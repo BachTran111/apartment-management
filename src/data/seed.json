@@ -1,0 +1,38 @@
+{
+  "phongs": [
+    {
+      "phong_id": 1,
+      "can_ho_id": 1,
+      "anh_phong": "room101.jpg",
+      "so_phong": "A101",
+      "dien_tich": 25.5,
+      "gia": "12000000",
+      "trang_thai": "Phòng Trống"
+    },
+    {
+      "phong_id": 2,
+      "can_ho_id": 2,
+      "anh_phong": "room102.jpg",
+      "so_phong": "A102",
+      "dien_tich": 30.0,
+      "gia": "15000000",
+      "trang_thai": "Đang Có Người Ở"
+    }
+  ],
+  "noithats": [
+    {
+      "noi_that_id": "NT-1",
+      "ten": "Giường",
+      "so_luong": 1,
+      "tinh_trang": "Tốt",
+      "phong_ids": [101]
+    },
+    {
+      "noi_that_id": "NT-2",
+      "ten": "Bàn",
+      "so_luong": 2,
+      "tinh_trang": "Cần sửa",
+      "phong_ids": [101, 102]
+    }
+  ]
+}
