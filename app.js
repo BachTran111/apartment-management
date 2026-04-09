@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
-import instanceMongoDB from "./config/db.config.js";
-import authRouter from "./routes/auth.route.js";
+import instanceMongoDB from "./src/config/db.config.js";
+import authRouter from "./src/routes/auth.route.js";
 
-import { errorHandler } from "./middlewares/error-handler.js";
+import { errorHandler } from "./src/middlewares/error-handler.js";
 
 const app = express();
 
