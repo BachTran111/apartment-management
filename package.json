@@ -1,19 +1,25 @@
 {
   "name": "apartment-management",
   "version": "1.0.0",
-  "description": "",
-  "type": "module",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "start": "nodemon app.js"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BachTran111/apartment-management.git"
+  },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BachTran111/apartment-management/issues"
+  },
+  "homepage": "https://github.com/BachTran111/apartment-management#readme",
+  "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "cloudinary": "^2.9.0",
+    "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
@@ -22,9 +28,9 @@
     "mongoose-sequence": "^6.0.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
-    "multer-storage-cloudinary": "^2.2.1"
+    "multer-storage-cloudinary": "^4.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.14"
   }
 }

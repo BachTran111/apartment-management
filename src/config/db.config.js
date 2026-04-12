@@ -10,7 +10,7 @@ export default async function instanceMongoDB() {
     // mongoose.set("debug", { color: true });
     mongoose.set?.("strictQuery", false);
 
-    await mongoose.connect(process.env.MONGO_URI);
+    mongoose.connect(process.env.MONGO_URI);
     console.log(" Connected to MongoDB");
     return mongoose;
   } catch (err) {

@@ -33,7 +33,7 @@ const phongSchema = new Schema(
       type: String,
       enum: ["Phòng Trống", "Đang Có Người Ở", "Đang Bảo Trì", "Không Sử Dụng"],
       required: true,
-      default: "Trống",
+      default: "Phòng Trống",
     },
     // Relations
     nguoi_thue_ids: [

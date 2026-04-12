@@ -7,7 +7,7 @@ import authRouter from "./routes/auth.route.js";
 import phongRouter from "./routes/phong.route.js";
 import noithatRouter from "./routes/noithat.route.js";
 
-import { errorHandler } from "./middlewares/error-handler.js";
+import { errorHandler } from "./src/middlewares/error-handler.js";
 
 const app = express();
 
