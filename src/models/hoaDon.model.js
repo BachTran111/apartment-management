@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const HoaDonSchema = new Schema(
@@ -18,4 +18,4 @@ const HoaDonSchema = new Schema(
   { collection: "HoaDon" },
 );
 
-module.exports = mongoose.model("HoaDon", HoaDonSchema);
+export default mongoose.model("HoaDon", HoaDonSchema);

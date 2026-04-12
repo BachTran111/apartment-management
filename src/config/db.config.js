@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import {
+  CanHo,
+  Phong,
+  NguoiThue,
+  HopDong,
+  HoaDon,
+  QuanTriVien,
+  NoiThat,
+  LichSuSuaChua,
+} from "../models/index.js";
 
 dotenv.config({ quiet: true });
 

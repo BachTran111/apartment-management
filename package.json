@@ -1,5 +1,6 @@
 {
   "name": "apartment-management",
+  "type": "module",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
@@ -28,7 +29,9 @@
     "mongoose-sequence": "^6.0.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
-    "multer-storage-cloudinary": "^4.0.0"
+    "multer-storage-cloudinary": "^4.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

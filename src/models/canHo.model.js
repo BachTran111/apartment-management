@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const CanHoSchema = new Schema(
@@ -10,4 +10,4 @@ const CanHoSchema = new Schema(
   { collection: "CanHo" },
 );
 
-module.exports = mongoose.model("CanHo", CanHoSchema);
+export default mongoose.model("CanHo", CanHoSchema);

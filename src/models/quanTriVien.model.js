@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const QuanTriVienSchema = new Schema(
@@ -9,4 +9,4 @@ const QuanTriVienSchema = new Schema(
   { collection: "QuanTriVien" },
 );
 
-module.exports = mongoose.model("QuanTriVien", QuanTriVienSchema);
+export default mongoose.model("QuanTriVien", QuanTriVienSchema);

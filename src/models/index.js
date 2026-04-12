@@ -1,13 +1,13 @@
-const CanHo = require("./canHo.model");
-const Phong = require("./phong.model");
-const NguoiThue = require("./nguoiThue.model");
-const HopDong = require("./hopDong.model");
-const HoaDon = require("./hoaDon.model");
-const QuanTriVien = require("./quanTriVien.model");
-const NoiThat = require("./noiThat.model");
-const LichSuSuaChua = require("./lichSuSuaChua.model");
+import CanHo from "./canHo.model.js";
+import Phong from "./phong.model.js";
+import NguoiThue from "./nguoiThue.model.js";
+import HopDong from "./hopDong.model.js";
+import HoaDon from "./hoaDon.model.js";
+import QuanTriVien from "./quanTriVien.model.js";
+import NoiThat from "./noiThat.model.js";
+import LichSuSuaChua from "./lichSuSuaChua.model.js";
 
-module.exports = {
+export {
   CanHo,
   Phong,
   NguoiThue,

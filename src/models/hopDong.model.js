@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const HopDongSchema = new Schema(
@@ -25,4 +25,4 @@ const HopDongSchema = new Schema(
   { collection: "HopDong" },
 );
 
-module.exports = mongoose.model("HopDong", HopDongSchema);
+export default mongoose.model("HopDong", HopDongSchema);
