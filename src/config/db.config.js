@@ -3,8 +3,6 @@ import dotenv from "dotenv";
 
 dotenv.config({ quiet: true });
 
-const URI = "mongodb://localhost:27017/";
-
 export default async function instanceMongoDB() {
   if (mongoose.connection.readyState === 1) return mongoose;
   try {

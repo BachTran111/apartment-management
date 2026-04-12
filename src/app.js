@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
-// import instanceMongoDB from "./config/db.config.js";
+import instanceMongoDB from "./config/db.config.js";
 import authRouter from "./routes/auth.route.js";
 import phongRouter from "./routes/phong.route.js";
 import noithatRouter from "./routes/noithat.route.js";
@@ -25,8 +25,8 @@ app.use(errorHandler);
 
 (async () => {
   try {
-    // await instanceMongoDB();
-    const PORT = process.env.PORT || 5000;
+    await instanceMongoDB();
+    const PORT = 5000;
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on http://0.0.0.0:${PORT}`);
     });
