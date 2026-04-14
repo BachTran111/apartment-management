@@ -15,14 +15,17 @@ const phongSchema = new Schema(
     so_phong: {
       type: String,
       required: true,
+      trim: true,
     },
     dien_tich: {
       type: Number,
       required: true,
+      min: [0.1, "Diện tích phải lớn hơn 0"],
     },
     gia: {
-      type: Schema.Types.Decimal128,
+      type: Number,
       required: true,
+      min: [0, "Giá thuê phải lớn hơn hoặc bằng 0"],
     },
     trang_thai: {
       type: String,

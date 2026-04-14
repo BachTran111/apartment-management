@@ -77,8 +77,53 @@ async function loadRoomData() {
     }
 }
 
+function clearErrors() {
+    const errorElements = document.querySelectorAll(".error-text");
+    errorElements.forEach(el => {
+        el.style.display = "none";
+        el.textContent = "";
+    });
+}
+
+function showError(inputId, message) {
+    const errorEl = document.getElementById(inputId + "Error");
+    if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.style.display = "block";
+    }
+}
+
+function validateForm() {
+    clearErrors();
+    let isValid = true;
+
+    const soPhong = soPhongInput.value.trim();
+    if (!soPhong) {
+        showError("soPhong", "Số phòng không được để trống.");
+        isValid = false;
+    }
+
+    const giaThue = Number(giaThueInput.value);
+    if (isNaN(giaThue) || giaThue < 0) {
+        showError("giaThue", "Giá thuê phải là một số lớn hơn hoặc bằng 0.");
+        isValid = false;
+    }
+
+    const dienTich = Number(dienTichInput.value);
+    if (isNaN(dienTich) || dienTich <= 0) {
+        showError("dienTich", "Diện tích phải là một số lớn hơn 0.");
+        isValid = false;
+    }
+
+    return isValid;
+}
+
 async function handleFormSubmit(event) {
     event.preventDefault();
+
+    if (!validateForm()) {
+        return;
+    }
 
     const payload = {
         can_ho_id: canHoId,
@@ -103,13 +148,13 @@ async function handleFormSubmit(event) {
         const result = await parseJsonResponse(response);
 
         if (!response.ok) {
-            throw new Error(result.message || "Khong the luu phong");
+            throw new Error(result.message || "Không thể lưu thông tin phòng.");
         }
 
-        alert("Luu thong tin phong thanh cong!");
+        alert("Lưu thông tin phòng thành công!");
         window.location.href = `RoomList.html?canHoId=${canHoId}`;
     } catch (error) {
-        alert(error.message);
+        alert("Lỗi: " + error.message);
     }
 }
 

@@ -2,6 +2,7 @@ import PhongService from "../services/phong.service.js";
 import NoiThatService from "../services/noithat.service.js";
 import mongoose from "mongoose";
 import { OK } from "../handler/success-response.js";
+import { phongCreateSchema, phongUpdateSchema } from "../validations/phong.validation.js";
 
 class PhongController {
   getAll = async (req, res, next) => {
@@ -78,6 +79,11 @@ class PhongController {
   create = async (req, res, next) => {
     try {
       const payload = req.body;
+      const { error } = phongCreateSchema.validate(payload, { abortEarly: false });
+      if (error) {
+        return res.status(400).json({ status: "ERROR", message: error.details.map(err => err.message).join(", ") });
+      }
+
       const phong = await PhongService.create(payload);
       res
         .status(201)
@@ -89,10 +95,15 @@ class PhongController {
 
   update = async (req, res, next) => {
     try {
-      console.log("Cục params từ Route truyền sang:", req.params);
+      // console.log("Cục params từ Route truyền sang:", req.params);
       const targetId = req.params.phongId || req.params.id;
 
       const payload = req.body;
+      const { error } = phongUpdateSchema.validate(payload, { abortEarly: false });
+      if (error) {
+        return res.status(400).json({ status: "ERROR", message: error.details.map(err => err.message).join(", ") });
+      }
+
       const phong = await PhongService.update(targetId, payload);
 
       if (!phong)

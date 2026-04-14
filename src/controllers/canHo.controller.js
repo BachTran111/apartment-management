@@ -1,10 +1,10 @@
-import CanHoModel from "../models/canHo.model.js";
+import CanHoService from "../services/canHo.service.js";
 import { OK } from "../handler/success-response.js";
 
 class CanHoController {
     getAll = async (req, res, next) => {
         try {
-            const canHos = await CanHoModel.find().lean();
+            const canHos = await CanHoService.getAll();
             return res.status(200).json({
                 status: "OK",
                 metadata: canHos,
@@ -18,7 +18,7 @@ class CanHoController {
     getById = async (req, res, next) => {
         try {
             const { canHoId } = req.params;
-            const canHo = await CanHoModel.findById(canHoId).lean();
+            const canHo = await CanHoService.getById(canHoId);
 
             if (!canHo) {
                 return res.status(404).json({ status: "ERROR", message: "Không tìm thấy Căn hộ" });
@@ -41,11 +41,7 @@ class CanHoController {
                 return res.status(400).json({ status: "ERROR", message: "Tên và địa chỉ không được để trống" });
             }
 
-            const newCanHo = await CanHoModel.create({
-                ten,
-                dia_chi,
-                tong_so_phong: tong_so_phong || 0,
-            });
+            const newCanHo = await CanHoService.create({ ten, dia_chi, tong_so_phong });
 
             return res.status(201).json(new OK({
                 message: "Tạo Căn hộ thành công!",
@@ -61,7 +57,7 @@ class CanHoController {
             const { canHoId } = req.params;
             const payload = req.body;
 
-            const updatedCanHo = await CanHoModel.findByIdAndUpdate(canHoId, payload, { new: true });
+            const updatedCanHo = await CanHoService.update(canHoId, payload);
 
             if (!updatedCanHo) {
                 return res.status(404).json({ status: "ERROR", message: "Không tìm thấy Căn hộ để cập nhật" });
@@ -79,7 +75,7 @@ class CanHoController {
     remove = async (req, res, next) => {
         try {
             const { canHoId } = req.params;
-            const deletedCanHo = await CanHoModel.findByIdAndDelete(canHoId);
+            const deletedCanHo = await CanHoService.remove(canHoId);
 
             if (!deletedCanHo) {
                 return res.status(404).json({ status: "ERROR", message: "Không tìm thấy Căn hộ để xóa" });
