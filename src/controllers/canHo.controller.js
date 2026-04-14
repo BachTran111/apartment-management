@@ -1,3 +1,4 @@
+import { canHoCreateSchema, canHoUpdateSchema } from "../validations/canHo.validation.js";
 import CanHoService from "../services/canHo.service.js";
 import { OK } from "../handler/success-response.js";
 
@@ -35,13 +36,12 @@ class CanHoController {
 
     create = async (req, res, next) => {
         try {
-            const { ten, dia_chi, tong_so_phong } = req.body;
-
-            if (!ten || !dia_chi) {
-                return res.status(400).json({ status: "ERROR", message: "Tên và địa chỉ không được để trống" });
+            const { error, value } = canHoCreateSchema.validate(req.body);
+            if (error) {
+                return res.status(400).json({ status: "ERROR", message: error.details[0].message });
             }
 
-            const newCanHo = await CanHoService.create({ ten, dia_chi, tong_so_phong });
+            const newCanHo = await CanHoService.create(value);
 
             return res.status(201).json(new OK({
                 message: "Tạo Căn hộ thành công!",
@@ -54,10 +54,14 @@ class CanHoController {
 
     update = async (req, res, next) => {
         try {
-            const { canHoId } = req.params;
-            const payload = req.body;
+            const { error, value } = canHoUpdateSchema.validate(req.body);
+            if (error) {
+                return res.status(400).json({ status: "ERROR", message: error.details[0].message });
+            }
 
-            const updatedCanHo = await CanHoService.update(canHoId, payload);
+            const { canHoId } = req.params;
+
+            const updatedCanHo = await CanHoService.update(canHoId, value);
 
             if (!updatedCanHo) {
                 return res.status(404).json({ status: "ERROR", message: "Không tìm thấy Căn hộ để cập nhật" });
