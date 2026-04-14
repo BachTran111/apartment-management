@@ -1,108 +1,94 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Danh sach phong</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./css/RoomList.css" />
-  </head>
-  <body data-api-base="" data-can-ho-id="">
-    <main class="room-page">
-      <section class="room-shell">
-        <header class="topbar">
-          <div class="brand">
-            <button class="icon-button" type="button" aria-label="Mo menu">
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-            <div>
-              <p class="eyebrow">Phong</p>
-              <h1>Quan ly can ho</h1>
-            </div>
-          </div>
-          <button class="profile-button" type="button" aria-label="Tai khoan">
-            <span></span>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Danh sach phong</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="./css/RoomList.css" />
+</head>
+
+<body data-api-base="" data-can-ho-id="">
+  <main class="room-page">
+    <section class="room-shell">
+      <header class="topbar">
+        <div class="brand">
+          <button class="icon-button" type="button" aria-label="Mo menu">
+            <span></span><span></span><span></span>
           </button>
-        </header>
-
-        <section class="panel">
-          <div class="section-heading">
-            <h2>Thong ke</h2>
+          <div>
+            <p class="eyebrow">Phong</p>
+            <h1>Quan ly can ho</h1>
           </div>
-          <div class="stat-grid" id="statGrid"></div>
-        </section>
+        </div>
+        <button class="profile-button" type="button" aria-label="Tai khoan">
+          <span></span>
+        </button>
+      </header>
 
-        <section class="panel">
-          <div class="toolbar">
-            <div class="filter-block">
-              <label for="roomSearch">
-                Tim kiem so phong
-              </label>
-              <div class="input-wrap">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M10.5 4a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13Zm0 1.8a4.7 4.7 0 1 0 0 9.4a4.7 4.7 0 0 0 0-9.4Zm6.53 10.02 3.47 3.47-1.27 1.27-3.47-3.47 1.27-1.27Z"
-                  />
-                </svg>
-                <input id="roomSearch" type="text" placeholder="Nhap so phong..." />
-              </div>
-            </div>
-
-            <div class="filter-block">
-              <label for="roomStatus">
-                Loc trang thai
-              </label>
-              <select id="roomStatus">
-                <option>Tat ca</option>
-                <option>Dang co nguoi o</option>
-                <option>Phong trong</option>
-                <option>Dang bao tri</option>
-              </select>
-            </div>
-
-            <button class="add-button" type="button">+ Them phong moi</button>
-          </div>
-          <p class="toolbar-note" id="roomListNotice"></p>
-        </section>
-
-        <section class="panel">
-          <div class="section-heading">
-            <h2>Bang danh sach phong</h2>
-          </div>
-
-          <div class="table-card">
-            <table class="room-table">
-              <thead>
-                <tr>
-                  <th>
-                    So phong
-                  </th>
-                  <th>
-                    Gia thue
-                  </th>
-                  <th>Trang thai</th>
-                  <th>
-                    Hop dong
-                  </th>
-                  <th>
-                    Thao tac
-                  </th>
-                </tr>
-              </thead>
-              <tbody id="roomTableBody"></tbody>
-            </table>
-          </div>
-        </section>
+      <section class="panel">
+        <div class="section-heading">
+          <h2>Thong ke</h2>
+        </div>
+        <div class="stat-grid" id="statGrid"></div>
       </section>
-    </main>
 
-    <script src="./js/RoomList.js"></script>
-  </body>
+      <section class="panel">
+        <div class="toolbar">
+          <div class="filter-block">
+            <label for="roomSearch">Tim kiem so phong</label>
+            <div class="input-wrap">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M10.5 4a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13Zm0 1.8a4.7 4.7 0 1 0 0 9.4a4.7 4.7 0 0 0 0-9.4Zm6.53 10.02 3.47 3.47-1.27 1.27-3.47-3.47 1.27-1.27Z" />
+              </svg>
+              <input id="roomSearch" type="text" placeholder="Nhap so phong..." />
+            </div>
+          </div>
+
+          <div class="filter-block">
+            <label for="roomStatus">Loc trang thai</label>
+            <select id="roomStatus">
+              <option>Tat ca</option>
+              <option>Dang co nguoi o</option>
+              <option>Phong trong</option>
+              <option>Dang bao tri</option>
+            </select>
+          </div>
+
+          <button id="btnAddRoom" class="add-button" type="button">+ Them phong moi</button>
+        </div>
+        <p class="toolbar-note" id="roomListNotice"></p>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <h2>Bang danh sach phong</h2>
+        </div>
+
+        <div class="table-card">
+          <table class="room-table">
+            <thead>
+              <tr>
+                <th>So phong</th>
+                <th>Gia thue</th>
+                <th>Trang thai</th>
+                <th>Hop dong</th>
+                <th>Thao tac</th>
+              </tr>
+            </thead>
+            <tbody id="roomTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="./js/RoomList.js"></script>
+</body>
+
 </html>

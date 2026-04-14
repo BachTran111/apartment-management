@@ -11,6 +11,7 @@ const roomStatus = document.getElementById("roomStatus");
 const statGrid = document.getElementById("statGrid");
 const roomTableBody = document.getElementById("roomTableBody");
 const roomListNotice = document.getElementById("roomListNotice");
+const btnAddRoom = document.getElementById("btnAddRoom");
 
 const apiBase = (bodyDataset.apiBase || params.get("apiBase") || "").trim();
 const canHoId = (bodyDataset.canHoId || params.get("canHoId") || "").trim();
@@ -45,6 +46,12 @@ async function boot() {
     setNotice("Can them canHoId trong URL, vi du: ?canHoId=<mongo-id>", true);
     renderTableMessage("Chua co canHoId de tai du lieu.");
     return;
+  }
+
+  if (btnAddRoom) {
+    btnAddRoom.addEventListener("click", () => {
+      window.location.href = `RoomForm.html?canHoId=${canHoId}`;
+    });
   }
 
   roomSearch.addEventListener("input", debounce(loadRooms, 300));
@@ -154,13 +161,20 @@ function renderRooms(rooms) {
           <td>
             <div class="actions">
               <button class="table-action" type="button" data-room-id="${room._id || ""}">Chi tiet</button>
-              <button class="table-action" type="button" data-room-id="${room._id || ""}">Sua</button>
+              <button class="table-action btn-edit" type="button" data-room-id="${room._id || ""}">Sua</button>
             </div>
           </td>
         </tr>
       `;
     })
     .join("");
+
+  document.querySelectorAll('.btn-edit').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = e.target.getAttribute('data-room-id');
+      window.location.href = `RoomForm.html?canHoId=${canHoId}&phongId=${id}`;
+    });
+  });
 }
 
 function renderTableMessage(message) {

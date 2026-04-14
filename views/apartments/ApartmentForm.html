@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm căn hộ mới</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a4a4a;
+            --bg-body: #f8f9fa;
+            --white: #ffffff;
+            --border-color: #dee2e6;
+            --text-secondary: #6c757d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            margin: 0;
+            padding: 20px;
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #444;
+        }
+
+        .btn-submit {
+            background-color: #444;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #222;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header-top">
+            <a href="ApartmentList.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Quay lại</a>
+            <h1>Thêm căn hộ mới</h1>
+        </div>
+
+        <form id="apartmentForm">
+            <div class="form-group">
+                <label for="tenCanHo">Tên căn hộ <span style="color:red">*</span></label>
+                <input type="text" id="tenCanHo" placeholder="VD: Chung cư mini số 1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="diaChi">Địa chỉ <span style="color:red">*</span></label>
+                <input type="text" id="diaChi" placeholder="VD: 54 Nguyễn Lương Bằng, Liên Chiểu" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tongSoPhong">Tổng số phòng</label>
+                <input type="number" id="tongSoPhong" placeholder="VD: 10" min="1">
+            </div>
+
+            <button type="submit" class="btn-submit">Lưu Căn Hộ & Tiếp Tục Thêm Phòng</button>
+        </form>
+    </div>
+
+    <script src="js/ApartmentForm.js"></script>
+</body>
+
+</html>

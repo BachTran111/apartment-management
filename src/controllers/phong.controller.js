@@ -89,13 +89,17 @@ class PhongController {
 
   update = async (req, res, next) => {
     try {
-      const { id } = req.params;
+      console.log("Cục params từ Route truyền sang:", req.params);
+      const targetId = req.params.phongId || req.params.id;
+
       const payload = req.body;
-      const phong = await PhongService.update(id, payload);
+      const phong = await PhongService.update(targetId, payload);
+
       if (!phong)
         return res
           .status(404)
           .json({ status: "ERROR", message: "Phong not found" });
+
       res
         .status(200)
         .json(new OK({ message: "Phong updated", metadata: phong }));

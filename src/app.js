@@ -5,6 +5,7 @@ import morgan from "morgan";
 import instanceMongoDB from "./config/db.config.js";
 import phongRouter from "./routes/phong.route.js";
 import noithatRouter from "./routes/noithat.route.js";
+import canHoRoutes from './routes/canHo.route.js';
 
 import { errorHandler } from "./middlewares/error-handler.js";
 
@@ -16,6 +17,7 @@ app.use(morgan("dev"));
 
 app.use("/api/phongs", phongRouter);
 app.use("/api/noithat", noithatRouter);
+app.use('/api/canhos', canHoRoutes);
 
 app.get("/", (req, res) => res.send(" Running..."));
 
