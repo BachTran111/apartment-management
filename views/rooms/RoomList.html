@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Danh sach phong</title>
+    <title>Danh sách phòng</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,24 +17,24 @@
       <section class="room-shell">
         <header class="topbar">
           <div class="brand">
-            <button class="icon-button" type="button" aria-label="Mo menu">
+            <button class="icon-button" type="button" aria-label="Mở menu">
               <span></span>
               <span></span>
               <span></span>
             </button>
             <div>
-              <p class="eyebrow">Phong</p>
-              <h1>Quan ly can ho</h1>
+              <p class="eyebrow">Phòng</p>
+              <h1>Quản lý căn hộ</h1>
             </div>
           </div>
-          <button class="profile-button" type="button" aria-label="Tai khoan">
+          <button class="profile-button" type="button" aria-label="Tài khoản">
             <span></span>
           </button>
         </header>
 
         <section class="panel">
           <div class="section-heading">
-            <h2>Thong ke</h2>
+            <h2>Thống kê</h2>
           </div>
           <div class="stat-grid" id="statGrid"></div>
         </section>
@@ -43,7 +43,7 @@
           <div class="toolbar">
             <div class="filter-block">
               <label for="roomSearch">
-                Tim kiem so phong
+                Tìm kiếm số phòng
               </label>
               <div class="input-wrap">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -51,30 +51,30 @@
                     d="M10.5 4a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13Zm0 1.8a4.7 4.7 0 1 0 0 9.4a4.7 4.7 0 0 0 0-9.4Zm6.53 10.02 3.47 3.47-1.27 1.27-3.47-3.47 1.27-1.27Z"
                   />
                 </svg>
-                <input id="roomSearch" type="text" placeholder="Nhap so phong..." />
+                <input id="roomSearch" type="text" placeholder="Nhập số phòng..." />
               </div>
             </div>
 
             <div class="filter-block">
               <label for="roomStatus">
-                Loc trang thai
+                Lọc trạng thái
               </label>
               <select id="roomStatus">
-                <option>Tat ca</option>
-                <option>Dang co nguoi o</option>
-                <option>Phong trong</option>
-                <option>Dang bao tri</option>
+                <option>Tất cả</option>
+                <option>Đang có người ở</option>
+                <option>Phòng trống</option>
+                <option>Đang bảo trì</option>
               </select>
             </div>
 
-            <button class="add-button" type="button">+ Them phong moi</button>
+            <button class="add-button" type="button">+ Thêm phòng mới</button>
           </div>
           <p class="toolbar-note" id="roomListNotice"></p>
         </section>
 
         <section class="panel">
           <div class="section-heading">
-            <h2>Bang danh sach phong</h2>
+            <h2>Bảng danh sách phòng</h2>
           </div>
 
           <div class="table-card">
@@ -82,17 +82,17 @@
               <thead>
                 <tr>
                   <th>
-                    So phong
+                    Số phòng
                   </th>
                   <th>
-                    Gia thue
+                    Giá thuê
                   </th>
-                  <th>Trang thai</th>
+                  <th>Trạng thái</th>
                   <th>
-                    Hop dong
+                    Hợp đồng
                   </th>
                   <th>
-                    Thao tac
+                    Thao tác
                   </th>
                 </tr>
               </thead>

@@ -1,7 +1,15 @@
+const LABELS = {
+  all: "Tất cả",
+  occupied: "Đang có người ở",
+  available: "Phòng trống",
+  maintenance: "Đang bảo trì",
+  inactive: "Không sử dụng"
+};
+
 const DEFAULT_STATS = [
-  { key: "occupied", markerClass: "filled", label: "Dang co nguoi o", value: 0 },
-  { key: "available", markerClass: "outline", label: "Phong trong", value: 0 },
-  { key: "maintenance", markerClass: "filled accent", label: "Dang bao tri", value: 0 }
+  { key: "occupied", markerClass: "filled", label: LABELS.occupied, value: 0 },
+  { key: "available", markerClass: "outline", label: LABELS.available, value: 0 },
+  { key: "maintenance", markerClass: "filled accent", label: LABELS.maintenance, value: 0 }
 ];
 
 const bodyDataset = document.body.dataset;
@@ -39,11 +47,11 @@ function resolveApiBase() {
 
 async function boot() {
   renderStats(DEFAULT_STATS);
-  renderTableMessage("Dang tai danh sach phong...");
+  renderTableMessage("Đang tải danh sách phòng...");
 
   if (!canHoId) {
-    setNotice("Can them canHoId trong URL, vi du: ?canHoId=<mongo-id>", true);
-    renderTableMessage("Chua co canHoId de tai du lieu.");
+    setNotice("Cần thêm canHoId trong URL, ví dụ: ?canHoId=<mongo-id>", true);
+    renderTableMessage("Chưa có canHoId để tải dữ liệu.");
     return;
   }
 
@@ -62,7 +70,7 @@ async function loadStats() {
     const payload = await parseJsonResponse(response);
 
     if (!response.ok) {
-      throw new Error(payload.message || "Khong the tai thong ke");
+      throw new Error(payload.message || "Không thể tải thống kê");
     }
 
     const counts = Array.isArray(payload.metadata) ? payload.metadata : [];
@@ -79,14 +87,14 @@ async function loadStats() {
 
 async function fetchAllRooms() {
   try {
-    setNotice(`Dang tai du lieu phong cho can ho ${canHoId}...`);
-    renderTableMessage("Dang tai danh sach phong...");
+    setNotice(`Đang tải dữ liệu phòng cho căn hộ ${canHoId}...`);
+    renderTableMessage("Đang tải danh sách phòng...");
 
     const response = await fetch(`${resolvedApiBase}/canho/${canHoId}`);
     const payload = await parseJsonResponse(response);
 
     if (!response.ok) {
-      throw new Error(payload.message || "Khong the tai danh sach phong");
+      throw new Error(payload.message || "Không thể tải danh sách phòng");
     }
 
     allRooms = Array.isArray(payload.metadata)
@@ -110,16 +118,16 @@ function loadRooms() {
     const roomNumber = String(room.so_phong || "").toLowerCase();
     const normalizedStatus = normalizeStatus(room.trang_thai).label;
     const matchKeyword = !keyword || roomNumber.includes(keyword);
-    const matchStatus =
-      selectedStatus === "Tat ca" || normalizedStatus === selectedStatus;
-
+    const matchStatus = selectedStatus === LABELS.all || normalizedStatus === selectedStatus;
     return matchKeyword && matchStatus;
   });
 
   renderRooms(filteredRooms);
 
-  const label = selectedStatus === "Tat ca" ? "tat ca trang thai" : selectedStatus;
-  setNotice(`Da tai ${filteredRooms.length}/${allRooms.length} phong (${label}${keyword ? `, tu khoa: ${keyword}` : ""}).`);
+  const label = selectedStatus === LABELS.all ? "tất cả trạng thái" : selectedStatus;
+  setNotice(
+    `Đã tải ${filteredRooms.length}/${allRooms.length} phòng (${label}${keyword ? `, từ khóa: ${keyword}` : ""}).`,
+  );
 }
 
 function renderStats(stats) {
@@ -131,20 +139,21 @@ function renderStats(stats) {
           <strong>${item.value}</strong>
           <span>${item.label}</span>
         </article>
-      `
+      `,
     )
     .join("");
 }
 
 function renderRooms(rooms) {
   if (!rooms.length) {
-    renderTableMessage("Khong tim thay phong phu hop.");
+    renderTableMessage("Không tìm thấy phòng phù hợp.");
     return;
   }
 
   roomTableBody.innerHTML = rooms
     .map((room) => {
       const status = normalizeStatus(room.trang_thai);
+      const detailUrl = buildDetailUrl(room._id);
       return `
         <tr>
           <td class="room-number">${escapeHtml(room.so_phong || "-")}</td>
@@ -153,8 +162,8 @@ function renderRooms(rooms) {
           <td class="contract-text">${formatContract(room)}</td>
           <td>
             <div class="actions">
-              <button class="table-action" type="button" data-room-id="${room._id || ""}">Chi tiet</button>
-              <button class="table-action" type="button" data-room-id="${room._id || ""}">Sua</button>
+              <button class="table-action" type="button" data-room-id="${room._id || ""}" data-detail-url="${escapeAttribute(detailUrl)}">Chi tiết</button>
+              <button class="table-action" type="button" data-room-id="${room._id || ""}">Sửa</button>
             </div>
           </td>
         </tr>
@@ -162,6 +171,15 @@ function renderRooms(rooms) {
     })
     .join("");
 }
+
+roomTableBody.addEventListener("click", (event) => {
+  const detailButton = event.target.closest("[data-detail-url]");
+  if (!detailButton) {
+    return;
+  }
+
+  window.location.href = detailButton.dataset.detailUrl;
+});
 
 function renderTableMessage(message) {
   roomTableBody.innerHTML = `<tr><td class="table-message" colspan="5">${escapeHtml(message)}</td></tr>`;
@@ -175,18 +193,18 @@ function formatCurrency(value) {
 
   const amount = Number(rawValue);
   if (Number.isNaN(amount)) {
-    return "Khong ro";
+    return "Chưa rõ";
   }
 
-  return `${amount.toLocaleString("vi-VN")} d`;
+  return `${amount.toLocaleString("vi-VN")} đ`;
 }
 
 function formatContract(room) {
   if (Array.isArray(room.hop_dong_ids) && room.hop_dong_ids.length) {
-    return `${room.hop_dong_ids.length} hop dong`;
+    return `${room.hop_dong_ids.length} hợp đồng`;
   }
 
-  return "Khong co";
+  return "Không có";
 }
 
 function normalizeStatus(rawStatus) {
@@ -197,30 +215,24 @@ function normalizeStatus(rawStatus) {
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 
-  if (
-    compact.includes("bao tri") ||
-    source.includes("báº£o") ||
-    source.includes("bao tri")
-  ) {
-    return { key: "maintenance", label: "Dang bao tri" };
+  if (compact.includes("bao tri") || source.includes("bảo trì") || source.includes("maintenance")) {
+    return { key: "maintenance", label: LABELS.maintenance };
   }
 
   if (
-    compact.includes("co nguoi") ||
-    compact.includes("nguoi o") ||
-    source.includes("ngÆ°")
+    compact.includes("co nguoi")
+    || compact.includes("nguoi o")
+    || source.includes("người ở")
+    || source.includes("rented")
   ) {
-    return { key: "occupied", label: "Dang co nguoi o" };
+    return { key: "occupied", label: LABELS.occupied };
   }
 
-  if (
-    compact.includes("khong su dung") ||
-    source.includes("sá»­ dá»¥ng")
-  ) {
-    return { key: "available", label: "Khong su dung" };
+  if (compact.includes("khong su dung") || source.includes("không sử dụng")) {
+    return { key: "available", label: LABELS.inactive };
   }
 
-  return { key: "available", label: "Phong trong" };
+  return { key: "available", label: LABELS.available };
 }
 
 function setNotice(message, isError = false) {
@@ -245,6 +257,24 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+function escapeAttribute(value) {
+  return escapeHtml(value);
+}
+
+function buildDetailUrl(phongId) {
+  const detailUrl = new URL("./RoomDetail.html", window.location.href);
+  if (phongId) {
+    detailUrl.searchParams.set("phongId", phongId);
+  }
+  if (canHoId) {
+    detailUrl.searchParams.set("canHoId", canHoId);
+  }
+  if (apiBase) {
+    detailUrl.searchParams.set("apiBase", apiBase);
+  }
+  return detailUrl.toString();
+}
+
 async function parseJsonResponse(response) {
   const rawText = await response.text();
 
@@ -252,7 +282,7 @@ async function parseJsonResponse(response) {
     return JSON.parse(rawText);
   } catch (error) {
     throw new Error(
-      `API ${response.url} khong tra JSON hop le. Hay kiem tra lai apiBase hoac cong backend.`,
+      `API ${response.url} không trả JSON hợp lệ. Hãy kiểm tra lại apiBase hoặc cổng backend.`,
     );
   }
 }
