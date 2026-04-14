@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Danh sách phòng</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/RoomList.css" />
+  </head>
+  <body data-api-base="" data-can-ho-id="">
+    <main class="room-page">
+      <section class="room-shell">
+        <header class="topbar">
+          <div class="brand">
+            <button class="icon-button" type="button" aria-label="Mở menu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <div>
+              <p class="eyebrow">Phòng</p>
+              <h1>Quản lý căn hộ</h1>
+            </div>
+          </div>
+          <button class="profile-button" type="button" aria-label="Tài khoản">
+            <span></span>
+          </button>
+        </header>
+
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Thống kê</h2>
+          </div>
+          <div class="stat-grid" id="statGrid"></div>
+        </section>
+
+        <section class="panel">
+          <div class="toolbar">
+            <div class="filter-block">
+              <label for="roomSearch">
+                Tìm kiếm số phòng
+              </label>
+              <div class="input-wrap">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M10.5 4a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13Zm0 1.8a4.7 4.7 0 1 0 0 9.4a4.7 4.7 0 0 0 0-9.4Zm6.53 10.02 3.47 3.47-1.27 1.27-3.47-3.47 1.27-1.27Z"
+                  />
+                </svg>
+                <input id="roomSearch" type="text" placeholder="Nhập số phòng..." />
+              </div>
+            </div>
+
+            <div class="filter-block">
+              <label for="roomStatus">
+                Lọc trạng thái
+              </label>
+              <select id="roomStatus">
+                <option>Tất cả</option>
+                <option>Đang có người ở</option>
+                <option>Phòng trống</option>
+                <option>Đang bảo trì</option>
+              </select>
+            </div>
+
+            <button class="add-button" type="button">+ Thêm phòng mới</button>
+          </div>
+          <p class="toolbar-note" id="roomListNotice"></p>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Bảng danh sách phòng</h2>
+          </div>
+
+          <div class="table-card">
+            <table class="room-table">
+              <thead>
+                <tr>
+                  <th>
+                    Số phòng
+                  </th>
+                  <th>
+                    Giá thuê
+                  </th>
+                  <th>Trạng thái</th>
+                  <th>
+                    Hợp đồng
+                  </th>
+                  <th>
+                    Thao tác
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="roomTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./js/RoomList.js"></script>
+  </body>
+</html>
