@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const LichSuSuaChuaSchema = new Schema(
@@ -15,4 +15,4 @@ const LichSuSuaChuaSchema = new Schema(
   { collection: "LichSuSuaChua" },
 );
 
-module.exports = mongoose.model("LichSuSuaChua", LichSuSuaChuaSchema);
+export default mongoose.model("LichSuSuaChua", LichSuSuaChuaSchema);

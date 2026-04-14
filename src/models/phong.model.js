@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const PhongSchema = new Schema(
@@ -20,4 +20,4 @@ const PhongSchema = new Schema(
   { collection: "Phong" },
 );
 
-module.exports = mongoose.model("Phong", PhongSchema);
+export default mongoose.model("Phong", PhongSchema);

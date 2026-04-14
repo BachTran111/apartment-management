@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const CanHoSchema = new Schema(
@@ -7,7 +7,10 @@ const CanHoSchema = new Schema(
     dia_chi: String,
     tong_so_phong: Number,
   },
-  { collection: "CanHo" },
+  { 
+    collection: "CanHo",
+    timestamps: true 
+  },
 );
 
-module.exports = mongoose.model("CanHo", CanHoSchema);
+export default mongoose.model("CanHo", CanHoSchema);

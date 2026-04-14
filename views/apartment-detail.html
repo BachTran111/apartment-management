@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết căn hộ - Quản lý</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-orange: #f39c12;
+            --bg-gray: #f4f7f6;
+            --text-dark: #333;
+            --text-light: #777;
+            --border-color: #e0e0e0;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-gray);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+        }
+
+        /* Header Navigation */
+        .top-nav {
+            background: var(--white);
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-left { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 14px; }
+        .nav-right { display: flex; gap: 20px; color: var(--text-light); }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary-orange);
+            padding-left: 10px;
+        }
+
+        /* Section Card Styles */
+        .section-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 25px;
+            padding: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .icon-circle {
+            background: var(--primary-orange);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        /* Info Fields */
+        .info-group { margin-bottom: 15px; }
+        .info-row { display: flex; margin-bottom: 10px; align-items: center; }
+        .info-label { width: 150px; font-size: 13px; color: var(--text-light); }
+        .info-value { 
+            flex: 1; 
+            padding: 8px 12px; 
+            background: #fff; 
+            border: 1px solid var(--border-color); 
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .contact-box {
+            margin-left: 150px;
+            padding: 12px;
+            background: #fafafa;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .stat-box {
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .stat-number { font-size: 32px; font-weight: 700; margin-bottom: 5px; }
+        .stat-label { font-size: 11px; color: var(--text-light); text-transform: uppercase; }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f8f9fa;
+            text-align: left;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        /* Bottom Buttons */
+        .bottom-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-black { background: #000; color: #fff; }
+        .btn-white { background: #fff; color: #333; border: 1px solid var(--border-color); }
+
+        .back-nav {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            color: var(--primary-orange);
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars"></i> QUẢN LÝ CĂN HỘ
+        </div>
+        <div class="nav-right">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-regular fa-circle-user"></i>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="back-nav">
+            <a href="/" class="btn-back">
+                <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+            </a>
+        </div>
+        
+        <div id="apartment-detail">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+
+    <script src="js/apartment-detail.js"></script>
+</body>
+</html>

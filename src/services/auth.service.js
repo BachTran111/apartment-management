@@ -1,27 +1,27 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import UserModel from "../models/user.model.js";
+import { QuanTriVien as UserModel } from "../models/index.js";
 
 const SECRET = "super_secret_key";
 
 class AuthService {
   async register(username, password, role = "USER") {
-    if (await UserModel.exists({ username }))
+    if (await UserModel.exists({ ten_dang_nhap: username }))
       throw new Error("Username already exists");
     const hashed = await bcrypt.hash(password, 10);
-    const user = await UserModel.create({ username, password: hashed, role });
-    return { id: user._id, username: user.username, role: user.role };
+    const user = await UserModel.create({ ten_dang_nhap: username, mat_khau: hashed });
+    return { id: user._id, username: user.ten_dang_nhap };
   }
 
   async login(username, password) {
-    const user = await UserModel.findOne({ username });
+    const user = await UserModel.findOne({ ten_dang_nhap: username });
     if (!user) throw new Error("Invalid username or password");
-    const valid = await bcrypt.compare(password, user.password);
+    const valid = await bcrypt.compare(password, user.mat_khau);
     if (!valid) throw new Error("Invalid username or password");
-    const token = jwt.sign({ id: user._id, role: user.role }, SECRET, {
+    const token = jwt.sign({ id: user._id }, SECRET, {
       expiresIn: "1h",
     });
-    return { token, role: user.role };
+    return { token };
   }
 
   verifyToken(token) {
