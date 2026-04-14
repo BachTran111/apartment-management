@@ -7,7 +7,13 @@ class PhongService {
     filter = {},
     { skip = 0, limit = 50, sort = { createdAt: -1 } } = {},
   ) {
-    return PhongModel.find(filter).skip(skip).limit(limit).sort(sort).lean();
+    const mongoFilter = this.buildMongoFilter(filter);
+    return PhongModel.collection
+      .find(mongoFilter)
+      .skip(skip)
+      .limit(limit)
+      .sort(sort)
+      .toArray();
   }
 
   async getById(id) {
@@ -76,22 +82,44 @@ class PhongService {
   }
 
   async findBySoPhong(canHoId, soPhong) {
-    return PhongModel.findOne({
-      can_ho_id: canHoId,
-      so_phong: soPhong,
-    }).lean();
+    return PhongModel.collection.findOne(
+      this.buildMongoFilter({
+        can_ho_id: canHoId,
+        so_phong: soPhong,
+      }),
+    );
   }
 
   async countAllTrangThai(canHoId) {
-    return PhongModel.aggregate([
-      { $match: { can_ho_id: new mongoose.Types.ObjectId(canHoId) } },
-      {
-        $group: {
-          _id: "$trang_thai",
-          count: { $sum: 1 },
+    return PhongModel.collection
+      .aggregate([
+        { $match: this.buildMongoFilter({ can_ho_id: canHoId }) },
+        {
+          $group: {
+            _id: "$trang_thai",
+            count: { $sum: 1 },
+          },
         },
-      },
-    ]);
+      ])
+      .toArray();
+  }
+
+  buildMongoFilter(filter = {}) {
+    const mongoFilter = { ...filter };
+
+    if (mongoFilter.can_ho_id) {
+      const canHoId = String(mongoFilter.can_ho_id);
+      const canHoCandidates = [canHoId];
+
+      if (mongoose.Types.ObjectId.isValid(canHoId)) {
+        canHoCandidates.push(new mongoose.Types.ObjectId(canHoId));
+      }
+
+      delete mongoFilter.can_ho_id;
+      mongoFilter.can_ho_id = { $in: canHoCandidates };
+    }
+
+    return mongoFilter;
   }
 }
 
