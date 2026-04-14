@@ -4,11 +4,6 @@ const { Schema } = mongoose;
 
 const phongSchema = new Schema(
   {
-    phong_id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     can_ho_id: {
       type: Schema.Types.ObjectId,
       ref: "CanHo",

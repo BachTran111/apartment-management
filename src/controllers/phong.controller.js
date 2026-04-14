@@ -1,28 +1,49 @@
 import PhongService from "../services/phong.service.js";
 import NoiThatService from "../services/noithat.service.js";
+import mongoose from "mongoose";
 import { OK } from "../handler/success-response.js";
 
 class PhongController {
   getAll = async (req, res, next) => {
     try {
-      const { skip, limit } = req.query;
+      const { canHoId } = req.params;
+      const { skip = 0, limit = 50 } = req.query;
+
+      if (!mongoose.Types.ObjectId.isValid(canHoId)) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: "Invalid can_ho_id",
+        });
+      }
+
       const phongs = await PhongService.getAll(
-        {},
-        { skip: Number(skip) || 0, limit: Number(limit) || 50 },
+        { can_ho_id: canHoId },
+        {
+          skip: Number(skip),
+          limit: Number(limit),
+        },
       );
-      res.status(200).json(new OK({ metadata: phongs }));
+
+      return res.status(200).json({
+        status: "OK",
+        metadata: phongs,
+      });
     } catch (err) {
-      res.status(400).json({ status: "ERROR", message: err.message });
+      console.error(err);
+      return res.status(500).json({
+        status: "ERROR",
+        message: err.message,
+      });
     }
   };
 
   getById = async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { phongId } = req.params;
 
       const [phong, noiThat] = await Promise.all([
-        PhongService.getById(id),
-        NoiThatService.getAllByPhong(id).catch(() => []), // fallback
+        PhongService.getById(phongId),
+        NoiThatService.getAllByPhong(phongId).catch(() => []),
       ]);
 
       if (!phong) {
@@ -32,14 +53,13 @@ class PhongController {
         });
       }
 
-      // Chưa có API → fallback null / []
       const nguoiThue = null;
       const hopDong = [];
 
       const result = {
         phong,
         noiThat: noiThat || [],
-        nguoiThue, // null để FE biết là chưa có
+        nguoiThue,
         hopDong, // [] để tránh crash khi map
       };
 
@@ -100,7 +120,6 @@ class PhongController {
     }
   };
 
-  // Return all furniture for a room
   getAllNoiThat = async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -132,6 +151,101 @@ class PhongController {
         );
     } catch (err) {
       res.status(400).json({ status: "ERROR", message: err.message });
+    }
+  };
+
+  getBySoPhong = async (req, res) => {
+    try {
+      const { canHoId, soPhong } = req.params;
+
+      // validate
+      if (!mongoose.Types.ObjectId.isValid(canHoId)) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: "Invalid can_ho_id",
+        });
+      }
+
+      const phong = await PhongService.findBySoPhong(canHoId, soPhong);
+
+      if (!phong) {
+        return res.status(404).json({
+          status: "ERROR",
+          message: "Phong not found",
+        });
+      }
+
+      return res.status(200).json({
+        status: "OK",
+        metadata: phong,
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        status: "ERROR",
+        message: err.message,
+      });
+    }
+  };
+
+  countAllTrangThai = async (req, res) => {
+    try {
+      const { canHoId } = req.params;
+
+      const result = await PhongService.countAllTrangThai(canHoId);
+
+      return res.status(200).json({
+        status: "OK",
+        metadata: result,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: "ERROR",
+        message: err.message,
+      });
+    }
+  };
+
+  filterByTrangThai = async (req, res) => {
+    try {
+      const { canHoId } = req.params;
+      const { trang_thai, skip = 0, limit = 50 } = req.query;
+
+      // validate
+      if (!mongoose.Types.ObjectId.isValid(canHoId)) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: "Invalid can_ho_id",
+        });
+      }
+
+      if (!trang_thai) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: "trang_thai is required",
+        });
+      }
+
+      const filter = {
+        can_ho_id: canHoId,
+        trang_thai: trang_thai,
+      };
+
+      const phongs = await PhongService.getAll(filter, {
+        skip: Number(skip),
+        limit: Number(limit),
+      });
+
+      return res.status(200).json({
+        status: "OK",
+        metadata: phongs,
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        status: "ERROR",
+        message: err.message,
+      });
     }
   };
 }

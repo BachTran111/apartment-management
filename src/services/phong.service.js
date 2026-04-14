@@ -2,28 +2,17 @@ import mongoose from "mongoose";
 import PhongModel from "../models/phong.model.js";
 import NoiThatModel from "../models/noithat.model.js";
 
-const { Types } = mongoose;
-
 class PhongService {
   async getAll(
     filter = {},
     { skip = 0, limit = 50, sort = { createdAt: -1 } } = {},
   ) {
-    return PhongModel.find(filter)
-      .skip(skip)
-      .limit(limit)
-      .sort(sort)
-      .populate("noi_that_ids")
-      .lean();
+    return PhongModel.find(filter).skip(skip).limit(limit).sort(sort).lean();
   }
 
   async getById(id) {
     if (!id) return null;
-    return isNaN(id)
-      ? PhongModel.findById(id).populate("noi_that_ids").lean()
-      : PhongModel.findOne({ phong_id: Number(id) })
-          .populate("noi_that_ids")
-          .lean();
+    return PhongModel.findById(id).lean();
   }
 
   async create(data) {
@@ -32,100 +21,56 @@ class PhongService {
   }
 
   async update(id, update) {
-    const doc = isNaN(id)
-      ? await PhongModel.findById(id)
-      : await PhongModel.findOne({ phong_id: Number(id) });
-
-    if (!doc) return null;
-    Object.assign(doc, update);
-    await doc.save();
-    return doc.toObject();
+    const doc = await PhongModel.findByIdAndUpdate(id, update, {
+      new: true,
+    }).lean();
+    return doc;
   }
 
   async remove(id) {
-    return isNaN(id)
-      ? await PhongModel.findByIdAndDelete(id).lean()
-      : await PhongModel.findOneAndDelete({ phong_id: Number(id) }).lean();
+    return PhongModel.findByIdAndDelete(id).lean();
   }
 
-  // Add a furniture reference to a room (bi-directional)
-  async addNoiThat(noiThatId, phongId) {
-    const nId = Types.ObjectId(noiThatId);
-    const pId = Types.ObjectId(phongId);
+  async getAllNoiThat(phongId, { skip = 0, limit = 100 } = {}) {
+    if (!phongId) return [];
 
-    const session = await mongoose.startSession();
-    session.startTransaction();
-    try {
-      const phong = await PhongModel.findByIdAndUpdate(
-        pId,
-        { $addToSet: { noi_that_ids: nId } },
-        { new: true, session },
-      ).exec();
-      await NoiThatModel.findByIdAndUpdate(
-        nId,
-        { $addToSet: { phong_ids: pId } },
-        { session },
-      ).exec();
-
-      await session.commitTransaction();
-      session.endSession();
-      return phong;
-    } catch (err) {
-      await session.abortTransaction();
-      session.endSession();
-      throw err;
-    }
-  }
-
-  async removeNoiThat(noiThatId, phongId) {
-    const nId = Types.ObjectId(noiThatId);
-    const pId = Types.ObjectId(phongId);
-
-    const session = await mongoose.startSession();
-    session.startTransaction();
-    try {
-      const phong = await PhongModel.findByIdAndUpdate(
-        pId,
-        { $pull: { noi_that_ids: nId } },
-        { new: true, session },
-      ).exec();
-      await NoiThatModel.findByIdAndUpdate(
-        nId,
-        { $pull: { phong_ids: pId } },
-        { session },
-      ).exec();
-
-      await session.commitTransaction();
-      session.endSession();
-      return phong;
-    } catch (err) {
-      await session.abortTransaction();
-      session.endSession();
-      throw err;
-    }
-  }
-
-  // Return all furniture for a given room identifier (numeric `phong_id` or Mongo _id)
-  async getAllNoiThat(phongIdentifier, { skip = 0, limit = 100 } = {}) {
-    if (!phongIdentifier) return [];
-
-    let phong = null;
-    if (isNaN(phongIdentifier)) {
-      phong = await PhongModel.findById(phongIdentifier).select("_id").lean();
-    } else {
-      phong = await PhongModel.findOne({ phong_id: Number(phongIdentifier) })
-        .select("_id")
-        .lean();
-    }
-    if (!phong) return [];
-
-    return NoiThatModel.find({ phong_ids: phong._id })
+    return NoiThatModel.find({ phong_id: phongId })
       .skip(skip)
       .limit(limit)
-      .populate("phong_ids")
       .lean();
+  }
+
+  async addNoiThat(phongId, data) {
+    if (!phongId) throw new Error("Missing phongId");
+
+    return NoiThatModel.create({
+      ...data,
+      phong_id: phongId,
+    });
+  }
+
+  async removeNoiThat(noiThatId) {
+    return NoiThatModel.findByIdAndDelete(noiThatId).lean();
+  }
+
+  async findBySoPhong(canHoId, soPhong) {
+    return PhongModel.findOne({
+      can_ho_id: canHoId,
+      so_phong: soPhong,
+    }).lean();
+  }
+
+  async countAllTrangThai(canHoId) {
+    return PhongModel.aggregate([
+      { $match: { can_ho_id: new mongoose.Types.ObjectId(canHoId) } },
+      {
+        $group: {
+          _id: "$trang_thai",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
   }
 }
 
 export default new PhongService();
-
