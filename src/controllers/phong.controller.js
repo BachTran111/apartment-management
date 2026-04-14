@@ -136,14 +136,15 @@ class PhongController {
 
   addNoiThat = async (req, res, next) => {
     try {
-      const { id } = req.params; // phong_id (số)
+      // const { id } = req.params; // phong_id (số)
+      const { phong_id } = req.params;
       const { noi_that_id } = req.body;
       if (!noi_that_id) {
         return res
           .status(400)
           .json({ status: "ERROR", message: "noi_that_id is required" });
       }
-      const updated = await NoiThatService.assignToPhong(noi_that_id, id);
+      const updated = await NoiThatService.assignToPhong(noi_that_id, phong_id);
       res
         .status(200)
         .json(
