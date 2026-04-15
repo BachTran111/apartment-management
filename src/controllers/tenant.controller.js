@@ -50,9 +50,9 @@ class TenantController {
   removeImage = async (req, res) => {
     try {
       const { id } = req.params;
-      const { imagePath } = req.body;
+      const { imagePath, imageType } = req.body;
 
-      const result = await TenantService.removeTenantImage(id, imagePath);
+      const result = await TenantService.removeTenantImage(id, imagePath, imageType);
 
       res.status(200).json(new OK({ message: result.message }));
     } catch (err) {
