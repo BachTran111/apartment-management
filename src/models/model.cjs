@@ -38,12 +38,13 @@ const CanHoSchema = new Schema({
 
 const NguoiThueSchema = new Schema({
   ho_ten: { type: String, required: true },
+  tuoi: { type: Number },
   so_dien_thoai: { type: String, required: true },
-  email: { type: String },
-  cmnd_cccd: { type: String },
-  ngay_sinh: { type: Date },
-  que_quan: { type: String },
-  anh_tai_lieu: [{ type: String }],
+  cmnd_cccd: { type: String, required: true },
+  que_quan: { type: String, required: true },
+  sdt_lien_he_khan_cap: { type: String },
+  anh_dai_dien: { type: String },
+  anh_hop_dong: [{ type: String }],
   ghi_chu: { type: String },
   deleted: { type: Boolean, default: false },
 }, { timestamps: true });
@@ -58,9 +59,10 @@ const HopDongSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
   },
-  ngay_bat_dau: Date,
-  ngay_ket_thuc: Date,
-  tien_dat_coc: Number,
+  ngay_bat_dau: { type: Date, required: true },
+  ngay_ket_thuc: { type: Date },
+  gia_thue: { type: Number, required: true },
+  tien_dat_coc: { type: Number, default: 0 },
   trang_thai: {
     type: String,
     enum: ["active", "expired"],
