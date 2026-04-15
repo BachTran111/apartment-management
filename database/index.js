@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { CanHo, NguoiThue, HopDong, HoaDon } = require("./models");
+const { CanHo, NguoiThue, HopDong, HoaDon } = require("./models/model.cjs");
 
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/quanlycanho");

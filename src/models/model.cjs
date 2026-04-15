@@ -25,6 +25,8 @@ const PhongSchema = new Schema({
     default: "available",
   },
   noi_that: [NoiThatSchema],
+  nguoi_thue_id: { type: Schema.Types.ObjectId, ref: "NguoiThue" },
+  hop_dong_id: { type: Schema.Types.ObjectId, ref: "HopDong" },
 });
 
 const CanHoSchema = new Schema({
@@ -35,11 +37,16 @@ const CanHoSchema = new Schema({
 });
 
 const NguoiThueSchema = new Schema({
-  ho_ten: String,
-  so_dien_thoai: String,
-  email: String,
-  cmnd_cccd: String,
-});
+  ho_ten: { type: String, required: true },
+  so_dien_thoai: { type: String, required: true },
+  email: { type: String },
+  cmnd_cccd: { type: String },
+  ngay_sinh: { type: Date },
+  que_quan: { type: String },
+  anh_tai_lieu: [{ type: String }],
+  ghi_chu: { type: String },
+  deleted: { type: Boolean, default: false },
+}, { timestamps: true });
 
 const HopDongSchema = new Schema({
   nguoi_thue_id: {
