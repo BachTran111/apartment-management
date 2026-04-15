@@ -26,19 +26,21 @@ Tạo người thuê, hợp đồng và cập nhật trạng thái phòng trong 
 **Content-Type:** `multipart/form-data`
 
 | Field | Type | Required | Description |
-|-------|------|-------------|
+|-------|------|----------|-------------|
 | ho_ten | string | Yes | Họ tên người thuê (2-100 ký tự) |
+| tuoi | number | No | Tuổi người thuê (1-150) |
 | so_dien_thoai | string | Yes | Số điện thoại (10-11 số) |
-| email | string | No | Email (định dạng email hợp lệ) |
-| cmnd_cccd | string | No | Số CMND/CCCD |
-| ngay_sinh | date | No | Ngày sinh (ISO 8601) |
-| que_quan | string | No | Quê quán |
+| cmnd_cccd | string | Yes | Số CMND/CCCD |
+| que_quan | string | Yes | Quê quán |
+| sdt_lien_he_khan_cap | string | No | SĐT liên hệ khẩn cấp (10-11 số) |
 | ghi_chu | string | No | Ghi chú |
-| phong_id | string | Yes | ID của phòng (ObjectId trong CanHo.phongs) |
+| phong_id | string | Yes | ID của phòng (ObjectId trong CanHo.phong) |
 | ngay_bat_dau | date | Yes | Ngày bắt đầu thuê |
-| ngay_ket_thuc | date | No | Ngày kết thúc thuê |
+| ngay_ket_thuc | date | No | Ngày kết thúc thuê dự kiến |
+| gia_thue | number | Yes | Giá thuê (>= 0, có thể khác giá gốc phòng) |
 | tien_dat_coc | number | No | Tiền đặt cọc (>= 0) |
-| anh_tai_lieu | file[] | No | Ảnh tài liệu (tối đa 5 ảnh, mỗi ảnh max 5MB) |
+| anh_dai_dien | file | No | Ảnh đại diện/chân dung (max 1 ảnh, 5MB) |
+| anh_hop_dong | file[] | No | Ảnh hợp đồng (tối đa 5 ảnh, mỗi ảnh max 5MB) |
 
 #### Response thành công (201)
 
@@ -50,12 +52,13 @@ Tạo người thuê, hợp đồng và cập nhật trạng thái phòng trong 
     "nguoi_thue": {
       "_id": "...",
       "ho_ten": "Nguyễn Văn A",
+      "tuoi": 30,
       "so_dien_thoai": "0123456789",
-      "email": "email@example.com",
       "cmnd_cccd": "123456789",
-      "ngay_sinh": "1990-01-01T00:00:00.000Z",
       "que_quan": "Hà Nội",
-      "anh_tai_lieu": ["/uploads/tenants/123456.jpg"],
+      "sdt_lien_he_khan_cap": "0987654321",
+      "anh_dai_dien": "/uploads/tenants/123456.jpg",
+      "anh_hop_dong": ["/uploads/tenants/789012.jpg"],
       "ghi_chu": "Ghi chú",
       "deleted": false,
       "createdAt": "...",
@@ -67,12 +70,14 @@ Tạo người thuê, hợp đồng và cập nhật trạng thái phòng trong 
       "phong_id": "...",
       "ngay_bat_dau": "...",
       "ngay_ket_thuc": null,
+      "gia_thue": 3000000,
       "tien_dat_coc": 1000000,
       "trang_thai": "active"
     },
     "phong": {
       "id": "...",
-      "so_phong": "101"
+      "so_phong": "101",
+      "gia_goc": 3500000
     }
   }
 }
@@ -93,12 +98,19 @@ Tạo người thuê, hợp đồng và cập nhật trạng thái phòng trong 
 curl -X POST http://localhost:5000/api/tenants \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -F "ho_ten=Nguyễn Văn A" \
+  -F "tuoi=30" \
   -F "so_dien_thoai=0123456789" \
-  -F "email=email@example.com" \
+  -F "cmnd_cccd=123456789" \
+  -F "que_quan=Hà Nội" \
+  -F "sdt_lien_he_khan_cap=0987654321" \
   -F "phong_id=660abc123def456" \
   -F "ngay_bat_dau=2024-01-01" \
+  -F "ngay_ket_thuc=2025-01-01" \
+  -F "gia_thue=3000000" \
   -F "tien_dat_coc=1000000" \
-  -F "anh_tai_lieu=@/path/to/image.jpg"
+  -F "anh_dai_dien=@/path/to/portrait.jpg" \
+  -F "anh_hop_dong=@/path/to/contract1.jpg" \
+  -F "anh_hop_dong=@/path/to/contract2.jpg"
 ```
 
 ---
@@ -116,16 +128,18 @@ Cập nhật thông tin người thuê. Hỗ trợ đổi phòng (tự động x
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | ho_ten | string | No | Họ tên người thuê |
+| tuoi | number | No | Tuổi |
 | so_dien_thoai | string | No | Số điện thoại |
-| email | string | No | Email |
 | cmnd_cccd | string | No | Số CMND/CCCD |
-| ngay_sinh | date | No | Ngày sinh |
 | que_quan | string | No | Quê quán |
+| sdt_lien_he_khan_cap | string | No | SĐT liên hệ khẩn cấp |
 | ghi_chu | string | No | Ghi chú |
 | phong_id | string | No | ID phòng mới (nếu đổi phòng) |
-| tien_dat_coc | number | No | Tiền đặt cọc mới |
 | ngay_ket_thuc | date | No | Ngày kết thúc thuê mới |
-| anh_tai_lieu | file[] | No | Ảnh tài liệu thêm mới |
+| gia_thue | number | No | Giá thuê mới (cho phòng mới hoặc cập nhật) |
+| tien_dat_coc | number | No | Tiền đặt cọc mới |
+| anh_dai_dien | file | No | Ảnh đại diện mới (thay thế ảnh cũ) |
+| anh_hop_dong | file[] | No | Ảnh hợp đồng thêm mới (cộng vào danh sách cũ) |
 
 #### Logic đổi phòng
 
@@ -133,7 +147,7 @@ Khi `phong_id` thay đổi:
 1. Phòng cũ chuyển sang `trang_thai: "available"`
 2. Hợp đồng cũ chuyển sang `trang_thai: "expired"`
 3. Phòng mới chuyển sang `trang_thai: "occupied"`
-4. Tạo hợp đồng mới cho phòng mới
+4. Tạo hợp đồng mới cho phòng mới (lấy `gia_thue` từ input hoặc giá gốc phòng)
 
 #### Response thành công (200)
 
@@ -144,6 +158,7 @@ Khi `phong_id` thay đổi:
   "metadata": {
     "_id": "...",
     "ho_ten": "Nguyễn Văn B",
+    "tuoi": 31,
     "so_dien_thoai": "0987654321",
     ...
   }
@@ -165,6 +180,7 @@ Khi `phong_id` thay đổi:
 curl -X PUT http://localhost:5000/api/tenants/660abc123def456 \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -F "ho_ten=Nguyễn Văn B" \
+  -F "tuoi=31" \
   -F "so_dien_thoai=0987654321"
 ```
 
@@ -206,11 +222,11 @@ curl -X DELETE http://localhost:5000/api/tenants/660abc123def456 \
 
 ---
 
-### 4. Xóa ảnh tài liệu
+### 4. Xóa ảnh
 
 **DELETE** `/api/tenants/:id/image`
 
-Xóa một ảnh cụ thể từ danh sách ảnh tài liệu.
+Xóa một ảnh cụ thể (ảnh đại diện hoặc ảnh hợp đồng).
 
 #### Request
 
@@ -218,9 +234,15 @@ Xóa một ảnh cụ thể từ danh sách ảnh tài liệu.
 
 ```json
 {
-  "imagePath": "/uploads/tenants/123456.jpg"
+  "imagePath": "/uploads/tenants/123456.jpg",
+  "imageType": "anh_hop_dong"
 }
 ```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| imagePath | string | Yes | Đường dẫn ảnh cần xóa |
+| imageType | string | No | Loại ảnh: `"anh_dai_dien"` hoặc `"anh_hop_dong"` (default: `"anh_hop_dong"`) |
 
 #### Response thành công (200)
 
@@ -237,7 +259,7 @@ Xóa một ảnh cụ thể từ danh sách ảnh tài liệu.
 curl -X DELETE http://localhost:5000/api/tenants/660abc123def456/image \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"imagePath": "/uploads/tenants/123456.jpg"}'
+  -d '{"imagePath": "/uploads/tenants/123456.jpg", "imageType": "anh_hop_dong"}'
 ```
 
 ---
@@ -245,7 +267,7 @@ curl -X DELETE http://localhost:5000/api/tenants/660abc123def456/image \
 ## Error Codes
 
 | HTTP Code | Message | Nguyên nhân |
-|-----------|-------------|
+|-----------|---------|-------------|
 | 400 | Validation error | Dữ liệu không hợp lệ |
 | 400 | Room not found | Không tìm thấy phòng |
 | 400 | Room is already occupied | Phòng đã có người thuê |
@@ -264,15 +286,16 @@ curl -X DELETE http://localhost:5000/api/tenants/660abc123def456/image \
 
 ```javascript
 {
-  ho_ten: String,           // Required
-  so_dien_thoai: String,    // Required
-  email: String,
-  cmnd_cccd: String,
-  ngay_sinh: Date,
-  que_quan: String,
-  anh_tai_lieu: [String],   // Array of file paths
+  ho_ten: String,              // Required
+  tuoi: Number,
+  so_dien_thoai: String,       // Required
+  cmnd_cccd: String,           // Required
+  que_quan: String,            // Required
+  sdt_lien_he_khan_cap: String,
+  anh_dai_dien: String,        // File path
+  anh_hop_dong: [String],      // Array of file paths
   ghi_chu: String,
-  deleted: Boolean,         // Default: false
+  deleted: Boolean,            // Default: false
   createdAt: Date,
   updatedAt: Date
 }
@@ -282,12 +305,13 @@ curl -X DELETE http://localhost:5000/api/tenants/660abc123def456/image \
 
 ```javascript
 {
-  nguoi_thue_id: ObjectId,  // Ref: NguoiThue
-  phong_id: ObjectId,
-  ngay_bat_dau: Date,
+  nguoi_thue_id: ObjectId,     // Ref: NguoiThue, Required
+  phong_id: ObjectId,          // Required
+  ngay_bat_dau: Date,          // Required
   ngay_ket_thuc: Date,
-  tien_dat_coc: Number,
-  trang_thai: String        // "active" | "expired"
+  gia_thue: Number,            // Required
+  tien_dat_coc: Number,        // Default: 0
+  trang_thai: String           // "active" | "expired"
 }
 ```
 
@@ -298,10 +322,10 @@ curl -X DELETE http://localhost:5000/api/tenants/660abc123def456/image \
   so_phong: String,
   dien_tich: Number,
   gia: Number,
-  trang_thai: String,       // "available" | "occupied"
+  trang_thai: String,          // "available" | "occupied"
   noi_that: [NoiThat],
-  nguoi_thue_id: ObjectId,  // Ref: NguoiThue
-  hop_dong_id: ObjectId     // Ref: HopDong
+  nguoi_thue_id: ObjectId,     // Ref: NguoiThue
+  hop_dong_id: ObjectId        // Ref: HopDong
 }
 ```
 
@@ -312,7 +336,9 @@ curl -X DELETE http://localhost:5000/api/tenants/660abc123def456/image \
 - **Thư mục lưu:** `uploads/tenants/`
 - **Định dạng hỗ trợ:** jpeg, png, gif, webp
 - **Kích thước tối đa:** 5MB/ảnh
-- **Số lượng tối đa:** 5 ảnh/request
+- **Số lượng tối đa:**
+  - `anh_dai_dien`: 1 ảnh
+  - `anh_hop_dong`: 5 ảnh
 - **Đường dẫn ảnh:** `/uploads/tenants/<filename>`
 - **Truy cập ảnh:** `GET http://localhost:5000/uploads/tenants/<filename>`
 
@@ -325,8 +351,8 @@ curl -X DELETE http://localhost:5000/api/tenants/660abc123def456/image \
 1. Validate input
 2. Check room exists and available
 3. [Transaction Start]
-   a. Create NguoiThue
-   b. Create HopDong (active)
+   a. Create NguoiThue (with anh_dai_dien, anh_hop_dong)
+   b. Create HopDong (active, with gia_thue)
    c. Update room status → occupied
    d. Link room → nguoi_thue_id, hop_dong_id
 4. [Transaction Commit]
@@ -338,12 +364,13 @@ curl -X DELETE http://localhost:5000/api/tenants/660abc123def456/image \
 1. Validate input
 2. [Transaction Start]
    a. Update NguoiThue fields
-   b. If phong_id changed:
+   b. Handle images (replace anh_dai_dien, append anh_hop_dong)
+   c. If phong_id changed:
       - Old room → available, unlink IDs
       - Old contract → expired
       - New room → occupied, link IDs
-      - Create new contract (active)
-   c. Else if tien_dat_coc/ngay_ket_thuc changed:
+      - Create new contract (active, with gia_thue)
+   d. Else if gia_thue/ngay_ket_thuc/tien_dat_coc changed:
       - Update active contract
 3. [Transaction Commit]
 4. Return result
