@@ -5,6 +5,7 @@ import morgan from "morgan";
 import instanceMongoDB from "./src/config/db.config.js";
 import authRouter from "./src/routes/auth.route.js";
 import tenantRouter from "./src/routes/tenant.route.js";
+import roomRouter from "./src/routes/room.route.js";
 
 import { errorHandler } from "./src/middlewares/error-handler.js";
 
@@ -18,6 +19,7 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api/auth", authRouter);
 app.use("/api/tenants", tenantRouter);
+app.use("/api/rooms", roomRouter);
 
 app.get("/", (_req, res) => res.send(" Running..."));
 
