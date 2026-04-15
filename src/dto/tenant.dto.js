@@ -1,28 +1,30 @@
 const createTenantSchema = {
   ho_ten: { type: "string", required: true, min: 2, max: 100 },
+  tuoi: { type: "number", min: 1, max: 150 },
   so_dien_thoai: { type: "string", required: true, pattern: /^[0-9]{10,11}$/ },
-  email: { type: "string", pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
-  cmnd_cccd: { type: "string" },
-  ngay_sinh: { type: "date" },
-  que_quan: { type: "string" },
+  cmnd_cccd: { type: "string", required: true },
+  que_quan: { type: "string", required: true },
+  sdt_lien_he_khan_cap: { type: "string", pattern: /^[0-9]{10,11}$/ },
   ghi_chu: { type: "string" },
   phong_id: { type: "string", required: true },
   ngay_bat_dau: { type: "date", required: true },
   ngay_ket_thuc: { type: "date" },
+  gia_thue: { type: "number", required: true, min: 0 },
   tien_dat_coc: { type: "number", min: 0 },
 };
 
 const updateTenantSchema = {
   ho_ten: { type: "string", min: 2, max: 100 },
+  tuoi: { type: "number", min: 1, max: 150 },
   so_dien_thoai: { type: "string", pattern: /^[0-9]{10,11}$/ },
-  email: { type: "string", pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
   cmnd_cccd: { type: "string" },
-  ngay_sinh: { type: "date" },
   que_quan: { type: "string" },
+  sdt_lien_he_khan_cap: { type: "string", pattern: /^[0-9]{10,11}$/ },
   ghi_chu: { type: "string" },
   phong_id: { type: "string" },
-  tien_dat_coc: { type: "number", min: 0 },
   ngay_ket_thuc: { type: "date" },
+  gia_thue: { type: "number", min: 0 },
+  tien_dat_coc: { type: "number", min: 0 },
 };
 
 function validateField(value, rules, fieldName) {
