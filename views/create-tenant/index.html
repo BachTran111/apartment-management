@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thông tin người thuê</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: #e0e7ff;
+        --secondary: #64748b;
+        --success: #10b981;
+        --danger: #ef4444;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --border: #e2e8f0;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow:
+          0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg:
+          0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --radius: 12px;
+        --radius-sm: 8px;
+      }
+
+      body {
+        font-family:
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .header h1 {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        padding: 32px;
+        margin-bottom: 24px;
+      }
+
+      .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid var(--primary-light);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .card-title::before {
+        content: "";
+        width: 4px;
+        height: 24px;
+        background: var(--primary);
+        border-radius: 2px;
+      }
+
+      /* Personal Info Layout */
+      .personal-info-wrapper {
+        display: flex;
+        gap: 32px;
+        flex-wrap: wrap;
+      }
+
+      /* Avatar Section */
+      .avatar-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .avatar-wrapper {
+        position: relative;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 4px solid var(--primary-light);
+        transition: all 0.3s ease;
+      }
+
+      .avatar-wrapper:hover {
+        transform: scale(1.02);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .avatar-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+      }
+
+      .avatar-preview:empty {
+        background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%234f46e5' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E")
+          no-repeat center;
+        background-size: 60px;
+      }
+
+      .btn-upload {
+        background: var(--primary);
+        color: white;
+        padding: 10px 24px;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-upload:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+
+      /* Form Fields */
+      .fields-grid {
+        flex: 1;
+        min-width: 280px;
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .form-group {
+        display: contents;
+      }
+
+      label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+
+      input,
+      select {
+        padding: 12px 16px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        outline: none;
+        width: 100%;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        background: var(--card-bg);
+      }
+
+      input:focus,
+      select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      input::placeholder {
+        color: #94a3b8;
+      }
+
+      /* Contract & Room Section */
+      .form-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .form-row label {
+        width: 140px;
+        flex-shrink: 0;
+      }
+
+      .form-row input,
+      .form-row select {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .date-range {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1;
+        flex-wrap: wrap;
+      }
+
+      .date-range input {
+        flex: 1;
+        min-width: 140px;
+      }
+
+      .date-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        white-space: nowrap;
+      }
+
+      /* Contract Image */
+      .contract-upload {
+        margin-top: 8px;
+      }
+
+      .contract-image-area {
+        border: 2px dashed var(--border);
+        border-radius: var(--radius);
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: var(--bg);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .contract-image-area:hover {
+        border-color: var(--primary);
+        background: var(--primary-light);
+      }
+
+      .contract-image-area.has-image {
+        border-style: solid;
+        border-color: var(--primary);
+      }
+
+      .contract-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        color: var(--text-secondary);
+      }
+
+      .contract-placeholder svg {
+        width: 48px;
+        height: 48px;
+        opacity: 0.5;
+      }
+
+      .contract-image-area img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      /* Buttons */
+      .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+      }
+
+      .btn {
+        padding: 14px 48px;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 140px;
+      }
+
+      .btn-cancel {
+        background: var(--bg);
+        color: var(--text-secondary);
+        border: 1.5px solid var(--border);
+      }
+
+      .btn-cancel:hover {
+        background: #f1f5f9;
+        border-color: var(--secondary);
+      }
+
+      .btn-save {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 6px -1px rgb(79 70 229 / 0.2);
+      }
+
+      .btn-save:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 12px -2px rgb(79 70 229 / 0.3);
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        .personal-info-wrapper {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .fields-grid {
+          grid-template-columns: 1fr;
+          width: 100%;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+        }
+
+        .form-row {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .form-row label {
+          width: auto;
+        }
+
+        .date-range {
+          width: 100%;
+        }
+
+        .card {
+          padding: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Thông tin người thuê</h1>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Thông tin cá nhân cơ bản</h2>
+        <div class="personal-info-wrapper">
+          <div class="avatar-section">
+            <div class="avatar-wrapper">
+              <img id="avatar-img" class="avatar-preview" src="" alt="" />
+            </div>
+            <button
+              class="btn-upload"
+              onclick="document.getElementById('avatar-input').click()"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Tải ảnh lên
+            </button>
+            <input type="file" id="avatar-input" accept="image/*" />
+          </div>
+
+          <div class="fields-grid">
+            <div class="form-group">
+              <label for="name">Họ và tên</label>
+              <input type="text" id="name" placeholder="Nguyễn Văn A" />
+            </div>
+            <div class="form-group">
+              <label for="age">Tuổi</label>
+              <input type="number" id="age" placeholder="25" />
+            </div>
+            <div class="form-group">
+              <label for="id-card">Số CMND/CCCD</label>
+              <input type="text" id="id-card" placeholder="001234567890" />
+            </div>
+            <div class="form-group">
+              <label for="hometown">Quê quán</label>
+              <input type="text" id="hometown" placeholder="Hà Nội" />
+            </div>
+            <div class="form-group">
+              <label for="phone">Số điện thoại</label>
+              <input type="tel" id="phone" placeholder="0987654321" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Thông tin hợp đồng &amp; Phòng</h2>
+        <div class="form-row">
+          <label for="room-select">Phòng thuê</label>
+          <select id="room-select">
+            <option value="">Chọn phòng</option>
+            <option value="A102" selected>Phòng A102</option>
+            <option value="A103">Phòng A103</option>
+            <option value="A104">Phòng A104</option>
+            <option value="B201">Phòng B201</option>
+            <option value="B202">Phòng B202</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Thời hạn thuê</label>
+          <div class="date-range">
+            <input type="date" id="start-date" value="2021-12-12" />
+            <span class="date-label">đến</span>
+            <input type="date" id="end-date" value="2022-12-12" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="price">Tiền phòng / tháng</label>
+          <input type="text" id="price" value="1.500.000 VNĐ" />
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Thông tin khác</h2>
+        <div class="form-row">
+          <label for="emergency-phone">Liên lạc khẩn cấp</label>
+          <input type="tel" id="emergency-phone" placeholder="0987654321" />
+        </div>
+
+        <div class="contract-upload">
+          <label>Ảnh hợp đồng</label>
+          <div
+            class="contract-image-area"
+            id="contract-area"
+            onclick="document.getElementById('contract-input').click()"
+          >
+            <div class="contract-placeholder" id="contract-placeholder">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                ></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              <span>Nhấn để tải ảnh hợp đồng</span>
+            </div>
+            <img id="contract-img" src="" alt="" style="display: none" />
+            <input type="file" id="contract-input" accept="image/*" />
+          </div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button class="btn btn-cancel" id="btn-cancel">Hủy bỏ</button>
+        <button class="btn btn-save" id="btn-save">Lưu thông tin</button>
+      </div>
+    </div>
+
+    <script src="javascripts.js"></script>
+  </body>
+</html>
