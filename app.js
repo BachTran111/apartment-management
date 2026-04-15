@@ -2,10 +2,11 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
-import instanceMongoDB from "./config/db.config.js";
-import authRouter from "./routes/auth.route.js";
+import instanceMongoDB from "./src/config/db.config.js";
+import authRouter from "./src/routes/auth.route.js";
+import tenantRouter from "./src/routes/tenant.route.js";
 
-import { errorHandler } from "./middlewares/error-handler.js";
+import { errorHandler } from "./src/middlewares/error-handler.js";
 
 const app = express();
 
@@ -13,9 +14,12 @@ app.use(express.json());
 app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
 
-app.use("/api/auth", authRouter);
+app.use("/uploads", express.static("uploads"));
 
-app.get("/", (req, res) => res.send(" Running..."));
+app.use("/api/auth", authRouter);
+app.use("/api/tenants", tenantRouter);
+
+app.get("/", (_req, res) => res.send(" Running..."));
 
 app.use(errorHandler);
 
