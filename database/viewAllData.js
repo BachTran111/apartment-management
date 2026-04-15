@@ -1,7 +1,10 @@
-const mongoose = require("mongoose");
-require("dotenv").config();
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const { CanHo, Phong, NguoiThue, HopDong, HoaDon, QuanTriVien, NoiThat, LichSuSuaChua } = require("../src/models");
+dotenv.config();
+
+// Import models nếu có file index.js
+// import { CanHo, Phong, NguoiThue, HopDong, HoaDon, QuanTriVien, NoiThat, LichSuSuaChua } from "../src/models/index.js";
 
 async function viewAllData() {
   try {

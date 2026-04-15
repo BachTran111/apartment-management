@@ -1,21 +1,28 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import fileUpload from "express-fileupload";
 
 import instanceMongoDB from "./config/db.config.js";
-import phongRouter from "./routes/phong.route.js";
-import noithatRouter from "./routes/noithat.route.js";
+import authRouter from "./routes/auth.route.js";
+import tenantRouter from "./routes/tenant.route.js";
+import roomRouter from "./routes/room.route.js";
 
 import { errorHandler } from "./middlewares/error-handler.js";
 
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
+app.use(cors({ 
+  origin: ['http://localhost:3000', 'http://127.0.0.1:8080', 'http://localhost:8080', 'file://'],
+  credentials: true 
+}));
 app.use(morgan("dev"));
 
-app.use("/api/phongs", phongRouter);
-app.use("/api/noithat", noithatRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/tenants", tenantRouter);
+app.use("/api/rooms", roomRouter);
 
 app.get("/", (req, res) => res.send(" Running..."));
 
