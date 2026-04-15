@@ -7,14 +7,14 @@ export default async function instanceMongoDB() {
   if (mongoose.connection.readyState === 1) return mongoose;
   try {
     mongoose.set("debug", false);
-    // mongoose.set("debug", { color: true });
     mongoose.set?.("strictQuery", false);
 
-    mongoose.connect(process.env.MONGO_URI);
-    console.log(" Connected to MongoDB");
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log(" ✅ Connected to MongoDB");
     return mongoose;
   } catch (err) {
-    console.error("MongoDB connection error:", err);
-    throw err;
+    console.warn("⚠️  MongoDB connection failed:", err.message);
+    console.log("Server running in offline mode...");
+    return mongoose;
   }
 }
