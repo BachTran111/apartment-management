@@ -37,6 +37,9 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-export const uploadTenantImages = upload.array("anh_tai_lieu", 5);
-export const getTenantImagePath = (filename) => `/uploads/tenants/${filename}`;
+export const uploadTenantImages = upload.fields([
+  { name: "anh_dai_dien", maxCount: 1 },
+  { name: "anh_hop_dong", maxCount: 5 },
+]);
+
 export const getUploadDir = () => uploadDir;
