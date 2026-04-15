@@ -9,12 +9,12 @@ const __dirname = path.dirname(__filename);
 const uploadDir = path.join(__dirname, "..", "..", "uploads", "tenants");
 
 class TenantService {
-  async createTenant(data, files = []) {
+  async createTenant(data, files = {}) {
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
-      const { phong_id, ngay_bat_dau, ngay_ket_thuc, tien_dat_coc, ...tenantData } = data;
+      const { phong_id, ngay_bat_dau, ngay_ket_thuc, gia_thue, tien_dat_coc, ...tenantData } = data;
 
       const canHo = await CanHo.findOne({ "phong._id": phong_id }).session(session);
       if (!canHo) {
@@ -30,10 +30,20 @@ class TenantService {
         throw new Error("Room is already occupied");
       }
 
-      const anh_tai_lieu = files.map((file) => `/uploads/tenants/${file.filename}`);
+      const nguoiThueData = { ...tenantData, deleted: false };
+
+      if (files.anh_dai_dien && files.anh_dai_dien[0]) {
+        nguoiThueData.anh_dai_dien = `/uploads/tenants/${files.anh_dai_dien[0].filename}`;
+      }
+
+      if (files.anh_hop_dong && files.anh_hop_dong.length > 0) {
+        nguoiThueData.anh_hop_dong = files.anh_hop_dong.map(
+          (file) => `/uploads/tenants/${file.filename}`
+        );
+      }
 
       const [nguoiThue] = await NguoiThue.create(
-        [{ ...tenantData, anh_tai_lieu, deleted: false }],
+        [{ ...nguoiThueData }],
         { session }
       );
 
@@ -44,6 +54,7 @@ class TenantService {
             phong_id: phong._id,
             ngay_bat_dau: new Date(ngay_bat_dau),
             ngay_ket_thuc: ngay_ket_thuc ? new Date(ngay_ket_thuc) : null,
+            gia_thue: gia_thue || phong.gia,
             tien_dat_coc: tien_dat_coc || 0,
             trang_thai: "active",
           },
@@ -61,12 +72,16 @@ class TenantService {
       return {
         nguoi_thue: nguoiThue,
         hop_dong: hopDong,
-        phong: { id: phong._id, so_phong: phong.so_phong },
+        phong: { id: phong._id, so_phong: phong.so_phong, gia_goc: phong.gia },
       };
     } catch (error) {
       await session.abortTransaction();
 
-      files.forEach((file) => {
+      const allFiles = [
+        ...(files.anh_dai_dien || []),
+        ...(files.anh_hop_dong || []),
+      ];
+      allFiles.forEach((file) => {
         const filePath = path.join(uploadDir, file.filename);
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
@@ -79,7 +94,7 @@ class TenantService {
     }
   }
 
-  async updateTenant(id, data, files = []) {
+  async updateTenant(id, data, files = {}) {
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -89,19 +104,25 @@ class TenantService {
         throw new Error("Tenant not found");
       }
 
-      const { phong_id, tien_dat_coc, ngay_ket_thuc, ...tenantData } = data;
-
-      let anh_tai_lieu = [...(tenant.anh_tai_lieu || [])];
-
-      if (files && files.length > 0) {
-        const newImages = files.map((file) => `/uploads/tenants/${file.filename}`);
-        anh_tai_lieu = [...anh_tai_lieu, ...newImages];
-      }
+      const { phong_id, gia_thue, ngay_ket_thuc, tien_dat_coc, ...tenantData } = data;
 
       Object.assign(tenant, tenantData);
-      if (anh_tai_lieu.length > 0) {
-        tenant.anh_tai_lieu = anh_tai_lieu;
+
+      if (files.anh_dai_dien && files.anh_dai_dien[0]) {
+        if (tenant.anh_dai_dien) {
+          const oldPath = path.join(__dirname, "..", "..", tenant.anh_dai_dien.replace(/^\//, ""));
+          if (fs.existsSync(oldPath)) {
+            fs.unlinkSync(oldPath);
+          }
+        }
+        tenant.anh_dai_dien = `/uploads/tenants/${files.anh_dai_dien[0].filename}`;
       }
+
+      if (files.anh_hop_dong && files.anh_hop_dong.length > 0) {
+        const newImages = files.anh_hop_dong.map((file) => `/uploads/tenants/${file.filename}`);
+        tenant.anh_hop_dong = [...(tenant.anh_hop_dong || []), ...newImages];
+      }
+
       await tenant.save({ session });
 
       if (phong_id && phong_id !== tenant.phong_id?.toString()) {
@@ -149,6 +170,7 @@ class TenantService {
               nguoi_thue_id: tenant._id,
               phong_id: newPhong._id,
               ngay_bat_dau: new Date(),
+              gia_thue: gia_thue || newPhong.gia,
               tien_dat_coc: tien_dat_coc || 0,
               trang_thai: "active",
             },
@@ -158,15 +180,16 @@ class TenantService {
 
         newPhong.hop_dong_id = newHopDong._id;
         await newCanHo.save({ session });
-      } else if (tien_dat_coc !== undefined || ngay_ket_thuc !== undefined) {
+      } else {
         const hopDong = await HopDong.findOne({
           nguoi_thue_id: id,
           trang_thai: "active",
         }).session(session);
 
         if (hopDong) {
-          if (tien_dat_coc !== undefined) hopDong.tien_dat_coc = tien_dat_coc;
+          if (gia_thue !== undefined) hopDong.gia_thue = gia_thue;
           if (ngay_ket_thuc !== undefined) hopDong.ngay_ket_thuc = new Date(ngay_ket_thuc);
+          if (tien_dat_coc !== undefined) hopDong.tien_dat_coc = tien_dat_coc;
           await hopDong.save({ session });
         }
       }
@@ -177,7 +200,11 @@ class TenantService {
     } catch (error) {
       await session.abortTransaction();
 
-      files.forEach((file) => {
+      const allFiles = [
+        ...(files.anh_dai_dien || []),
+        ...(files.anh_hop_dong || []),
+      ];
+      allFiles.forEach((file) => {
         const filePath = path.join(uploadDir, file.filename);
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
@@ -235,18 +262,25 @@ class TenantService {
     }
   }
 
-  async removeTenantImage(tenantId, imagePath) {
+  async removeTenantImage(tenantId, imagePath, imageType = "anh_hop_dong") {
     const tenant = await NguoiThue.findById(tenantId);
     if (!tenant || tenant.deleted) {
       throw new Error("Tenant not found");
     }
 
-    const imageIndex = tenant.anh_tai_lieu.indexOf(imagePath);
-    if (imageIndex === -1) {
-      throw new Error("Image not found");
+    if (imageType === "anh_dai_dien") {
+      if (tenant.anh_dai_dien !== imagePath) {
+        throw new Error("Image not found");
+      }
+      tenant.anh_dai_dien = undefined;
+    } else {
+      const imageIndex = (tenant.anh_hop_dong || []).indexOf(imagePath);
+      if (imageIndex === -1) {
+        throw new Error("Image not found");
+      }
+      tenant.anh_hop_dong.splice(imageIndex, 1);
     }
 
-    tenant.anh_tai_lieu.splice(imageIndex, 1);
     await tenant.save();
 
     const fullPath = path.join(__dirname, "..", "..", imagePath.replace(/^\//, ""));
