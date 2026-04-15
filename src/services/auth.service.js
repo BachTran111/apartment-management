@@ -1,4 +1,3 @@
-import { readData, writeData, getNextId } from "../utils/fileDb.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user.model.js";
