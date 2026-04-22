@@ -164,8 +164,118 @@ router.get("/expiring", HopDongController.getExpiringContracts);
  */
 router.get("/status/:status", HopDongController.getContractsByStatus);
 
+/**
+ * @swagger
+ * /api/hop-dong:
+ *   post:
+ *     summary: Tạo hợp đồng mới
+ *     description: Tạo hợp đồng thuê căn hộ mới với thông tin người thuê, phòng, ngày bắt đầu, ngày kết thúc và tiền đặt cọc
+ *     tags:
+ *       - Contracts
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nguoi_thue_id
+ *               - phong_id
+ *               - ngay_bat_dau
+ *               - ngay_ket_thuc
+ *             properties:
+ *               nguoi_thue_id:
+ *                 type: string
+ *                 description: ID của người thuê (MongoDB ObjectId)
+ *                 example: "507f1f77bcf86cd799439011"
+ *               phong_id:
+ *                 type: string
+ *                 description: ID của phòng (MongoDB ObjectId)
+ *                 example: "507f1f77bcf86cd799439012"
+ *               ngay_bat_dau:
+ *                 type: string
+ *                 format: date
+ *                 description: Ngày bắt đầu hợp đồng (định dạng YYYY-MM-DD)
+ *                 example: "2026-05-01"
+ *               ngay_ket_thuc:
+ *                 type: string
+ *                 format: date
+ *                 description: Ngày kết thúc hợp đồng (phải sau ngày bắt đầu, định dạng YYYY-MM-DD)
+ *                 example: "2026-12-31"
+ *               tien_dat_coc:
+ *                 type: number
+ *                 description: Số tiền đặt cọc (không được âm)
+ *                 example: 5000000
+ *               trang_thai:
+ *                 type: string
+ *                 enum: [active, expired]
+ *                 description: Trạng thái hợp đồng
+ *                 example: "active"
+ *     responses:
+ *       201:
+ *         description: Hợp đồng được tạo thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Contract created successfully"
+ *                 metadata:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     nguoi_thue_id:
+ *                       type: string
+ *                     phong_id:
+ *                       type: string
+ *                     ngay_bat_dau:
+ *                       type: string
+ *                     ngay_ket_thuc:
+ *                       type: string
+ *                     tien_dat_coc:
+ *                       type: number
+ *                     trang_thai:
+ *                       type: string
+ *       400:
+ *         description: Dữ liệu không hợp lệ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "ERROR"
+ *                 message:
+ *                   type: string
+ *                   examples:
+ *                     - "nguoi_thue_id is required"
+ *                     - "ngay_bat_dau must be before ngay_ket_thuc"
+ *                     - "tien_dat_coc cannot be negative"
+ *       500:
+ *         description: Lỗi máy chủ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "ERROR"
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error"
+ */
+
 // POST, PUT, DELETE - Sẽ thêm middleware sau
-// router.post("/", HopDongController.createContract);
+
+router.post("/", HopDongController.createContract);
 // router.put("/:id", HopDongController.updateContract);
 // router.delete("/:id", HopDongController.deleteContract);
 

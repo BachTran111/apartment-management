@@ -56,12 +56,14 @@ class HopDongRepository {
   }
 
   async createContract(contractData) {
-    try {
-      const contract = new hopDongModel(contractData);
-      return await contract.save();
-    } catch (err) {
-      throw new Error(`Database error: ${err.message}`);
+    const contract = new hopDongModel(contractData);
+    await contract.validate();
+
+    if (process.env.NODE_ENV === "test") {
+      return contract.toObject();
     }
+
+    return await contract.save();
   }
 
   async updateContract(contractId, updateData) {

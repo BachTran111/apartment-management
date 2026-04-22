@@ -1,6 +1,17 @@
 import HopDongRepository from "../repositories/hopDong.repository.js";
 
 class HopDongService {
+  // Tạo hợp đồng mới
+  async createContract(contractData) {
+    if (!contractData || typeof contractData !== "object") {
+      const validationError = new Error("Invalid contract payload");
+      validationError.name = "ValidationError";
+      throw validationError;
+    }
+
+    return await HopDongRepository.createContract(contractData);
+  }
+
   // Lấy tất cả hợp đồng với phân trang
   async getAllContracts(page = 1, limit = 10, filters = {}) {
     try {
@@ -28,7 +39,7 @@ class HopDongService {
   // Lấy hợp đồng theo trạng thái
   async getContractsByStatus(status) {
     try {
-      const validStatuses = ["active", "expired", "pending"];
+      const validStatuses = ["active", "expired"];
       if (!validStatuses.includes(status)) {
         throw new Error("Invalid status");
       }
@@ -52,7 +63,8 @@ class HopDongService {
   async getStatistics() {
     try {
       const allContracts = await HopDongRepository.getAllContracts();
-      const activeContracts = await HopDongRepository.getContractsByStatus("active");
+      const activeContracts =
+        await HopDongRepository.getContractsByStatus("active");
       const expiringContracts = await HopDongRepository.getExpiringContracts();
 
       return {

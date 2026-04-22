@@ -2,6 +2,35 @@ import HopDongService from "../services/hopDong.service.js";
 import { OK } from "../handler/success-response.js";
 
 class HopDongController {
+  // POST /api/hop-dong - Tạo hợp đồng
+  createContract = async (req, res, next) => {
+    try {
+      const createdContract = await HopDongService.createContract(req.body);
+
+      res.status(201).json(
+        new OK({
+          message: "Contract created successfully",
+          metadata: createdContract,
+        }),
+      );
+    } catch (err) {
+      const isValidationError =
+        err?.name === "ValidationError" || err?.name === "CastError";
+
+      if (isValidationError) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: err.message,
+        });
+      }
+
+      return res.status(500).json({
+        status: "ERROR",
+        message: "Internal server error",
+      });
+    }
+  };
+
   // GET /api/hop-dong - Lấy danh sách hợp đồng
   getAllContracts = async (req, res, next) => {
     try {
