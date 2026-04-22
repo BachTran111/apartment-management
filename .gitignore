@@ -1,0 +1,13 @@
+node_modules/
+
+# Environment variables
+.env
+
+# IDE/Editor
+.codex
+.playwright-mcp/
+
+node_modules/
+.env
+.codex
+.playwright-mcp/
