@@ -1,0 +1,386 @@
+/* ===== hopDongThanhLy.css ===== */
+
+/* Gradient Button */
+.primary-gradient {
+    background: linear-gradient(135deg, #005ea4 0%, #0077ce 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.primary-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.primary-gradient:hover::before {
+    opacity: 1;
+}
+
+/* Payment Method Selection */
+.payment-method {
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.payment-method.inactive {
+    border-color: transparent !important;
+    background-color: #f1f3fc !important;
+    color: #404752 !important;
+}
+
+.payment-method.inactive .material-symbols-outlined {
+    opacity: 0.6;
+}
+
+/* Equipment Inspection Table */
+.equipment-row {
+    transition: all 0.2s ease;
+}
+
+.equipment-row:hover {
+    background-color: rgba(211, 228, 255, 0.3);
+}
+
+/* Column width distribution for responsive tables */
+@media (min-width: 1024px) {
+    table th:nth-child(1),
+    table td:nth-child(1) {
+        width: 20%;
+    }
+
+    table th:nth-child(2),
+    table td:nth-child(2) {
+        width: 15%;
+    }
+
+    table th:nth-child(3),
+    table td:nth-child(3) {
+        width: 30%;
+    }
+
+    table th:nth-child(4),
+    table td:nth-child(4) {
+        width: 20%;
+    }
+
+    table th:nth-child(5),
+    table td:nth-child(5) {
+        width: 15%;
+    }
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.status-badge.good {
+    background-color: #6cf8bb;
+    color: #00714d;
+}
+
+.status-badge.damaged {
+    background-color: #ffdad6;
+    color: #93000a;
+}
+
+.status-badge:hover {
+    transform: translateY(-2px);
+}
+
+/* Status Dropdown Menu */
+.status-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border: 1px solid #e0e2ea;
+    border-radius: 0.75rem;
+    shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.status-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.status-option {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-size: 0.875rem;
+    color: #181c22;
+}
+
+.status-option:hover {
+    background-color: #ebeef6;
+}
+
+.status-option.good {
+    color: #006c49;
+}
+
+.status-option.damaged {
+    color: #ba1a1a;
+}
+
+/* Deduction Amount Display & Input */
+.deduction-amount {
+    font-weight: 700;
+    color: #ba1a1a;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    text-align: right;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.deduction-amount:hover {
+    background-color: rgba(186, 26, 26, 0.08);
+}
+
+.deduction-input {
+    background-color: #e0e2ea;
+    border: 1px solid #ba1a1a;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-weight: 700;
+    color: #ba1a1a;
+    text-align: right;
+    width: 100px;
+    font-size: 0.875rem;
+}
+
+.deduction-input:focus {
+    outline: none;
+    border-color: #005ea4;
+    box-shadow: 0 0 0 2px rgba(0, 94, 164, 0.1);
+}
+
+/* Photo Upload Button */
+.photo-btn {
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+    color: #404752;
+}
+
+.photo-btn:hover {
+    color: #005ea4;
+    transform: scale(1.1);
+}
+
+.photo-btn.filled {
+    color: #005ea4;
+}
+
+.photo-btn.filled .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1;
+}
+
+/* Utility Input */
+.utility-input {
+    width: 100%;
+    background-color: #e0e2ea;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.utility-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #005ea4;
+    background-color: #ffffff;
+}
+
+.utility-input::placeholder {
+    color: #707783;
+}
+
+/* Financial Summary Animations */
+.summary-row {
+    animation: slideInLeft 0.4s ease forwards;
+}
+
+.summary-row:nth-child(1) { animation-delay: 0.1s; }
+.summary-row:nth-child(2) { animation-delay: 0.15s; }
+.summary-row:nth-child(3) { animation-delay: 0.2s; }
+.summary-row:nth-child(4) { animation-delay: 0.25s; }
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Final Refund Display */
+#finalRefund {
+    display: inline-block;
+    animation: pulse 0.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Signature Area */
+.signature-area {
+    border-color: #c0c7d4;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.signature-area:hover {
+    border-color: #005ea4;
+    background-color: rgba(211, 228, 255, 0.05);
+}
+
+.signature-area.signed {
+    background-color: rgba(108, 248, 187, 0.1);
+    border-color: #006c49;
+}
+
+.signature-area.signed p {
+    color: #006c49;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .grid-cols-6 {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-cols-4 {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .payment-method {
+        width: 100%;
+    }
+
+    .status-dropdown {
+        min-width: 100px;
+        left: auto;
+        right: 0;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .utility-input {
+        background-color: #2d3137;
+        color: #eef0f9;
+    }
+
+    .utility-input:focus {
+        box-shadow: 0 0 0 2px #a2c9ff;
+    }
+
+    .status-option:hover {
+        background-color: #3d4049;
+    }
+
+    .signature-area {
+        background-color: rgba(45, 49, 55, 0.5);
+    }
+
+    .signature-area:hover {
+        background-color: rgba(211, 228, 255, 0.1);
+    }
+}
+
+/* Print Styles */
+@media print {
+    header,
+    .payment-method,
+    #completeBtn,
+    .signature-area,
+    .fixed {
+        display: none !important;
+    }
+
+    main {
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .bg-surface-container-lowest {
+        box-shadow: none !important;
+        border: 1px solid #e0e2ea !important;
+        page-break-inside: avoid;
+    }
+
+    .equipment-row {
+        page-break-inside: avoid;
+    }
+
+    .notes-input,
+    .deduction-input {
+        border: none !important;
+        background-color: transparent !important;
+        color: #181c22 !important;
+    }
+
+    .deduction-input:focus,
+    .notes-input:focus {
+        box-shadow: none !important;
+    }
+
+    table {
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    body {
+        background-color: white !important;
+    }
+}

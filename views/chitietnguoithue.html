@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tenant Details - Skyline Pro</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="css/details-styles.css" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffddb8",
+                        "tertiary": "#825100",
+                        "on-secondary-container": "#00714d",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#fdfcff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface": "#f8f9ff",
+                        "background": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#004881",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#ebeef6",
+                        "surface-container-high": "#e5e8f0",
+                        "surface-dim": "#d7dae2",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#a2c9ff",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-container-low": "#f1f3fc",
+                        "secondary-fixed": "#6ffbbe",
+                        "outline-variant": "#c0c7d4",
+                        "primary-fixed-dim": "#a2c9ff",
+                        "on-background": "#181c22",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#eef0f9",
+                        "on-error": "#ffffff",
+                        "primary-container": "#0077ce",
+                        "primary": "#005ea4",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface-variant": "#e0e2ea",
+                        "outline": "#707783",
+                        "surface-tint": "#0060a8",
+                        "surface-bright": "#f8f9ff",
+                        "primary-fixed": "#d3e4ff",
+                        "secondary": "#006c49",
+                        "on-surface-variant": "#404752",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-fixed": "#001c38",
+                        "tertiary-container": "#a36700",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "inverse-surface": "#2d3137",
+                        "on-surface": "#181c22",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-highest": "#e0e2ea",
+                        "secondary-container": "#6cf8bb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "md": "12px",
+                        "full": "9999px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-surface text-on-surface min-h-screen">
+    <!-- Sidebar Shell (Shared Component) -->
+    <aside
+        class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low flex flex-col py-8 px-4 tonal-transition hidden md:flex">
+        <div class="mb-10 px-2">
+            <h1 class="text-2xl font-black text-primary tracking-tighter">Skyline Pro</h1>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-outline font-bold mt-1">Quản Lý Bất Động Sản</p>
+        </div>
+        <nav class="flex-1 space-y-1">
+            <a class="flex items-center gap-3 px-4 py-3 rounded-md text-slate-600 transition-all hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span class="font-medium text-sm tracking-wide">Bảng Điều Khiển</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-md text-primary font-bold border-r-4 border-primary transition-all"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="group">group</span>
+                <span class="font-medium text-sm tracking-wide">Người Thuê</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-md text-slate-600 transition-all hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="domain">domain</span>
+                <span class="font-medium text-sm tracking-wide">Bất Động Sản</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-md text-slate-600 transition-all hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="payments">payments</span>
+                <span class="font-medium text-sm tracking-wide">Tài Chính</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-md text-slate-600 transition-all hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="description">description</span>
+                <span class="font-medium text-sm tracking-wide">Tài Liệu</span>
+            </a>
+        </nav>
+        <div class="mt-auto flex items-center gap-3 px-2 pt-4">
+            <img alt="Admin" class="w-10 h-10 rounded-full object-cover"
+                data-alt="professional portrait of a male property manager in a corporate office setting"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvClAv0oAo1kNdFFwiuH9wBpyL5T3vYme4kyRo3Gf7RPF1Q4d64mTDj9joSEhrgul2zdqdZS6G554_xWK26T5Uzkyn5Gi7ruMLsxBFOOJG5u3PFsk8ftrpqGuKuh98pa9TOvCrKqG_1sYU7cDtf3Oq2gCOrgWybCKDeVFtPZGNH3SCXmuqi9R_IVpBdfN0GhSOoB2Sj6fp81UubA_5m9jngu0oxL7E9XwJNIbVTbCHPSr-sYN2DvbwITM8WlJ07RHJScSRANbtKpU" />
+            <div>
+                <p class="text-sm font-bold text-on-surface">Admin Skyline</p>
+                <p class="text-xs text-outline">Quản trị viên</p>
+            </div>
+        </div>
+    </aside>
+    <main class="md:ml-64 min-h-screen">
+        <!-- Top App Bar -->
+        <header
+            class="w-full sticky top-0 z-50 bg-surface/80 backdrop-blur-md flex items-center justify-between px-6 py-4">
+            <div class="flex items-center gap-4">
+                <button
+                    class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors active:scale-95 duration-200"
+                    id="backBtn" onclick="goBack()">
+                    <span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+                </button>
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-outline">Quay lại danh sách</span>
+                    <h2 class="font-['Inter'] font-semibold text-lg tracking-tight text-on-surface">CHI TIẾT THÔNG TIN
+                        CƯ DÂN</h2>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+                    <span class="material-symbols-outlined text-outline" data-icon="notifications">notifications</span>
+                </button>
+                <button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+                    <span class="material-symbols-outlined text-outline" data-icon="settings">settings</span>
+                </button>
+                <div class="w-1 h-6 bg-outline-variant/20 rounded-full"></div>
+                <button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+                    <span class="material-symbols-outlined text-outline" data-icon="more_vert">more_vert</span>
+                </button>
+            </div>
+        </header>
+        <div class="p-6 md:p-10 pb-20 md:pb-0 max-w-7xl mx-auto space-y-8">
+            <!-- Overview & Identity -->
+            <div class="flex flex-col md:flex-row gap-6 items-start">
+                <div class="w-24 h-24 md:w-32 md:h-32 rounded-md overflow-hidden bg-surface-container-high">
+                    <img alt="Tenant" class="w-full h-full object-cover" id="tenantImage"
+                        data-alt="professional headshot of a young man with a friendly expression in a neutral studio background"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5AO2UCI7JGd2mr785DAkpdTilUfgNtjOxyLrYjOr5zMp9uEDzCOGIRi8nlMmZHCMqXh7YKlqXR24A71FHSN3hn6rau8K0q68j9LVBRJSEHzhcoMGRP7K1FVehv6uBYbUOwmn2UHqO5Q29RvPAKYzazTDpkgVSB5SR1rsSkTrn_y3H3fFw9TiN3v7rjK3PEWA6pjXQrW0DK1OEFHH82E7ySWnE_-bpYqKfWGIFW-aQYYjIwVMMwlgDm-GszRYJsj1280Fn3wrMovE" />
+                </div>
+                <div class="flex-1 space-y-2">
+                    <div class="flex items-center gap-3">
+                        <h1 class="text-4xl font-extrabold tracking-tight text-on-surface" id="tenantName">Đang tải...
+                        </h1>
+                        <span
+                            class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold uppercase tracking-wider"
+                            id="tenantStatus">Đang thuê</span>
+                    </div>
+                    <p class="text-on-surface-variant font-medium">Thông tin hợp đồng và cá nhân</p>
+                    <div class="flex items-center gap-4 text-xs text-outline font-semibold">
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]"
+                                data-icon="schedule">schedule</span> Cập nhật lần cuối: <span
+                                id="lastUpdated">12/12/2021</span></span>
+                        <span class="flex items-center gap-1" id="residentId"><span
+                                class="material-symbols-outlined text-[14px]" data-icon="pin_drop">pin_drop</span>
+                            Resident ID: SKL-99201</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Bento Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Section 1: Personal Information -->
+                <section class="lg:col-span-2 space-y-6">
+                    <div class="bg-surface-container-lowest rounded-md p-8 shadow-sm transition-all hover:shadow-md">
+                        <div class="flex items-center gap-3 mb-8">
+                            <div class="w-10 h-10 rounded-md bg-primary-fixed flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+                            </div>
+                            <h3 class="text-sm font-bold uppercase tracking-[0.1em] text-on-surface">Thông tin cá nhân
+                            </h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-outline">Họ và
+                                    tên</label>
+                                <p class="text-base font-semibold text-on-surface" id="fullName">Đang tải...</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-outline">Giới
+                                    tính</label>
+                                <p class="text-base font-semibold text-on-surface" id="gender">Nam</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-outline">Số điện
+                                    thoại</label>
+                                <p class="text-base font-semibold text-primary" id="phone">Đang tải...</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label
+                                    class="text-[10px] font-bold uppercase tracking-widest text-outline">CMND/CCCD</label>
+                                <p class="text-base font-semibold text-on-surface" id="idCard">Đang tải...</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-outline">Ngày
+                                    sinh</label>
+                                <p class="text-base font-semibold text-on-surface" id="birthDate">Đang tải...</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-outline">Quê
+                                    quán</label>
+                                <p class="text-base font-semibold text-on-surface" id="hometown">Đang tải...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Documents & Notes -->
+                    <div class="bg-surface-container-lowest rounded-md p-8 shadow-sm">
+                        <div class="flex items-center gap-3 mb-8">
+                            <div class="w-10 h-10 rounded-md bg-tertiary-fixed flex items-center justify-center">
+                                <span class="material-symbols-outlined text-tertiary"
+                                    data-icon="attachment">attachment</span>
+                            </div>
+                            <h3 class="text-sm font-bold uppercase tracking-[0.1em] text-on-surface">Tài liệu &amp; Ghi
+                                chú</h3>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-outline">Ảnh tài
+                                    liệu</label>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <div
+                                        class="aspect-video bg-surface-container rounded-md overflow-hidden group cursor-pointer border border-transparent hover:border-primary transition-all">
+                                        <img alt="Hợp đồng 1"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                            data-alt="close up of a legal contract document with a signature and official seal on a wooden desk"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiNBplqdKiy6WA_tnFqutGNl2tkMoMQVgRaAgJJOy4P0lWdgSUaKk3Xl8OTLMZMV-rk1hOkrGxLQklfYlSMXDcKliHHX36-_6S9EGuV--ekFtQzuT6iFm-R1gRSneLVlrgmYf9Hj1x0mHmM8WT5hVKvHYQtanLLzMFBTeX2uvAM9whEgWBsq0nXp0cqpUrB4txVFztN5mkMzu5M23Dx7Tspz2pHiBSt8hYE1sv5GIQrVK0jFnOtb00M5H1ytMx3YFRywuC7O-rjg0" />
+                                    </div>
+                                    <div
+                                        class="aspect-video bg-surface-container rounded-md overflow-hidden group cursor-pointer border border-transparent hover:border-primary transition-all">
+                                        <img alt="ID Card Front"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                            data-alt="top view of a generic identification card resting on a clean white surface with professional lighting"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZgCDytLkNstG3KaKWtIPQkMZU0jc7yTPl--S-7Edr_lQfcScS9YNArTp7ADgwcMi2J00VDmp6SXZXex3S2xenbHfWL1KsSgbLLH36WRzauWt6-htEVKXWqCRRNX8VlkLdM0Znp_dKD2_H-1PfLH_JXXioWorDd9OPuQd7wX3-qqyIxtmhThB_I04QPmsmihcqu1o3S5zymXqenpvj3zdctY1vvYh-7E3dllFjBejH3dIJNSPcpKht31O7gddI4KS74qlusDpo0Co" />
+                                    </div>
+                                    <div
+                                        class="aspect-video bg-surface-container rounded-md overflow-hidden group cursor-pointer border border-transparent hover:border-primary transition-all">
+                                        <img alt="ID Card Back"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                            data-alt="close up of administrative paperwork and legal files stacked neatly in an office"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB18KCAk4wuhvSKxGcJoJr2JNELuuc_e28PgjkV5t-Ljbr8lZOdfGPlzz-N-C5p1JiKlt6-9ibJz0oLY5SKGdJY6Vt6eZVdtepjEjbyQit93l6EU2H5a73e251PkvnypF9p7WWrkwJBhcuBBY6NmUthrhFR1SBQL-Z_nVyBM9mlQATUHFibVELwkWgi9LJNXlzgp5cIsZLdXZwhOA2VV47HMijl4llj2lkQoiyJlH0TiqqMXJB4QeEBV2aq8iG6IQSKl4RHk5Kowbk" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-surface-container-low rounded-md border-l-4 border-tertiary">
+                                <label
+                                    class="text-[10px] font-bold uppercase tracking-widest text-outline block mb-2">Ghi
+                                    chú</label>
+                                <p class="text-sm font-medium text-on-surface-variant leading-relaxed" id="note">Hợp
+                                    đồng 3 năm, gia hạn tự động. Khách hàng thân thiết.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Section 2: Contract Information -->
+                <aside class="space-y-6">
+                    <div class="bg-primary primary-gradient rounded-md p-8 text-on-primary shadow-lg sticky top-24">
+                        <div class="flex items-center gap-3 mb-8">
+                            <div
+                                class="w-10 h-10 rounded-md bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                <span class="material-symbols-outlined text-white" data-icon="contract">contract</span>
+                            </div>
+                            <h3 class="text-sm font-bold uppercase tracking-[0.1em]">Hợp đồng thuê</h3>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-end border-b border-white/10 pb-4">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold uppercase tracking-widest text-white/60">Tòa nhà
+                                        &amp; Phòng</label>
+                                    <p class="text-xl font-black" id="building">Tòa A — 301</p>
+                                </div>
+                                <div class="text-right">
+                                    <span
+                                        class="px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase">Standard</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold uppercase tracking-widest text-white/60">Ngày
+                                        bắt đầu</label>
+                                    <p class="text-sm font-bold" id="startDate">01/01/2022</p>
+                                </div>
+                                <div class="space-y-1 text-right">
+                                    <label class="text-[10px] font-bold uppercase tracking-widest text-white/60">Ngày
+                                        kết thúc</label>
+                                    <p class="text-sm font-bold" id="endDate">01/01/2026</p>
+                                </div>
+                            </div>
+                            <div class="pt-6 mt-6 border-t border-white/20">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="text-[10px] font-bold uppercase tracking-widest text-white/60">Giá
+                                        phòng</label>
+                                    <p class="text-lg font-black tracking-tight" id="roomPrice">3.500.000 VNĐ</p>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] font-bold uppercase tracking-widest text-white/60">Tiền
+                                        cọc</label>
+                                    <p class="text-lg font-black tracking-tight" id="deposit">3.500.000 VNĐ</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Footer Actions in Sidebar context -->
+                        <div class="mt-10 space-y-3">
+                            <button
+                                class="w-full bg-white text-primary font-bold py-4 rounded-md text-sm shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-lg"
+                                    data-icon="description">description</span>
+                                Trả phiếu
+                            </button>
+                            <button
+                                class="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-4 rounded-md text-sm border border-white/20 backdrop-blur-sm active:scale-95 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-lg" data-icon="settings">settings</span>
+                                Chính sách
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Quick Insight (Extra context) -->
+                    <div class="bg-surface-container-high rounded-md p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="material-symbols-outlined text-primary text-sm" data-icon="info">info</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-outline">Insight cư
+                                dân</span>
+                        </div>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-3xl font-black text-on-surface tracking-tighter"
+                                id="daysRented">720</span>
+                            <span class="text-xs font-bold text-outline uppercase">Ngày thuê</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">Cư dân duy trì thanh toán đúng
+                            hạn 100% trong suốt thời gian thuê.</p>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+    <!-- Mobile Navigation Shell -->
+    <nav
+        class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-outline-variant/10 px-6 py-3 flex justify-between items-center z-50">
+        <a href="quanlynguoithue.html" class="flex flex-col items-center gap-1 text-outline">
+            <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            <span class="text-[10px] font-medium">Dashboard</span>
+        </a>
+        <a href="quanlynguoithue.html" class="flex flex-col items-center gap-1 text-primary">
+            <span class="material-symbols-outlined" data-icon="group"
+                style="font-variation-settings: 'FILL' 1;">group</span>
+            <span class="text-[10px] font-bold">Tenants</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 text-outline">
+            <span class="material-symbols-outlined" data-icon="domain">domain</span>
+            <span class="text-[10px] font-medium">Properties</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 text-outline">
+            <span class="material-symbols-outlined" data-icon="payments">payments</span>
+            <span class="text-[10px] font-medium">Finance</span>
+        </a>
+    </nav>
+    <!-- Script: Details Page -->
+    <script src="js/details-script-app.js"></script>
+</body>
+
+</html>

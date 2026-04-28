@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="css/hopDong.css" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#fffbff",
+                        "background": "#f8f9ff",
+                        "surface-tint": "#0060a8",
+                        "surface": "#f8f9ff",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#825100",
+                        "tertiary-fixed": "#ffddb8",
+                        "secondary-fixed": "#6ffbbe",
+                        "secondary-fixed-dim": "#4edea3",
+                        "inverse-surface": "#2d3137",
+                        "inverse-on-surface": "#eef0f9",
+                        "outline": "#707783",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-container": "#ebeef6",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "primary": "#005ea4",
+                        "on-background": "#181c22",
+                        "on-primary-fixed": "#001c38",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c0c7d4",
+                        "secondary": "#006c49",
+                        "inverse-primary": "#a2c9ff",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e5e8f0",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-surface-variant": "#404752",
+                        "surface-container-highest": "#e0e2ea",
+                        "on-surface": "#181c22",
+                        "surface-bright": "#f8f9ff",
+                        "primary-container": "#0077ce",
+                        "primary-fixed": "#d3e4ff",
+                        "primary-fixed-dim": "#a2c9ff",
+                        "on-secondary-container": "#00714d",
+                        "surface-variant": "#e0e2ea",
+                        "surface-container-low": "#f1f3fc",
+                        "tertiary-container": "#a36700",
+                        "on-primary-fixed-variant": "#004881",
+                        "surface-dim": "#d7dae2",
+                        "secondary-container": "#6cf8bb",
+                        "on-primary-container": "#fdfcff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002113",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "display": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background text-on-background min-h-screen flex overflow-hidden">
+    <!-- SideNavBar -->
+    <aside class="h-screen w-64 fixed left-0 top-0 bg-[#f1f3fc] dark:bg-slate-900 flex flex-col h-full py-8 px-4 z-50">
+        <div class="mb-10 px-4">
+            <h1 class="text-2xl font-black text-[#005ea4] dark:text-blue-400 tracking-tight">Skyline Pro</h1>
+            <p class="text-slate-600 dark:text-slate-400 text-xs font-medium tracking-wide">Property Management</p>
+        </div>
+        <nav class="flex-1 space-y-2">
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 font-medium tracking-wide text-sm hover:text-[#005ea4] transition-all active:translate-x-1 duration-150"
+                href="#">
+                <span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-[#005ea4] dark:text-blue-300 font-bold border-r-4 border-[#005ea4] tracking-wide text-sm active:translate-x-1 duration-150"
+                href="#">
+                <span class="material-symbols-outlined">group</span>
+                Tenants
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 font-medium tracking-wide text-sm hover:text-[#005ea4] transition-all active:translate-x-1 duration-150"
+                href="#">
+                <span class="material-symbols-outlined">domain</span>
+                Properties
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 font-medium tracking-wide text-sm hover:text-[#005ea4] transition-all active:translate-x-1 duration-150"
+                href="#">
+                <span class="material-symbols-outlined">payments</span>
+                Financials
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 font-medium tracking-wide text-sm hover:text-[#005ea4] transition-all active:translate-x-1 duration-150"
+                href="#">
+                <span class="material-symbols-outlined">description</span>
+                Documents
+            </a>
+        </nav>
+        <div class="mt-auto px-4 flex items-center gap-3">
+            <img alt="Admin" class="w-10 h-10 rounded-full bg-surface-container"
+                data-alt="close up professional portrait of a property administrator in a minimalist office setting"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbJTWD6rsG3Bap_zcC_ihQPpp6YVTSyrsSPgwbYamIoOubFjCr_LaENi7TOEHEDKfcAoJQcQdHUidY9OqJL1QII-D-ynpKIWtB0ZjUdRSnMFoAiaWanLtpVrpuiW8ISBvkMXAlVsbwqerp4XJaoTR9--6BNTc6P1KudKmWp843hjiiRRv3SUWYafn0UcvswTDdW_PaN0sly59Jcy9qOUUNgP_sZ6FluCJd6xIGrXo5877FmN_eSMqh57y-ONN-NNF0VHvOo2-4BL4" />
+            <div>
+                <p class="text-sm font-bold text-on-surface">Admin Skyline</p>
+                <p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Premium Plan</p>
+            </div>
+        </div>
+    </aside>
+    <!-- Main Workspace -->
+    <main class="ml-64 flex-1 flex flex-col h-screen overflow-y-auto">
+        <!-- TopAppBar -->
+        <header
+            class="w-full sticky top-0 z-40 flex items-center justify-between px-8 py-4 bg-[#f1f3fc] dark:bg-slate-900 transition-colors">
+            <div class="flex items-center gap-4">
+                <button
+                    class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-200/50 transition-colors active:scale-95 duration-200">
+                    <span class="material-symbols-outlined text-[#005ea4]">arrow_back</span>
+                </button>
+                <h2 class="font-['Inter'] font-semibold text-xl tracking-tight text-on-surface">Thêm hợp đồng mới</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center bg-surface-container-low px-4 py-2 rounded-xl">
+                    <span class="material-symbols-outlined text-outline mr-2">search</span>
+                    <input class="bg-transparent border-none focus:ring-0 text-sm" placeholder="Tìm kiếm nhanh..."
+                        type="text" />
+                </div>
+                <button
+                    class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-200/50 transition-colors">
+                    <span class="material-symbols-outlined">more_vert</span>
+                </button>
+            </div>
+        </header>
+        <!-- Page Content -->
+        <div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+            <!-- Section 1: Room/Apartment List -->
+            <section>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-on-surface-variant font-bold text-sm tracking-[0.05em] uppercase">1. Danh sách phòng
+                        trống</h3>
+                    <span class="text-xs text-primary font-medium px-3 py-1 bg-primary-fixed/40 rounded-full">Hiện có 12
+                        phòng</span>
+                </div>
+                <div id="roomsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Selected Card -->
+                    <div class="room-card relative bg-surface-container-lowest p-5 rounded-[12px] border-2 border-primary-container shadow-sm group cursor-pointer"
+                        data-room-id="1" data-room-name="CT7-CH1.10" data-room-price="5.500.000 đ" data-room-area="45">
+                        <div class="absolute top-3 right-3 text-primary-container">
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">apartment</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-on-surface-variant font-medium">Phòng/Căn hộ</p>
+                                <p class="font-bold text-on-surface room-name">CT7-CH1.10</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs text-on-surface-variant">Diện tích: <span
+                                        class="font-semibold text-on-surface room-area">45 m²</span></p>
+                                <p class="text-sm font-black text-primary mt-1 room-price">5.500.000 đ</p>
+                            </div>
+                            <span
+                                class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded-full">Đang
+                                trống</span>
+                        </div>
+                    </div>
+                    <!-- Regular Card -->
+                    <div class="room-card bg-surface-container-lowest p-5 rounded-[12px] hover:bg-primary-fixed/20 transition-all cursor-pointer"
+                        data-room-id="2" data-room-name="CT7-CH1.11" data-room-price="4.800.000 đ" data-room-area="38">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+                                <span class="material-symbols-outlined">apartment</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-on-surface-variant font-medium">Phòng/Căn hộ</p>
+                                <p class="font-bold text-on-surface room-name">CT7-CH1.11</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs text-on-surface-variant">Diện tích: <span
+                                        class="font-semibold text-on-surface room-area">38 m²</span></p>
+                                <p class="text-sm font-black text-on-surface mt-1 room-price">4.800.000 đ</p>
+                            </div>
+                            <span
+                                class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded-full">Đang
+                                trống</span>
+                        </div>
+                    </div>
+                    <!-- Regular Card -->
+                    <div class="room-card bg-surface-container-lowest p-5 rounded-[12px] hover:bg-primary-fixed/20 transition-all cursor-pointer"
+                        data-room-id="3" data-room-name="CT8-CH2.05" data-room-price="6.200.000 đ" data-room-area="52">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+                                <span class="material-symbols-outlined">apartment</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-on-surface-variant font-medium">Phòng/Căn hộ</p>
+                                <p class="font-bold text-on-surface room-name">CT8-CH2.05</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs text-on-surface-variant">Diện tích: <span
+                                        class="font-semibold text-on-surface room-area">52 m²</span></p>
+                                <p class="text-sm font-black text-on-surface mt-1 room-price">6.200.000 đ</p>
+                            </div>
+                            <span
+                                class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded-full">Đang
+                                trống</span>
+                        </div>
+                    </div>
+                    <!-- Regular Card -->
+                    <div class="room-card bg-surface-container-lowest p-5 rounded-[12px] hover:bg-primary-fixed/20 transition-all cursor-pointer"
+                        data-room-id="4" data-room-name="CT8-CH2.06" data-room-price="5.500.000 đ" data-room-area="45">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+                                <span class="material-symbols-outlined">apartment</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-on-surface-variant font-medium">Phòng/Căn hộ</p>
+                                <p class="font-bold text-on-surface room-name">CT8-CH2.06</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs text-on-surface-variant">Diện tích: <span
+                                        class="font-semibold text-on-surface room-area">45 m²</span></p>
+                                <p class="text-sm font-black text-on-surface mt-1 room-price">5.500.000 đ</p>
+                            </div>
+                            <span
+                                class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded-full">Đang
+                                trống</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column: Tenant Info & Duration -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Section 2: Tenant Information -->
+                    <section class="bg-surface-container-lowest p-8 rounded-[12px] shadow-sm">
+                        <h3 class="text-on-surface-variant font-bold text-sm tracking-[0.05em] uppercase mb-6">2. Thông
+                            tin khách thuê</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Họ và
+                                        tên</label>
+                                    <input name="tenantName"
+                                        class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder="Nguyễn Văn A" type="text" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Số
+                                        điện thoại</label>
+                                    <input name="tenantPhone"
+                                        class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder="090 123 4567" type="tel" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Số
+                                        CCCD/Hộ chiếu</label>
+                                    <input name="tenantIdNumber"
+                                        class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder="012345678910" type="text" />
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Ngày
+                                            sinh</label>
+                                        <input name="tenantBirthDate"
+                                            class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                            type="date" />
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Giới
+                                            tính</label>
+                                        <select name="tenantGender"
+                                            class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all">
+                                            <option>Nam</option>
+                                            <option>Nữ</option>
+                                            <option>Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Địa
+                                        chỉ thường trú</label>
+                                    <input name="tenantAddress"
+                                        class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder="Số 10, Đường ABC, Quận XYZ..." type="text" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Ngày
+                                        cấp CCCD</label>
+                                    <input name="tenantIdIssueDate"
+                                        class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                        type="date" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Nơi
+                                        cấp</label>
+                                    <input name="tenantIdIssuedBy"
+                                        class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder="Cục Cảnh sát QLHC về TTXH" type="text" />
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 pt-2">
+                                    <div class="upload-container">
+                                        <div class="upload-area border-2 border-dashed border-outline-variant rounded-xl p-4 flex flex-col items-center justify-center text-center group hover:border-primary transition-colors cursor-pointer"
+                                            data-upload-type="front">
+                                            <span
+                                                class="material-symbols-outlined text-outline group-hover:text-primary mb-2">cloud_upload</span>
+                                            <p
+                                                class="text-[10px] font-bold text-on-surface-variant group-hover:text-primary">
+                                                Ảnh mặt trước CCCD</p>
+                                        </div>
+                                        <img class="image-preview hidden rounded-xl mt-3 w-full h-32 object-cover border border-outline-variant"
+                                            alt="Front CCCD" title="Click để thay đổi hoặc xóa ảnh" />
+                                    </div>
+                                    <div class="upload-container">
+                                        <div class="upload-area border-2 border-dashed border-outline-variant rounded-xl p-4 flex flex-col items-center justify-center text-center group hover:border-primary transition-colors cursor-pointer"
+                                            data-upload-type="back">
+                                            <span
+                                                class="material-symbols-outlined text-outline group-hover:text-primary mb-2">cloud_upload</span>
+                                            <p
+                                                class="text-[10px] font-bold text-on-surface-variant group-hover:text-primary">
+                                                Ảnh mặt sau CCCD</p>
+                                        </div>
+                                        <img class="image-preview hidden rounded-xl mt-3 w-full h-32 object-cover border border-outline-variant"
+                                            alt="Back CCCD" title="Click để thay đổi hoặc xóa ảnh" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Section 3: Contract Duration -->
+                    <section class="bg-surface-container-lowest p-8 rounded-[12px] shadow-sm">
+                        <h3 class="text-on-surface-variant font-bold text-sm tracking-[0.05em] uppercase mb-6">3. Thời
+                            hạn hợp đồng</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Thời hạn
+                                    thuê</label>
+                                <select name="duration"
+                                    class="duration-select w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all">
+                                    <option value="6">6 tháng</option>
+                                    <option value="12">12 tháng</option>
+                                    <option value="24">24 tháng</option>
+                                </select>
+                            </div>
+                            <div class="relative">
+                                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Ngày bắt
+                                    đầu</label>
+                                <div class="relative">
+                                    <input name="startDate"
+                                        class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                        type="date" />
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Ngày kết
+                                    thúc</label>
+                                <div class="relative">
+                                    <input name="endDate"
+                                        class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                        type="date" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Section 4: Deposit -->
+                    <section class="bg-surface-container-lowest p-8 rounded-[12px] shadow-sm">
+                        <h3 class="text-on-surface-variant font-bold text-sm tracking-[0.05em] uppercase mb-6">4. Tiền
+                            đặt cọc</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Số tiền
+                                    đặt cọc</label>
+                                <div class="flex items-center">
+                                    <input name="deposit"
+                                        class="flex-1 bg-surface-container-highest border-none rounded-l-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder="Nhập số tiền" type="text" />
+                                    <span
+                                        class="bg-surface-container-high p-3 text-[10px] font-bold rounded-r-lg">VNĐ</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1">Ghi chú
+                                    đặt cọc</label>
+                                <input name="depositNote"
+                                    class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                                    placeholder="VD: Hoàn lại khi kết thúc hợp đồng" type="text" />
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- Right Column: Utility & Assets -->
+                <div class="space-y-8">
+                    <!-- Section 5: Utility Usage -->
+                    <section class="space-y-4">
+                        <h3 class="text-on-surface-variant font-bold text-sm tracking-[0.05em] uppercase">5. Chỉ số điện
+                            nước</h3>
+                        <div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-sm">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="material-symbols-outlined text-amber-500">bolt</span>
+                                <span class="font-bold text-on-surface">Chỉ số Điện</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-on-surface-variant uppercase font-bold">Đơn giá</span>
+                                    <div class="flex items-center">
+                                        <input name="electricityPrice"
+                                            class="utility-input w-24 text-right bg-surface-container-highest border-none rounded-l-lg p-2 text-sm"
+                                            type="text" value="3.500" />
+                                        <span
+                                            class="bg-surface-container-high p-2 text-[10px] font-bold rounded-r-lg">VNĐ/kWh</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-on-surface-variant uppercase font-bold">Số mới</span>
+                                    <div class="flex items-center">
+                                        <input name="electricityReading"
+                                            class="utility-input w-24 text-right bg-surface-container-highest border-none rounded-l-lg p-2 text-sm"
+                                            type="text" value="1.240" />
+                                        <span
+                                            class="bg-surface-container-high p-2 text-[10px] font-bold rounded-r-lg">kWh</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-sm">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="material-symbols-outlined text-blue-500">water_drop</span>
+                                <span class="font-bold text-on-surface">Chỉ số Nước</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-on-surface-variant uppercase font-bold">Đơn giá</span>
+                                    <div class="flex items-center">
+                                        <input name="waterPrice"
+                                            class="utility-input w-24 text-right bg-surface-container-highest border-none rounded-l-lg p-2 text-sm"
+                                            type="text" value="18.000" />
+                                        <span
+                                            class="bg-surface-container-high p-2 text-[10px] font-bold rounded-r-lg">VNĐ/m³</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-on-surface-variant uppercase font-bold">Số mới</span>
+                                    <div class="flex items-center">
+                                        <input name="waterReading"
+                                            class="utility-input w-24 text-right bg-surface-container-highest border-none rounded-l-lg p-2 text-sm"
+                                            type="text" value="85" />
+                                        <span
+                                            class="bg-surface-container-high p-2 text-[10px] font-bold rounded-r-lg">m³</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Section 6: Asset Information -->
+                    <section class="space-y-4">
+                        <h3 class="text-on-surface-variant font-bold text-sm tracking-[0.05em] uppercase">6. Trang thiết
+                            bị &amp; Tài sản</h3>
+                        <div class="bg-surface-container-lowest rounded-[12px] shadow-sm overflow-hidden">
+                            <div
+                                class="p-4 border-b border-outline-variant/10 flex items-center justify-between bg-surface-container-low">
+                                <span
+                                    class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Tên
+                                    tài sản</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Số
+                                    lượng</span>
+                            </div>
+                            <!-- Asset Row -->
+                            <div
+                                class="asset-row p-4 flex items-center justify-between group hover:bg-primary-fixed/20 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input
+                                        class="asset-checkbox rounded-md border-outline-variant text-primary focus:ring-primary"
+                                        type="checkbox" checked="" />
+                                    <div>
+                                        <p class="text-sm font-semibold">Điều hòa Inverter</p>
+                                        <p class="text-[10px] text-on-surface-variant">12.000 BTU</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="asset-decrement w-6 h-6 rounded-md bg-surface-container flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+                                        <span class="material-symbols-outlined text-sm">remove</span>
+                                    </button>
+                                    <span class="text-sm font-bold w-6 text-center">1</span>
+                                    <button
+                                        class="asset-increment w-6 h-6 rounded-md bg-surface-container flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+                                        <span class="material-symbols-outlined text-sm">add</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Asset Row -->
+                            <div
+                                class="asset-row p-4 flex items-center justify-between group hover:bg-primary-fixed/20 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input
+                                        class="asset-checkbox rounded-md border-outline-variant text-primary focus:ring-primary"
+                                        type="checkbox" checked="" />
+                                    <div>
+                                        <p class="text-sm font-semibold">Tủ lạnh Panasonic</p>
+                                        <p class="text-[10px] text-on-surface-variant">250 Lít</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="asset-decrement w-6 h-6 rounded-md bg-surface-container flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+                                        <span class="material-symbols-outlined text-sm">remove</span>
+                                    </button>
+                                    <span class="text-sm font-bold w-6 text-center">1</span>
+                                    <button
+                                        class="asset-increment w-6 h-6 rounded-md bg-surface-container flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+                                        <span class="material-symbols-outlined text-sm">add</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Asset Row -->
+                            <div
+                                class="asset-row p-4 flex items-center justify-between group hover:bg-primary-fixed/20 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input
+                                        class="asset-checkbox rounded-md border-outline-variant text-primary focus:ring-primary"
+                                        type="checkbox" checked="" />
+                                    <div>
+                                        <p class="text-sm font-semibold">Máy nước nóng</p>
+                                        <p class="text-[10px] text-on-surface-variant">Ariston 30L</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="asset-decrement w-6 h-6 rounded-md bg-surface-container flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+                                        <span class="material-symbols-outlined text-sm">remove</span>
+                                    </button>
+                                    <span class="text-sm font-bold w-6 text-center">1</span>
+                                    <button
+                                        class="asset-increment w-6 h-6 rounded-md bg-surface-container flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+                                        <span class="material-symbols-outlined text-sm">add</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- Floating Action Section -->
+            <div class="sticky bottom-8 flex justify-end">
+                <button
+                    class="btn-create-contract btn-gradient shadow-xl text-white px-8 py-4 rounded-xl flex items-center gap-3 active:scale-95 transition-all group">
+                    <span class="material-symbols-outlined group-hover:rotate-90 transition-transform">add</span>
+                    <span class="font-bold tracking-wide">Tạo hợp đồng</span>
+                </button>
+            </div>
+            <!-- Footer Meta -->
+            <div
+                class="flex justify-between items-center text-on-surface-variant/40 pt-8 border-t border-surface-container">
+                <p class="text-xs">Skyline Pro v4.2.0 • Bản ghi được tạo tự động</p>
+                <div class="flex gap-4">
+                    <a class="text-xs hover:text-primary underline" href="#">Điều khoản dịch vụ</a>
+                    <a class="text-xs hover:text-primary underline" href="#">Bảo mật thông tin</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="js/hopDong.js"></script>
+</body>
+
+</html>

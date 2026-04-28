@@ -1,0 +1,26 @@
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+}
+
+.tonal-transition {
+    transition: background-color 0.2s ease;
+}
+
+.glass-panel {
+    background: rgba(224, 226, 234, 0.6);
+    backdrop-filter: blur(20px);
+}
+
+.custom-shadow {
+    box-shadow: 0 0 32px 0 rgba(24, 28, 34, 0.06);
+}
+
+input:focus {
+    outline: none !important;
+    border-bottom: 2px solid #005ea4 !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}

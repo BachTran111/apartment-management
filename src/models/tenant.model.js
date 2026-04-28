@@ -58,7 +58,7 @@ const tenantSchema = new mongoose.Schema(
       type: String,
     },
   },
-  { 
+  {
     timestamps: true,
     collection: "NguoiThue"
   }
