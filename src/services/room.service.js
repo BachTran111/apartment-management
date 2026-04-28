@@ -10,16 +10,33 @@ class RoomService {
     filter = {},
     { skip = 0, limit = 50, sort = { createdAt: -1 } } = {},
   ) {
-    // Sử dụng Mongoose .find() thay vì .collection.find() để tận dụng tính năng tự động ép kiểu (casting)
-    return Room.find(filter).skip(skip).limit(limit).sort(sort).lean();
+    return Room.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort(sort)
+      .populate({
+        path: "hop_dong_ids", // Lớp 1: Lấy danh sách hợp đồng
+        populate: {
+          path: "nguoi_thue_id", // Lớp 2: Lấy thông tin người thuê bên trong hợp đồng đó
+          select: "ho_ten so_dien_thoai email", // (Tùy chọn) Chỉ lấy các trường cần thiết
+        },
+      })
+      .lean();
   }
 
   /**
-   * Lấy chi tiết phòng theo ID
+   * Lấy chi tiết một phòng
    */
   async getById(id) {
     if (!id) return null;
-    return Room.findById(id).lean();
+    return Room.findById(id)
+      .populate({
+        path: "hop_dong_ids",
+        populate: {
+          path: "nguoi_thue_id",
+        },
+      })
+      .lean();
   }
 
   /**

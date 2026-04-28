@@ -114,10 +114,14 @@ function renderEmptyState() {
 }
 
 async function renderDetail(metadata) {
-  const phong = metadata.phong || {};
   const noiThat = await resolveFurniture(metadata);
-  const nguoiThue = metadata.nguoiThue;
-  const hopDong = Array.isArray(metadata.hopDong) ? metadata.hopDong : [];
+  const phong = metadata.phong || {};
+
+  // Lấy từ hop_dong_ids
+  const hopDong = Array.isArray(phong.hop_dong_ids) ? phong.hop_dong_ids : [];
+
+  // Lấy người thuê từ hợp đồng đầu tiên
+  const nguoiThue = hopDong.length > 0 ? hopDong[0].nguoi_thue_id : null;
   currentCanHoId = currentCanHoId || String(phong.can_ho_id || "").trim();
 
   roomTitle.textContent = phong.so_phong

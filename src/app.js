@@ -5,6 +5,8 @@ import morgan from "morgan";
 import instanceMongoDB from "./configs/db.config.js";
 import roomRouter from "./routes/room.route.js"; // Đã cập nhật tên file theo chuẩn
 import apartmentRouter from "./routes/apartment.route.js";
+import contractRouter from "./routes/contract.route.js";
+import tenantRouter from "./routes/tenant.route.js";
 import { errorHandler } from "./middlewares/error-handler.js";
 
 const app = express();
@@ -22,6 +24,8 @@ app.use(morgan("dev"));
 // Chỉ giữ lại module Room. Bạn có thể dùng "/api/rooms" hoặc "/api/phongs" tùy ý.
 app.use("/api/rooms", roomRouter);
 app.use("/api/apartments", apartmentRouter);
+app.use("/api/contracts", contractRouter);
+app.use("/api/tenants", tenantRouter);
 
 // ==========================================
 // ERROR HANDLING
