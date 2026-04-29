@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý căn hộ</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #4a4a4a;
+        --bg-body: #f8f9fa;
+        --white: #ffffff;
+        --border-color: #dee2e6;
+        --text-secondary: #6c757d;
+        --success: #d4edda;
+        --success-text: #155724;
+        --warning: #fff3cd;
+        --warning-text: #856404;
+        --blue-light: #e7f1ff;
+        --blue-text: #0d6efd;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-body);
+        margin: 0;
+        padding: 20px;
+        color: var(--primary-color);
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: var(--white);
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Header & Search Area */
+      .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        font-size: 32px;
+        margin: 0;
+      }
+
+      .btn-add {
+        background-color: #444;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .search-bar {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr auto;
+        gap: 10px;
+        margin-bottom: 30px;
+      }
+
+      .search-bar input,
+      .search-bar select {
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .btn-search {
+        background-color: #444;
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      /* Table Styles */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      thead {
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        border-bottom: 2px solid #eee;
+      }
+
+      th {
+        text-align: left;
+        padding: 15px 10px;
+        font-weight: 600;
+      }
+
+      td {
+        padding: 15px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+      }
+
+      .apartment-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .apartment-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        background-color: #eee;
+        object-fit: cover;
+      }
+
+      .apartment-name {
+        font-weight: bold;
+        display: block;
+      }
+
+      .location {
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+
+      /* Progress bar */
+      .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .progress-bar {
+        width: 60px;
+        height: 4px;
+        background: #eee;
+        border-radius: 2px;
+        position: relative;
+      }
+
+      .progress-fill {
+        height: 100%;
+        border-radius: 2px;
+      }
+
+      /* Status Badges */
+      .status {
+        display: inline-block;
+        white-space: nowrap;
+        padding: 4px 10px;
+        border-radius: 12px;
+      }
+
+      .status-active {
+        background: #d4edda;
+        color: #155724;
+      }
+      .status-maintenance {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .status-inactive {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      /* Actions */
+      .actions {
+        display: flex;
+        gap: 15px;
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+
+      /* Pagination */
+      .footer-table {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+
+      .pagination {
+        display: flex;
+        gap: 5px;
+      }
+
+      .page-btn {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+
+      .page-btn.active {
+        background-color: #007bff;
+        color: white;
+      }
+
+      .page-btn:hover:not(.active) {
+        background-color: #eee;
+      }
+
+      /* Loading Spinner */
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #444;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .no-data-msg {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-secondary);
+      }
+
+      .error-container {
+        text-align: center;
+        padding: 20px;
+        background-color: #f8d7da;
+        color: #721c24;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="error-message" class="error-container"></div>
+      <div class="header-top">
+        <h1>Quản lý căn hộ</h1>
+        <a href="ApartmentForm.html" class="btn-add">+ Thêm căn hộ mới</a>
+      </div>
+
+      <div class="search-bar">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Tìm theo tên hoặc địa điểm..."
+        />
+
+        <select id="status-filter">
+          <option value="">Tất cả trạng thái</option>
+          <option value="active">Hoạt động</option>
+          <option value="maintenance">Bảo trì</option>
+          <option value="inactive">Ngừng hoạt động</option>
+        </select>
+
+        <select id="location-filter">
+          <option value="">Khu vực</option>
+          <option value="Q1">Quận 1</option>
+          <option value="Ba Đình">Ba Đình</option>
+          <option value="Hoàn Kiếm">Hoàn Kiếm</option>
+          <option value="Đống Đa">Đống Đa</option>
+        </select>
+
+        <button id="search-btn" class="btn-search">Tìm kiếm</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Tên căn hộ</th>
+            <th>Vị trí</th>
+            <th>Số lượng phòng</th>
+            <th>Phòng trống</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="apartment-list">
+          <!-- Data will be loaded here -->
+        </tbody>
+      </table>
+
+      <div class="footer-table" style="display: none">
+        <div>Hiển thị 1-4 trên tổng số 24 căn hộ</div>
+        <div class="pagination">
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">3</div>
+          <div class="page-btn"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/apartment-list.js"></script>
+  </body>
+</html>

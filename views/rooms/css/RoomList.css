@@ -1,0 +1,402 @@
+:root {
+  --bg: #f6f1ea;
+  --surface: #fffdf9;
+  --surface-alt: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6e6960;
+  --line: #29241e;
+  --accent: #f08c28;
+  --accent-soft: #fff1e1;
+  --dark-chip: #181818;
+  --success: #f7f7f7;
+  --shadow: 0 16px 40px rgba(28, 24, 20, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Be Vietnam Pro", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(240, 140, 40, 0.18), transparent 22%),
+    linear-gradient(180deg, #fcfaf6 0%, var(--bg) 100%);
+  color: var(--text);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.room-page {
+  min-height: 100vh;
+  padding: 32px 20px 48px;
+}
+
+.room-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.topbar,
+.panel,
+.table-card,
+.stat-card,
+.input-wrap,
+select,
+.add-button {
+  border: 1.5px solid var(--line);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  background: rgba(255, 253, 249, 0.88);
+  box-shadow: var(--shadow);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.icon-button,
+.profile-button {
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--line);
+  background: var(--surface-alt);
+  cursor: pointer;
+}
+
+.icon-button {
+  width: 44px;
+  height: 44px;
+  gap: 5px;
+}
+
+.icon-button span {
+  width: 22px;
+  height: 2px;
+  background: var(--line);
+}
+
+.profile-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+}
+
+.profile-button span {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+}
+
+.panel {
+  margin-top: 18px;
+  padding: 18px;
+  background: rgba(255, 253, 249, 0.88);
+  box-shadow: var(--shadow);
+}
+
+.section-heading,
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.section-index {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.section-index.small {
+  min-width: 20px;
+  height: 20px;
+  font-size: 0.68rem;
+  margin-right: 6px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: linear-gradient(180deg, #fff 0%, #fff8f0 100%);
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.stat-card .marker {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0 auto 14px;
+  border: 1.5px solid var(--line);
+}
+
+.stat-card .marker.filled {
+  background: var(--line);
+}
+
+.stat-card .marker.outline {
+  background: transparent;
+}
+
+.stat-card .marker.accent {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.stat-card strong {
+  margin-bottom: 14px;
+  display: block;
+  margin-bottom: 6px;
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
+  font-weight: 800;
+}
+
+.stat-card span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 260px) minmax(240px, 280px);
+  gap: 14px;
+  align-items: end;
+}
+
+.filter-block label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  background: #fff;
+}
+
+.input-wrap svg {
+  width: 18px;
+  height: 18px;
+  fill: #8c867d;
+  flex: none;
+}
+
+.input-wrap input,
+select {
+  width: 100%;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  outline: none;
+}
+
+select {
+  padding: 0 12px;
+  background: #fff;
+}
+
+.add-button {
+  height: 44px;
+  background: #161616;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.toolbar-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.toolbar-note.error {
+  color: #b45309;
+}
+
+.table-card {
+  overflow: hidden;
+  background: #fff;
+}
+
+.room-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.room-table th,
+.room-table td {
+  padding: 18px 12px;
+  border-bottom: 1px solid rgba(41, 36, 30, 0.18);
+  border-right: 1px solid rgba(41, 36, 30, 0.18);
+  text-align: left;
+}
+
+.room-table th:last-child,
+.room-table td:last-child {
+  border-right: 0;
+}
+
+.room-table th {
+  background: #fbf6ef;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+}
+
+.room-table tbody tr:hover {
+  background: #fffbf5;
+}
+
+.room-number {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.price {
+  font-weight: 600;
+  color: #51483e;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+}
+
+.badge.occupied {
+  background: var(--dark-chip);
+  color: #fff;
+}
+
+.badge.available {
+  background: #fff;
+  color: var(--line);
+}
+
+.badge.maintenance {
+  background: var(--accent);
+  color: #fff;
+}
+
+.contract-text {
+  color: #7a7368;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.table-message {
+  padding: 32px 16px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.table-action {
+  min-width: 74px;
+  height: 32px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (max-width: 920px) {
+  .stat-grid,
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .room-table {
+    min-width: 780px;
+  }
+
+  .table-card {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .room-page {
+    padding-inline: 14px;
+  }
+
+  .topbar,
+  .panel {
+    padding: 16px;
+  }
+
+  .brand {
+    gap: 12px;
+  }
+
+  .brand h1 {
+    font-size: 1.1rem;
+  }
+}
