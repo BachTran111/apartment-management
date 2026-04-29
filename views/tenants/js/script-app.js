@@ -424,9 +424,8 @@ function renderRoomOptions(apartmentId = "") {
       })
     : rooms;
 
-  roomSelect.innerHTML = filteredRooms.length
-    ? '<option value="">-- Chọn phòng --</option>'
-    : '<option value="">Chưa có phòng</option>';
+  roomSelect.innerHTML = filteredRooms.length;
+  ('<option value="">-- Chọn phòng --</option>');
 
   filteredRooms.forEach((room) => {
     const option = document.createElement("option");

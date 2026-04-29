@@ -7,6 +7,7 @@ import roomRouter from "./routes/room.route.js"; // Đã cập nhật tên file 
 import apartmentRouter from "./routes/apartment.route.js";
 import contractRouter from "./routes/contract.route.js";
 import tenantRouter from "./routes/tenant.route.js";
+import billRouter from "./routes/bill.route.js";
 import { errorHandler } from "./middlewares/error-handler.js";
 
 const app = express();
@@ -26,6 +27,7 @@ app.use("/api/rooms", roomRouter);
 app.use("/api/apartments", apartmentRouter);
 app.use("/api/contracts", contractRouter);
 app.use("/api/tenants", tenantRouter);
+app.use("/api/bills", billRouter);
 
 // ==========================================
 // ERROR HANDLING
