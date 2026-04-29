@@ -8,6 +8,7 @@ const router = express.Router();
 // ==========================================
 // Lấy danh sách căn hộ (Hỗ trợ phân trang và filter qua req.query)
 // Ví dụ: GET /api/apartments?skip=0&limit=10&ten=Sunrise
+router.get("/search", ApartmentController.search);
 router.get("/", ApartmentController.getAll);
 
 // ==========================================

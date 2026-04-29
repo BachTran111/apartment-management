@@ -8,6 +8,22 @@ import RoomService from "../services/room.service.js"; // Import thêm RoomServi
 import { OK } from "../handler/success-response.js";
 
 class ApartmentController {
+  search = async (req, res, next) => {
+    try {
+      const filters = req.query; // { q, minPrice, maxPrice, minArea, status }
+      const results = await ApartmentService.searchApartments(filters);
+
+      res.status(200).json(
+        new OK({
+          message: "Search completed successfully",
+          metadata: results,
+        }),
+      );
+    } catch (err) {
+      res.status(500).json({ status: "ERROR", message: err.message });
+    }
+  };
+
   getAll = async (req, res) => {
     try {
       const { skip = 0, limit = 50 } = req.query;

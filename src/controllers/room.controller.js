@@ -106,7 +106,7 @@ class RoomController {
     try {
       const { id } = req.params; // Chuẩn hóa lấy trực tiếp từ `id`
 
-      const { error, value } = phongUpdateSchema.validate(req.body, {
+      const { error, value } = roomUpdateSchema.validate(req.body, {
         abortEarly: false,
       });
 

@@ -30,6 +30,7 @@ const statGrid = document.getElementById("statGrid");
 const roomTableBody = document.getElementById("roomTableBody");
 const roomListNotice = document.getElementById("roomListNotice");
 const btnAddRoom = document.getElementById("btnAddRoom");
+const menuBtn = document.querySelector(".icon-button");
 
 const apiBase = (bodyDataset.apiBase || params.get("apiBase") || "").trim();
 const canHoId = (bodyDataset.canHoId || params.get("canHoId") || "").trim();
@@ -186,7 +187,7 @@ function renderRooms(rooms) {
           <td>
             <div class="actions">
               <button class="table-action" type="button" data-room-id="${room._id || ""}" data-detail-url="${escapeAttribute(detailUrl)}">Chi tiết</button>
-              <button class="table-action" type="button" data-room-id="${room._id || ""}">Sửa</button>
+              <button class="table-action btn-edit" type="button" data-room-id="${room._id}">Sửa</button>
             </div>
           </td>
         </tr>
@@ -195,8 +196,8 @@ function renderRooms(rooms) {
     .join("");
 
   document.querySelectorAll(".btn-edit").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const id = e.target.getAttribute("data-room-id");
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.roomId;
       window.location.href = `RoomForm.html?canHoId=${canHoId}&phongId=${id}`;
     });
   });
@@ -320,3 +321,9 @@ async function parseJsonResponse(response) {
     );
   }
 }
+
+menuBtn.addEventListener("click", () => {
+  if (!canHoId) return;
+
+  window.location.href = `../apartments/apartment-detail.html?id=${canHoId}`;
+});
