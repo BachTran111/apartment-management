@@ -1,160 +1,4 @@
-// Non-module version of script-api.js
-// All functions are in global scope
-
 const API_BASE_URL = "http://localhost:5000/api";
-
-function extractPayloadData(payload) {
-  if (!payload || typeof payload !== "object") {
-    return [];
-  }
-
-  // 1. Lấy lõi dữ liệu từ data hoặc metadata
-  const source = payload.data || payload.metadata;
-
-  if (!source) return [];
-
-  // 2. Nếu lõi dữ liệu đã là một Mảng (API cũ không có phân trang) -> Trả về luôn
-  if (Array.isArray(source)) {
-    return source;
-  }
-
-  // 3. Nếu lõi dữ liệu là Object phân trang (API mới) -> Tìm mảng bên trong
-  // Tương ứng với tên các model: tenants, apartments, rooms, contracts
-  const possibleKeys = ["tenants", "apartments", "rooms", "contracts", "items"];
-
-  for (const key of possibleKeys) {
-    if (source[key] && Array.isArray(source[key])) {
-      return source[key];
-    }
-  }
-
-  // Nếu là hàm getById (trả về 1 object duy nhất)
-  return source;
-}
-
-function formatCurrency(value) {
-  const amount =
-    typeof value === "object" && value !== null && "$numberDecimal" in value
-      ? Number(value.$numberDecimal)
-      : Number(value);
-
-  if (Number.isNaN(amount)) {
-    return "0";
-  }
-
-  return amount.toLocaleString("vi-VN");
-}
-
-async function getTenants(filter = {}) {
-  try {
-    const queryParams = new URLSearchParams();
-    if (filter.status) queryParams.append("trang_thai", filter.status);
-
-    const response = await fetch(`${API_BASE_URL}/tenants?${queryParams}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const payload = await response.json();
-    const tenantsData = extractPayloadData(payload);
-    return Array.isArray(tenantsData)
-      ? tenantsData
-      : tenantsData
-        ? [tenantsData]
-        : [];
-  } catch (error) {
-    console.error("Lỗi lấy danh sách người thuê:", error);
-    return [];
-  }
-}
-
-async function getTenantById(id) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/tenants/${id}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const payload = await response.json();
-    return extractPayloadData(payload) || null;
-  } catch (error) {
-    console.error("Lỗi lấy chi tiết người thuê:", error);
-    return null;
-  }
-}
-
-function mapTenantData(apiTenant) {
-  const roomData = apiTenant.phong_id || {};
-
-  // SỬA LỖI: Đồng bộ logic trạng thái giữa các DB và UI
-  let mappedStatus = "Inactive";
-  if (
-    apiTenant.trang_thai === "active" ||
-    apiTenant.trang_thai === "KHẢ DỤNG"
-  ) {
-    mappedStatus = "Active";
-  } else if (
-    apiTenant.trang_thai === "expired" ||
-    apiTenant.trang_thai === "HẾT HẠN"
-  ) {
-    mappedStatus = "Expired";
-  } else if (apiTenant.trang_thai === "expiring") {
-    mappedStatus = "Expiring soon";
-  }
-
-  return {
-    id: apiTenant._id,
-    name: apiTenant.ho_ten || "N/A",
-    idCard: apiTenant.cmnd_cccd || "N/A",
-    building:
-      roomData.building ||
-      roomData.can_ho_id?.ten ||
-      roomData.can_ho_id?.dia_chi ||
-      "N/A",
-    room: roomData.so_phong || "N/A",
-    status: mappedStatus,
-    gender: "N/A",
-    phone: apiTenant.so_dien_thoai || "N/A",
-    birthDate: apiTenant.tuoi ? `${apiTenant.tuoi} tuổi` : "N/A",
-    hometown: apiTenant.que_quan || "N/A",
-    startDate: apiTenant.ngay_bat_dau
-      ? new Date(apiTenant.ngay_bat_dau).toLocaleDateString("vi-VN")
-      : "N/A",
-    endDate: apiTenant.ngay_ket_thuc
-      ? new Date(apiTenant.ngay_ket_thuc).toLocaleDateString("vi-VN")
-      : "N/A",
-    roomPrice: formatCurrency(apiTenant.tien_phong),
-    deposit: formatCurrency(apiTenant.tien_dat_coc ?? apiTenant.tien_phong),
-    note: apiTenant.ghi_chu || "N/A",
-    residentId: apiTenant._id,
-    daysRented: calculateDaysRented(
-      apiTenant.ngay_bat_dau,
-      apiTenant.ngay_ket_thuc,
-    ),
-    emergencyContact: apiTenant.lien_he_khan_cap || "N/A",
-    age: apiTenant.tuoi || "N/A",
-  };
-}
-
-function calculateDaysRented(startDate, endDate) {
-  if (!startDate || !endDate) return 0;
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const days = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-  return Math.max(0, days);
-}
-
-function convertVNDateToISO(vnDate) {
-  if (!vnDate || vnDate === "N/A") return "";
-  const parts = vnDate.split("/");
-  if (parts.length !== 3) return "";
-  const day = parts[0].padStart(2, "0");
-  const month = parts[1].padStart(2, "0");
-  const year = parts[2];
-  return `${year}-${month}-${day}`;
-}
 
 let tenants = [];
 let apartments = [];
@@ -177,23 +21,138 @@ const formError = document.getElementById("formError");
 const apartmentSelect = document.getElementById("formApartment");
 const roomSelect = document.getElementById("formRoom");
 
+function extractPayloadData(payload) {
+  const source = payload?.metadata || payload?.data;
+  if (!source) return [];
+  if (Array.isArray(source)) return source;
+
+  const possibleKeys = ["tenants", "apartments", "rooms", "contracts", "items"];
+  for (const key of possibleKeys) {
+    if (Array.isArray(source[key])) {
+      return source[key];
+    }
+  }
+
+  return source;
+}
+
+function formatCurrency(value) {
+  const amount =
+    typeof value === "object" && value !== null && "$numberDecimal" in value
+      ? Number(value.$numberDecimal)
+      : Number(value);
+
+  if (Number.isNaN(amount)) return "0";
+  return amount.toLocaleString("vi-VN");
+}
+
+function normalizeTenantStatus(rawStatus) {
+  const value = String(rawStatus || "").toLowerCase();
+  if (value === "active") return "Active";
+  if (value === "expired") return "Expired";
+  if (value === "expiring") return "Expiring soon";
+  return "Inactive";
+}
+
+function getApartmentIdFromRoom(room) {
+  return room?.can_ho_id?._id || room?.can_ho_id || "";
+}
+
+function mapTenantData(apiTenant) {
+  const roomData = apiTenant.phong_id || {};
+  return {
+    id: apiTenant._id,
+    name: apiTenant.ho_ten || "N/A",
+    idCard: apiTenant.cmnd_cccd || "N/A",
+    building:
+      roomData.can_ho_id?.ten ||
+      roomData.can_ho_id?.dia_chi ||
+      roomData.building ||
+      "N/A",
+    room: roomData.so_phong || "N/A",
+    apartmentId: getApartmentIdFromRoom(roomData),
+    roomId: roomData._id || "",
+    status: normalizeTenantStatus(apiTenant.trang_thai),
+    phone: apiTenant.so_dien_thoai || "N/A",
+    hometown: apiTenant.que_quan || "N/A",
+    startDate: apiTenant.ngay_bat_dau
+      ? new Date(apiTenant.ngay_bat_dau).toLocaleDateString("vi-VN")
+      : "N/A",
+    endDate: apiTenant.ngay_ket_thuc
+      ? new Date(apiTenant.ngay_ket_thuc).toLocaleDateString("vi-VN")
+      : "N/A",
+    roomPrice: formatCurrency(apiTenant.tien_phong),
+    emergencyContact: apiTenant.lien_he_khan_cap || "N/A",
+    age: apiTenant.tuoi || "N/A",
+  };
+}
+
+function convertVNDateToISO(vnDate) {
+  if (!vnDate || vnDate === "N/A") return "";
+  const parts = vnDate.split("/");
+  if (parts.length !== 3) return "";
+  const [day, month, year] = parts;
+  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+}
+
+async function fetchJson(url, options = {}) {
+  const response = await fetch(url, options);
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      payload.message || `HTTP error! status: ${response.status}`,
+    );
+  }
+
+  return payload;
+}
+
 async function loadApartments() {
   try {
-    const res = await fetch(`${API_BASE_URL}/apartments`);
-    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-    const payload = await res.json();
-    const apartmentData = extractPayloadData(payload);
-    apartments = Array.isArray(apartmentData) ? apartmentData : [];
-  } catch (err) {
-    console.error("Lỗi load apartments:", err);
+    const payload = await fetchJson(`${API_BASE_URL}/apartments`);
+    const data = extractPayloadData(payload);
+    apartments = Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("Lỗi load apartments:", error);
     apartments = [];
+  }
+}
+
+async function loadRoomsByApartment(apartmentId = "") {
+  if (!apartmentId) {
+    rooms = [];
+    renderRoomOptions();
+    return [];
+  }
+
+  try {
+    const payload = await fetchJson(
+      `${API_BASE_URL}/rooms/apartment/${apartmentId}`,
+    );
+    const data = extractPayloadData(payload);
+    rooms = Array.isArray(data) ? data : [];
+    renderRoomOptions(apartmentId);
+    return rooms;
+  } catch (error) {
+    console.error("Lỗi tải danh sách phòng:", error);
+    rooms = [];
+    renderRoomOptions();
+    return [];
   }
 }
 
 async function loadTenants() {
   try {
-    const apiTenants = await getTenants();
-    tenants = apiTenants.map(mapTenantData);
+    const payload = await fetchJson(`${API_BASE_URL}/tenants`);
+    const data = extractPayloadData(payload);
+    const tenantList = Array.isArray(data)
+      ? data
+      : Array.isArray(data.tenants)
+        ? data.tenants
+        : [];
+
+    tenants = tenantList.map(mapTenantData);
     filteredTenants = [...tenants];
     currentPage = 1;
     renderTable();
@@ -211,7 +170,7 @@ function renderTable() {
 
   tableBody.innerHTML = "";
 
-  if (paginatedItems.length === 0) {
+  if (!paginatedItems.length) {
     tableBody.innerHTML = `
       <tr>
         <td colspan="6" class="px-6 py-12 text-center text-on-surface-variant">
@@ -269,6 +228,7 @@ function renderTable() {
         </div>
       </td>
     `;
+
     tableBody.appendChild(row);
   });
 
@@ -280,12 +240,12 @@ function updateStats() {
   if (totalTenantsEl) totalTenantsEl.innerText = filteredTenants.length;
   if (activeTenantsEl) {
     activeTenantsEl.innerText = filteredTenants.filter(
-      (t) => t.status === "Active",
+      (tenant) => tenant.status === "Active",
     ).length;
   }
   if (expiringTenantsEl) {
     expiringTenantsEl.innerText = filteredTenants.filter(
-      (t) => t.status === "Expiring soon",
+      (tenant) => tenant.status === "Expiring soon",
     ).length;
   }
 }
@@ -332,10 +292,10 @@ function updatePagination() {
   `;
 }
 
-function changePage(p) {
+function changePage(page) {
   const totalPages = Math.ceil(filteredTenants.length / itemsPerPage) || 1;
-  if (p < 1 || p > totalPages) return;
-  currentPage = p;
+  if (page < 1 || page > totalPages) return;
+  currentPage = page;
   renderTable();
 }
 
@@ -344,18 +304,18 @@ function applyFilters() {
   const category = categoryFilter?.value || "all";
   const status = statusFilter?.value || "all";
 
-  filteredTenants = tenants.filter((t) => {
-    const matchesStatus = status === "all" || t.status === status;
+  filteredTenants = tenants.filter((tenant) => {
+    const matchesStatus = status === "all" || tenant.status === status;
     let matchesQuery = true;
 
     if (query) {
       if (category === "all") {
-        matchesQuery = Object.values(t).some((val) =>
-          String(val).toLowerCase().includes(query),
+        matchesQuery = Object.values(tenant).some((value) =>
+          String(value).toLowerCase().includes(query),
         );
       } else {
         const key = category === "id" ? "idCard" : category;
-        matchesQuery = String(t[key] ?? "")
+        matchesQuery = String(tenant[key] ?? "")
           .toLowerCase()
           .includes(query);
       }
@@ -376,58 +336,38 @@ function resetFilters() {
 }
 
 function viewTenantDetails(id) {
-  window.location.href = `chitietnguoithue.html?id=${id}`;
+  window.location.href = `TenantDetail.html?id=${id}`;
 }
 
 function showError(message) {
   if (!formError) return;
   formError.innerText = message;
   formError.classList.remove("hidden");
-  setTimeout(() => {
-    formError.classList.add("hidden");
-  }, 3000);
-}
-
-async function loadRooms() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/rooms`);
-    if (!response.ok) throw new Error("Failed to fetch rooms");
-    const payload = await response.json();
-    const roomData = extractPayloadData(payload);
-    rooms = Array.isArray(roomData) ? roomData : [];
-  } catch (error) {
-    console.error("Lỗi tải danh sách phòng:", error);
-    rooms = [];
-  }
+  setTimeout(() => formError.classList.add("hidden"), 3000);
 }
 
 function renderApartmentOptions() {
   if (!apartmentSelect) return;
 
   apartmentSelect.innerHTML = '<option value="">-- Chọn căn hộ --</option>';
-  apartments.forEach((apt) => {
+  apartments.forEach((apartment) => {
     const option = document.createElement("option");
-    option.value = apt._id;
-    option.textContent = apt.ten || apt.dia_chi || "Căn hộ";
+    option.value = apartment._id;
+    option.textContent = apartment.ten || apartment.dia_chi || "Căn hộ";
     apartmentSelect.appendChild(option);
   });
 }
 
-function renderRoomOptions(apartmentId = "") {
+function renderRoomOptions() {
   if (!roomSelect) return;
 
-  const filteredRooms = apartmentId
-    ? rooms.filter((room) => {
-        const roomApartmentId =
-          room.apartment_id || room.can_ho_id?._id || room.can_ho_id;
-        return String(roomApartmentId || "") === String(apartmentId);
-      })
-    : rooms;
+  if (!rooms.length) {
+    roomSelect.innerHTML = '<option value="">Chưa có phòng</option>';
+    return;
+  }
 
-  roomSelect.innerHTML = filteredRooms.length;
-  ('<option value="">-- Chọn phòng --</option>');
-
-  filteredRooms.forEach((room) => {
+  roomSelect.innerHTML = '<option value="">-- Chọn phòng --</option>';
+  rooms.forEach((room) => {
     const option = document.createElement("option");
     option.value = room._id;
     option.textContent = `Phòng ${room.so_phong || "N/A"}`;
@@ -435,158 +375,131 @@ function renderRoomOptions(apartmentId = "") {
   });
 }
 
-function openModal(editId = null) {
+async function openModal(editId = null) {
   if (!tenantForm) return;
 
   tenantForm.reset();
   document.getElementById("editId").value = "";
   document.getElementById("modalTitle").innerText = "Thêm Người Thuê Mới";
-  if (formError) formError.classList.add("hidden");
+  formError?.classList.add("hidden");
 
   renderApartmentOptions();
+  rooms = [];
   renderRoomOptions();
 
   if (editId) {
-    const tenant = tenants.find((t) => t.id === editId);
+    const tenant = tenants.find((item) => item.id === editId);
     if (tenant) {
       const setFieldValue = (id, value) => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.value = value;
-        }
+        const element = document.getElementById(id);
+        if (element) element.value = value;
       };
 
       document.getElementById("editId").value = tenant.id;
       setFieldValue("formName", tenant.name);
-      setFieldValue("formPhone", tenant.phone || "");
-      setFieldValue("formIdCard", tenant.idCard);
+      setFieldValue("formPhone", tenant.phone === "N/A" ? "" : tenant.phone);
+      setFieldValue("formIdCard", tenant.idCard === "N/A" ? "" : tenant.idCard);
       setFieldValue("formAge", tenant.age === "N/A" ? "" : tenant.age);
-      setFieldValue("formHometown", tenant.hometown);
+      setFieldValue(
+        "formHometown",
+        tenant.hometown === "N/A" ? "" : tenant.hometown,
+      );
       setFieldValue("formStartDate", convertVNDateToISO(tenant.startDate));
       setFieldValue("formEndDate", convertVNDateToISO(tenant.endDate));
-      setFieldValue("formRentPrice", tenant.roomPrice.replace(/\./g, ""));
-      setFieldValue("formEmergency", tenant.emergencyContact || "");
+      setFieldValue(
+        "formRentPrice",
+        tenant.roomPrice ? tenant.roomPrice.replace(/\./g, "") : "",
+      );
+      setFieldValue(
+        "formEmergency",
+        tenant.emergencyContact === "N/A" ? "" : tenant.emergencyContact,
+      );
       setFieldValue(
         "formStatus",
         tenant.status === "Active" ? "active" : "inactive",
       );
 
-      const selectedRoom = rooms.find((room) => room.so_phong === tenant.room);
-      if (selectedRoom) {
-        const apartmentId =
-          selectedRoom.apartment_id ||
-          selectedRoom.can_ho_id?._id ||
-          selectedRoom.can_ho_id ||
-          "";
-
-        if (apartmentId && apartmentSelect) {
-          apartmentSelect.value = apartmentId;
-          renderRoomOptions(apartmentId);
-        }
-
-        setFieldValue("formRoom", selectedRoom._id);
+      if (tenant.apartmentId && apartmentSelect) {
+        apartmentSelect.value = tenant.apartmentId;
+        await loadRoomsByApartment(tenant.apartmentId);
+        setFieldValue("formRoom", tenant.roomId);
       }
 
       document.getElementById("modalTitle").innerText = "Chỉnh Sửa Thông Tin";
     }
   }
 
-  if (modalOverlay) modalOverlay.classList.remove("hidden");
-  if (modalContainer) modalContainer.classList.remove("hidden");
+  modalOverlay?.classList.remove("hidden");
+  modalContainer?.classList.remove("hidden");
 
   setTimeout(() => {
-    if (modalOverlay) modalOverlay.classList.remove("opacity-0");
-    if (modalContainer) {
-      modalContainer.classList.remove("opacity-0", "scale-95");
-      modalContainer.classList.add("scale-100");
-    }
+    modalOverlay?.classList.remove("opacity-0");
+    modalContainer?.classList.remove("opacity-0", "scale-95");
+    modalContainer?.classList.add("scale-100");
   }, 10);
 }
 
 function closeModal() {
-  if (modalOverlay) modalOverlay.classList.add("opacity-0");
-  if (modalContainer) {
-    modalContainer.classList.add("opacity-0", "scale-95");
-    modalContainer.classList.remove("scale-100");
-  }
+  modalOverlay?.classList.add("opacity-0");
+  modalContainer?.classList.add("opacity-0", "scale-95");
+  modalContainer?.classList.remove("scale-100");
 
   setTimeout(() => {
-    if (modalOverlay) modalOverlay.classList.add("hidden");
-    if (modalContainer) modalContainer.classList.add("hidden");
-    if (tenantForm) tenantForm.reset();
+    modalOverlay?.classList.add("hidden");
+    modalContainer?.classList.add("hidden");
+    tenantForm?.reset();
   }, 300);
 }
 
-// SỬA LỖI: Gắn logic gọi API thực tế vào sự kiện submit của Form thay vì block lại
-if (tenantForm) {
-  tenantForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+async function handleTenantSubmit(event) {
+  event.preventDefault();
 
-    const editId = document.getElementById("editId").value;
-
-    // Thu thập dữ liệu
-    const payload = {
-      ho_ten: document.getElementById("formName").value,
-      so_dien_thoai: document.getElementById("formPhone").value,
-      cmnd_cccd: document.getElementById("formIdCard").value,
-      tuoi: Number(document.getElementById("formAge").value) || null,
-      que_quan: document.getElementById("formHometown").value,
-      ngay_bat_dau: document.getElementById("formStartDate").value || null,
-      ngay_ket_thuc: document.getElementById("formEndDate").value || null,
-      tien_phong: Number(document.getElementById("formRentPrice").value) || 0,
-      lien_he_khan_cap: document.getElementById("formEmergency").value,
-      trang_thai: document.getElementById("formStatus").value,
-      phong_id: document.getElementById("formRoom").value || null,
-    };
-
-    try {
-      const method = editId ? "PUT" : "POST";
-      const url = editId
-        ? `${API_BASE_URL}/tenants/${editId}`
-        : `${API_BASE_URL}/tenants`;
-
-      const response = await fetch(url, {
-        method: method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Có lỗi xảy ra khi lưu dữ liệu");
-      }
-
-      closeModal();
-      await loadTenants(); // Tải lại danh sách sau khi thêm/sửa thành công
-    } catch (error) {
-      showError(error.message);
-    }
-  });
-}
-
-// SỬA LỖI: Bổ sung tham số id và logic gọi API DELETE
-async function deleteTenantHandler(id) {
-  if (!id) return;
-  if (
-    !confirm(
-      "Bạn có chắc chắn muốn xóa người thuê này? Hành động này không thể hoàn tác.",
-    )
-  )
-    return;
+  const editId = document.getElementById("editId").value;
+  const payload = {
+    ho_ten: document.getElementById("formName").value.trim(),
+    so_dien_thoai: document.getElementById("formPhone").value.trim(),
+    cmnd_cccd: document.getElementById("formIdCard").value.trim(),
+    tuoi: Number(document.getElementById("formAge").value) || undefined,
+    que_quan: document.getElementById("formHometown").value.trim(),
+    ngay_bat_dau: document.getElementById("formStartDate").value || undefined,
+    ngay_ket_thuc: document.getElementById("formEndDate").value || undefined,
+    tien_phong: Number(document.getElementById("formRentPrice").value) || 0,
+    lien_he_khan_cap: document.getElementById("formEmergency").value.trim(),
+    trang_thai: document.getElementById("formStatus").value,
+    phong_id: document.getElementById("formRoom").value || undefined,
+  };
 
   try {
-    const response = await fetch(`${API_BASE_URL}/tenants/${id}`, {
+    await fetchJson(
+      editId ? `${API_BASE_URL}/tenants/${editId}` : `${API_BASE_URL}/tenants`,
+      {
+        method: editId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      },
+    );
+
+    closeModal();
+    await loadTenants();
+  } catch (error) {
+    showError(error.message);
+  }
+}
+
+async function deleteTenantHandler(id) {
+  if (!id) return;
+  const confirmed = window.confirm(
+    "Bạn có chắc chắn muốn xóa người thuê này không?",
+  );
+  if (!confirmed) return;
+
+  try {
+    await fetchJson(`${API_BASE_URL}/tenants/${id}`, {
       method: "DELETE",
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Lỗi khi xóa người thuê");
-    }
-
-    await loadTenants(); // Reload lại bảng sau khi xóa
+    await loadTenants();
   } catch (error) {
-    alert(error.message);
+    showError(error.message);
   }
 }
 
@@ -594,12 +507,13 @@ function editTenant(id) {
   openModal(id);
 }
 
+if (tenantForm) tenantForm.addEventListener("submit", handleTenantSubmit);
 if (searchInput) searchInput.addEventListener("input", applyFilters);
 if (categoryFilter) categoryFilter.addEventListener("change", applyFilters);
 if (statusFilter) statusFilter.addEventListener("change", applyFilters);
 if (apartmentSelect) {
-  apartmentSelect.addEventListener("change", (event) => {
-    renderRoomOptions(event.target.value);
+  apartmentSelect.addEventListener("change", async (event) => {
+    await loadRoomsByApartment(event.target.value);
   });
 }
 
@@ -611,4 +525,4 @@ window.deleteTenantHandler = deleteTenantHandler;
 window.changePage = changePage;
 window.resetFilters = resetFilters;
 
-Promise.all([loadApartments(), loadRooms()]).finally(loadTenants);
+Promise.all([loadApartments()]).finally(loadTenants);

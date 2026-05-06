@@ -2,11 +2,11 @@
   "name": "room-management-api",
   "version": "1.0.0",
   "description": "Minimal API for Room Management",
-  "main": "app.js",
+  "main": "src/app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -29,14 +29,20 @@
           <a href="#" class="menu-item active">
             <i class="fa-solid fa-chart-pie"></i> Dashboard
           </a>
+          <a href="../bills/BillList.html" class="menu-item">
+            <i class="fa-solid fa-money-bill"></i> Hóa đơn
+          </a>
           <a href="../apartments/apartment-list.html" class="menu-item">
             <i class="fa-solid fa-building"></i> Căn hộ
           </a>
           <a href="../tenants/TenantList.html" class="menu-item">
-            <i class="fa-solid fa-door-open"></i> Người thuê
+            <i class="fa-solid fa-users"></i> Người thuê
           </a>
           <a href="../contracts/ContractList.html" class="menu-item">
             <i class="fa-solid fa-file-contract"></i> Hợp đồng
+          </a>
+          <a href="../features/FeatureList.html" class="menu-item">
+            <i class="fa-solid fa-couch"></i> Nội thất
           </a>
         </nav>
       </aside>
@@ -159,9 +165,7 @@
                   <td>Tiền phòng tháng 4</td>
                   <td>22/04/2026</td>
                   <td>4.000.000đ</td>
-                  <td>
-                    <span class="badge badge-success">Đã thanh toán</span>
-                  </td>
+                  <td><span class="badge badge-success">Đã thanh toán</span></td>
                 </tr>
                 <tr>
                   <td><strong>Phạm Thị E</strong></td>
@@ -169,9 +173,7 @@
                   <td>Điện nước</td>
                   <td>21/04/2026</td>
                   <td>650.000đ</td>
-                  <td>
-                    <span class="badge badge-success">Đã thanh toán</span>
-                  </td>
+                  <td><span class="badge badge-success">Đã thanh toán</span></td>
                 </tr>
                 <tr>
                   <td><strong>Vũ Văn F</strong></td>
@@ -193,14 +195,7 @@
       new Chart(ctx, {
         type: "line",
         data: {
-          labels: [
-            "Tháng 11",
-            "Tháng 12",
-            "Tháng 1",
-            "Tháng 2",
-            "Tháng 3",
-            "Tháng 4",
-          ],
+          labels: ["Tháng 11", "Tháng 12", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4"],
           datasets: [
             {
               label: "Doanh thu (VNĐ)",

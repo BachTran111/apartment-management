@@ -54,6 +54,23 @@
         font-size: 14px;
       }
 
+      .nav-left a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--text-dark);
+        text-decoration: none;
+        font-size: 13px;
+      }
+
+      .nav-left a:hover {
+        background: #f2f2f2;
+      }
+
       .nav-right {
         display: flex;
         gap: 20px;
@@ -407,6 +424,7 @@
   <body>
     <nav class="top-nav">
       <div class="nav-left">
+        <a href="../dashboard/Dashboard.html">← Về dashboard</a>
         <i class="fa-solid fa-bars"></i> QUẢN LÝ CĂN HỘ
       </div>
       <div class="nav-right">
