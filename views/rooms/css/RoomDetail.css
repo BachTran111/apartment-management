@@ -64,6 +64,12 @@ input {
   gap: 12px;
 }
 
+.title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .title-wrap.small-gap {
   gap: 10px;
 }
@@ -118,6 +124,25 @@ input {
 .primary-button:hover {
   background: var(--primary-strong);
   border-color: var(--primary-strong);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  margin-bottom: 12px;
+  padding: 0 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--text-main);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.back-link:hover {
+  background: #f3f4f6;
 }
 
 .summary-grid {

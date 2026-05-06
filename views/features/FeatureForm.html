@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biểu mẫu nội thất</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="page-header">
+        <div class="header-copy">
+          <a class="back-link" href="../dashboard/Dashboard.html">← Về dashboard</a>
+          <h1 class="page-title" id="formTitle">Thêm nội thất</h1>
+          <p class="page-subtitle">Quản lý thiết bị và đồ đạc theo từng phòng</p>
+        </div>
+      </section>
+      <section class="card">
+        <form id="featureForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="apartmentSelect">Căn hộ</label>
+              <select id="apartmentSelect" class="select"><option value="">Chọn căn hộ</option></select>
+              <div class="field-error" id="apartmentError"></div>
+            </div>
+            <div class="field">
+              <label for="roomSelect">Phòng</label>
+              <select id="roomSelect" class="select"><option value="">Chọn phòng</option></select>
+              <div class="field-error" id="roomError"></div>
+            </div>
+            <div class="field">
+              <label for="featureName">Tên nội thất</label>
+              <input id="featureName" class="input" type="text" placeholder="Ví dụ: Máy lạnh, Tủ quần áo..." />
+              <div class="field-error" id="nameError"></div>
+            </div>
+            <div class="field">
+              <label for="featureStatus">Tình trạng</label>
+              <select id="featureStatus" class="select">
+                <option value="Mới">Mới</option>
+                <option value="Đang Sử Dụng">Đang sử dụng</option>
+                <option value="Hư Hỏng">Hư hỏng</option>
+                <option value="Cần Thay Thế">Cần thay thế</option>
+              </select>
+              <div class="field-error" id="statusError"></div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn" onclick="window.location.href='FeatureList.html'">Quay lại</button>
+            <button type="submit" class="btn btn-primary">Lưu nội thất</button>
+          </div>
+          <div class="form-message" id="formMessage"></div>
+        </form>
+      </section>
+    </main>
+    <script src="./js/feature-form.js"></script>
+  </body>
+</html>

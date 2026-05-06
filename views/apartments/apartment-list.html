@@ -65,6 +65,12 @@
         display: inline-block;
       }
 
+      .btn-back {
+        background: #fff;
+        color: var(--primary-color);
+        border: 1px solid var(--border-color);
+      }
+
       .search-bar {
         display: grid;
         grid-template-columns: 2fr 1fr 1fr 1fr auto;
@@ -264,6 +270,7 @@
     <div class="container">
       <div id="error-message" class="error-container"></div>
       <div class="header-top">
+        <a href="../dashboard/Dashboard.html" class="btn-add btn-back">← Về dashboard</a>
         <h1>Quản lý căn hộ</h1>
         <a href="ApartmentForm.html" class="btn-add">+ Thêm căn hộ mới</a>
       </div>
