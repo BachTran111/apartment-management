@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quản lý hóa đơn | Admin Dashboard</title>
     <link rel="stylesheet" href="./css/invoice-mgt.css" />
-
-    <!-- Preload fonts optionally -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
@@ -14,38 +12,30 @@
   </head>
   <body>
     <div class="container">
-      <!-- Header -->
       <div class="header">
         <h1>Quản lý hóa đơn</h1>
         <button
           class="btn btn-primary"
-          onclick="console.log('Tạo hóa đơn clicked')"
+          onclick="window.location.href = 'BillForm.html'"
         >
           <span style="font-size: 1.2rem">+</span> Tạo hóa đơn
         </button>
       </div>
 
-      <!-- Filter Card -->
       <div class="card">
         <div class="filter-section">
           <input
             type="text"
             id="searchInput"
             class="form-control"
-            placeholder="Tìm theo tên hóa đơn..."
+            placeholder="Tìm theo người thuê, phòng, ghi chú..."
           />
-
-          <select id="typeFilter" class="form-control">
-            <option value="">Tất cả loại</option>
-            <option value="Điện">Điện</option>
-            <option value="Nước">Nước</option>
-            <option value="Internet">Internet</option>
-          </select>
 
           <select id="statusFilter" class="form-control">
             <option value="">Tất cả trạng thái</option>
-            <option value="Đã thanh toán">Đã thanh toán</option>
-            <option value="Chưa thanh toán">Chưa thanh toán</option>
+            <option value="ĐÃ THANH TOÁN">Đã thanh toán</option>
+            <option value="CHƯA THANH TOÁN">Chưa thanh toán</option>
+            <option value="QUÁ HẠN">Quá hạn</option>
           </select>
 
           <button
@@ -58,38 +48,25 @@
         </div>
       </div>
 
-      <!-- Table Card -->
       <div class="card">
         <div class="table-responsive">
           <table id="invoiceTable">
             <thead>
               <tr>
-                <th>Tên hóa đơn</th>
-                <th>Loại</th>
+                <th>Người thuê / Phòng</th>
                 <th>Số tiền</th>
                 <th>Ngày tạo</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
               </tr>
             </thead>
-            <tbody id="invoiceBody">
-              <!-- Data will be populated here -->
-            </tbody>
+            <tbody id="invoiceBody"></tbody>
           </table>
         </div>
 
-        <!-- Pagination Container -->
         <div class="pagination-container">
-          <div id="paginationInfo" class="pagination-info">
-            Showing 1 to 5 of 20
-          </div>
-          <div id="paginationButtons" class="pagination">
-            <!-- Pagination buttons -->
-            <a href="#" class="page-link active">1</a>
-            <a href="#" class="page-link">2</a>
-            <a href="#" class="page-link">3</a>
-            <a href="#" class="page-link">Next</a>
-          </div>
+          <div id="paginationInfo" class="pagination-info">Đang tải...</div>
+          <div id="paginationButtons" class="pagination"></div>
         </div>
       </div>
     </div>

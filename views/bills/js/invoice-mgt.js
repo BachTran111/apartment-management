@@ -1,220 +1,206 @@
-// Mock data array
-const mockInvoices = [
-  {
-    id: 1,
-    name: "Hóa đơn điện tháng 03/2026",
-    type: "Điện",
-    amount: 1560000,
-    date: "2026-03-22",
-    status: "Đã thanh toán",
-  },
-  {
-    id: 2,
-    name: "Hóa đơn nước tháng 03/2026",
-    type: "Nước",
-    amount: 245000,
-    date: "2026-03-22",
-    status: "Đã thanh toán",
-  },
-  {
-    id: 3,
-    name: "Internet VNPT Gói Home",
-    type: "Internet",
-    amount: 350000,
-    date: "2026-04-01",
-    status: "Chưa thanh toán",
-  },
-  {
-    id: 4,
-    name: "Hóa đơn điện tháng 04/2026",
-    type: "Điện",
-    amount: 1845000,
-    date: "2026-04-20",
-    status: "Chưa thanh toán",
-  },
-  {
-    id: 5,
-    name: "Phí dịch vụ chung cư 2026",
-    type: "Dịch vụ",
-    amount: 2000000,
-    date: "2026-04-15",
-    status: "Chưa thanh toán",
-  },
-  {
-    id: 6,
-    name: "Tiền WiFi 6 tháng đầu năm",
-    type: "Internet",
-    amount: 2100000,
-    date: "2026-01-10",
-    status: "Đã thanh toán",
-  },
-  {
-    id: 7,
-    name: "Phiếu thu nước sinh hoạt",
-    type: "Nước",
-    amount: 115000,
-    date: "2026-04-18",
-    status: "Chưa thanh toán",
-  },
-  {
-    id: 8,
-    name: "Phí quản lý tòa nhà",
-    type: "Dịch vụ",
-    amount: 800000,
-    date: "2026-02-15",
-    status: "Đã thanh toán",
-  },
-  {
-    id: 9,
-    name: "Internet FPT - Tầng 5",
-    type: "Internet",
-    amount: 450000,
-    date: "2026-03-10",
-    status: "Đã thanh toán",
-  },
-  {
-    id: 10,
-    name: "Định kỳ tiền điện - P.502",
-    type: "Điện",
-    amount: 1240000,
-    date: "2026-04-12",
-    status: "Chưa thanh toán",
-  },
-];
+const API_BASE_URL = "http://localhost:5000/api";
+const ITEMS_PER_PAGE = 5;
 
-let itemsPerPage = 5;
+let allBills = [];
+let filteredBills = [];
 let currentPage = 1;
-let filteredInvoices = [...mockInvoices];
 
-// DOM Elements
 const invoiceBody = document.getElementById("invoiceBody");
 const searchInput = document.getElementById("searchInput");
-const typeFilter = document.getElementById("typeFilter");
 const statusFilter = document.getElementById("statusFilter");
 const paginationInfo = document.getElementById("paginationInfo");
 const paginationButtons = document.getElementById("paginationButtons");
 
-// Formatter for currency
 const formatter = new Intl.NumberFormat("vi-VN", {
   style: "currency",
   currency: "VND",
 });
 
-// Main function to display invoices
-function displayInvoices() {
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedInvoices = filteredInvoices.slice(startIndex, endIndex);
+function getMetadata(payload) {
+  return payload?.metadata || payload?.data || {};
+}
+
+function normalizeStatus(status) {
+  const normalized = String(status || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase();
+
+  if (normalized.includes("DA THANH TOAN")) return "ĐÃ THANH TOÁN";
+  if (normalized.includes("QUA HAN")) return "QUÁ HẠN";
+  return "CHƯA THANH TOÁN";
+}
+
+function searchable(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function mapBill(bill) {
+  const contract = bill.hop_dong_id || {};
+  const tenant = contract.nguoi_thue_id || {};
+  const room = contract.phong_id || {};
+
+  return {
+    id: bill._id,
+    tenantName: tenant.ho_ten || "Chưa rõ người thuê",
+    roomNumber: room.so_phong || "N/A",
+    amount: Number(bill.so_tien || 0),
+    createdDate: bill.ngay_lap
+      ? new Date(bill.ngay_lap).toLocaleDateString("vi-VN")
+      : "N/A",
+    status: normalizeStatus(bill.trang_thai),
+    note: bill.ghi_chu || "",
+  };
+}
+
+async function loadBills() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/bills?limit=100`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const payload = await response.json();
+    const result = getMetadata(payload);
+    const bills = Array.isArray(result.bills) ? result.bills : [];
+
+    allBills = bills.map(mapBill);
+    filteredBills = [...allBills];
+    currentPage = 1;
+    renderBills();
+  } catch (error) {
+    console.error("Lỗi tải danh sách hóa đơn:", error);
+    invoiceBody.innerHTML =
+      '<tr><td colspan="5" style="text-align:center;">Không thể tải dữ liệu hóa đơn</td></tr>';
+    paginationInfo.textContent = "Không có dữ liệu";
+    paginationButtons.innerHTML = "";
+  }
+}
+
+function renderBills() {
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const pageItems = filteredBills.slice(startIndex, endIndex);
 
   invoiceBody.innerHTML = "";
 
-  if (paginatedInvoices.length === 0) {
+  if (!pageItems.length) {
     invoiceBody.innerHTML =
-      '<tr><td colspan="6" style="text-align:center;">Không có dữ liệu phù hợp</td></tr>';
+      '<tr><td colspan="5" style="text-align:center;">Không có dữ liệu phù hợp</td></tr>';
     updatePagination();
     return;
   }
 
-  paginatedInvoices.forEach((inv) => {
-    const row = `
-            <tr>
-                <td style="font-weight: 600;">${inv.name}</td>
-                <td>${inv.type}</td>
-                <td>${formatter.format(inv.amount)}</td>
-                <td>${inv.date}</td>
-                <td>
-                    <span class="badge ${inv.status === "Đã thanh toán" ? "badge-success" : "badge-danger"}">
-                        ${inv.status}
-                    </span>
-                </td>
-                <td class="actions">
-                    <button class="action-btn" title="Xem" onclick="viewDetail(${inv.id})">👁️</button>
-                    <button class="action-btn" title="Sửa" onclick="console.log('Sửa invoice ${inv.id}')">✏️</button>
-                    <button class="action-btn" title="Xóa" onclick="console.log('Xóa invoice ${inv.id}')">🗑️</button>
-                </td>
-            </tr>
-        `;
-    invoiceBody.insertAdjacentHTML("beforeend", row);
+  pageItems.forEach((bill) => {
+    const badgeClass =
+      bill.status === "ĐÃ THANH TOÁN" ? "badge-success" : "badge-danger";
+
+    invoiceBody.insertAdjacentHTML(
+      "beforeend",
+      `
+        <tr>
+          <td>
+            <div style="font-weight:600;">${bill.tenantName}</div>
+            <div style="font-size:12px;color:#858796;">Phòng ${bill.roomNumber}</div>
+          </td>
+          <td>${formatter.format(bill.amount)}</td>
+          <td>${bill.createdDate}</td>
+          <td><span class="badge ${badgeClass}">${bill.status}</span></td>
+          <td class="actions">
+            <button class="action-btn" title="Xem" onclick="viewDetail('${bill.id}')">👁️</button>
+            <button class="action-btn" title="Sửa" onclick="editBill('${bill.id}')">✏️</button>
+            <button class="action-btn" title="Xóa" onclick="deleteBill('${bill.id}')">🗑️</button>
+          </td>
+        </tr>
+      `,
+    );
   });
 
   updatePagination();
 }
 
-// Navigation function
-function viewDetail(id) {
-  window.location.href = `invoice-detail.html?id=${id}`;
-}
-
-// Update pagination UI
 function updatePagination() {
-  const totalItems = filteredInvoices.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startNum = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
-  const endNum = Math.min(currentPage * itemsPerPage, totalItems);
+  const totalItems = filteredBills.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+  const startNum = totalItems === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endNum = Math.min(currentPage * ITEMS_PER_PAGE, totalItems);
 
-  paginationInfo.textContent = `Showing ${startNum} to ${endNum} of ${totalItems}`;
-
+  paginationInfo.textContent = `Hiển thị ${startNum} đến ${endNum} của ${totalItems}`;
   paginationButtons.innerHTML = "";
 
-  // Page digits
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement("a");
     btn.href = "#";
     btn.className = `page-link ${currentPage === i ? "active" : ""}`;
     btn.textContent = i;
-    btn.onclick = (e) => {
-      e.preventDefault();
+    btn.onclick = (event) => {
+      event.preventDefault();
       currentPage = i;
-      displayInvoices();
+      renderBills();
     };
     paginationButtons.appendChild(btn);
   }
-
-  // Next button
-  if (totalPages > 1 && currentPage < totalPages) {
-    const nextBtn = document.createElement("a");
-    nextBtn.href = "#";
-    nextBtn.className = "page-link";
-    nextBtn.textContent = "Next";
-    nextBtn.onclick = (e) => {
-      e.preventDefault();
-      currentPage++;
-      displayInvoices();
-    };
-    paginationButtons.appendChild(nextBtn);
-  }
 }
 
-// Filter Logic
 function applyFilters() {
-  const searchTerm = searchInput.value.toLowerCase();
-  const typeValue = typeFilter.value;
-  const statusValue = statusFilter.value;
+  const searchTerm = searchable(searchInput.value);
+  const selectedStatus = statusFilter.value;
 
-  filteredInvoices = mockInvoices.filter((inv) => {
-    const matchesSearch = inv.name.toLowerCase().includes(searchTerm);
-    const matchesType = typeValue === "" || inv.type === typeValue;
-    const matchesStatus = statusValue === "" || inv.status === statusValue;
-    return matchesSearch && matchesType && matchesStatus;
+  filteredBills = allBills.filter((bill) => {
+    const matchesSearch =
+      !searchTerm ||
+      searchable(`${bill.tenantName} ${bill.roomNumber} ${bill.note}`).includes(
+        searchTerm,
+      );
+    const matchesStatus = !selectedStatus || bill.status === selectedStatus;
+    return matchesSearch && matchesStatus;
   });
 
   currentPage = 1;
-  displayInvoices();
+  renderBills();
 }
 
 function clearFilters() {
   searchInput.value = "";
-  typeFilter.value = "";
   statusFilter.value = "";
   applyFilters();
 }
 
-// Event Listeners
+function viewDetail(id) {
+  window.location.href = `BillDetail.html?id=${id}`;
+}
+
+function editBill(id) {
+  window.location.href = `BillForm.html?id=${id}`;
+}
+
+async function deleteBill(id) {
+  if (!window.confirm("Bạn có chắc muốn xóa hóa đơn này?")) return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/bills/${id}`, {
+      method: "DELETE",
+    });
+    const payload = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(payload.message || "Không thể xóa hóa đơn");
+    }
+
+    await loadBills();
+  } catch (error) {
+    console.error("Lỗi xóa hóa đơn:", error);
+    alert(error.message);
+  }
+}
+
 searchInput.addEventListener("input", applyFilters);
-typeFilter.addEventListener("change", applyFilters);
 statusFilter.addEventListener("change", applyFilters);
 
-// Initial Load
-document.addEventListener("DOMContentLoaded", () => {
-  displayInvoices();
-});
+window.clearFilters = clearFilters;
+window.viewDetail = viewDetail;
+window.editBill = editBill;
+window.deleteBill = deleteBill;
+
+document.addEventListener("DOMContentLoaded", loadBills);

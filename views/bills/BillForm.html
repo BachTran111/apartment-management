@@ -17,41 +17,46 @@
           <p class="eyebrow">Admin / Hóa đơn</p>
           <h1 id="page-title">Tạo mới hóa đơn</h1>
           <p class="page-description">
-            Tạo một hóa đơn mới với thông tin cơ bản. Biểu mẫu được tối ưu cho
-            thao tác nhanh và dễ kiểm soát.
+            Tạo hoặc cập nhật hóa đơn theo hợp đồng đã có trong hệ thống.
           </p>
         </header>
 
         <form id="create-invoice-form" class="invoice-form" novalidate>
           <div class="field-group">
-            <label class="field-label" for="invoice-name">Tên hóa đơn</label>
+            <label class="field-label" for="contract-id">Hợp đồng</label>
+            <select id="contract-id" name="contractId" class="field-control">
+              <option value="">Chọn hợp đồng</option>
+            </select>
+            <p class="field-error" id="contract-id-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="invoice-amount">Số tiền</label>
             <input
-              id="invoice-name"
-              name="invoiceName"
-              type="text"
+              id="invoice-amount"
+              name="invoiceAmount"
+              type="number"
               class="field-control"
-              placeholder="Nhập tên hóa đơn..."
-              autocomplete="off"
+              placeholder="Nhập số tiền hóa đơn..."
+              min="0"
             />
             <p
               class="field-error"
-              id="invoice-name-error"
+              id="invoice-amount-error"
               aria-live="polite"
             ></p>
           </div>
 
           <div class="field-group">
-            <label class="field-label" for="invoice-type">Loại hóa đơn</label>
-            <select id="invoice-type" name="invoiceType" class="field-control">
-              <option value="">Chọn loại hóa đơn muốn tạo</option>
-              <option value="tien-phong">Hóa đơn tiền phòng</option>
-              <option value="dien-nuoc">Hóa đơn điện nước</option>
-              <option value="dich-vu">Hóa đơn dịch vụ</option>
-              <option value="khac">Hóa đơn khác</option>
+            <label class="field-label" for="invoice-status">Trạng thái</label>
+            <select id="invoice-status" name="invoiceStatus" class="field-control">
+              <option value="CHƯA THANH TOÁN">Chưa thanh toán</option>
+              <option value="ĐÃ THANH TOÁN">Đã thanh toán</option>
+              <option value="QUÁ HẠN">Quá hạn</option>
             </select>
             <p
               class="field-error"
-              id="invoice-type-error"
+              id="invoice-status-error"
               aria-live="polite"
             ></p>
           </div>
@@ -71,6 +76,17 @@
             ></p>
           </div>
 
+          <div class="field-group">
+            <label class="field-label" for="invoice-note">Ghi chú</label>
+            <textarea
+              id="invoice-note"
+              name="invoiceNote"
+              class="field-control"
+              placeholder="Nhập ghi chú nếu có..."
+              style="min-height: 120px; padding-top: 16px"
+            ></textarea>
+          </div>
+
           <div class="form-actions">
             <button
               type="button"
@@ -80,7 +96,7 @@
               Quay lại
             </button>
             <button type="submit" class="button button-primary">
-              Tạo hóa đơn
+              Lưu hóa đơn
             </button>
           </div>
 
@@ -89,6 +105,6 @@
       </section>
     </main>
 
-    <script src=".js/scripts.js"></script>
+    <script src="./js/script.js"></script>
   </body>
 </html>
