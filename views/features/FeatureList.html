@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý nội thất</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="page-header">
+        <div class="header-copy">
+          <a class="back-link" href="../dashboard/Dashboard.html">← Về dashboard</a>
+          <h1 class="page-title">Quản lý nội thất</h1>
+          <p class="page-subtitle">Đăng ký, chỉnh sửa và xóa danh sách đồ đạc, thiết bị cho từng phòng</p>
+        </div>
+        <button class="btn btn-primary" onclick="window.location.href='FeatureForm.html'">+ Thêm nội thất</button>
+      </section>
+      <section class="summary-grid" id="summaryGrid"></section>
+      <section class="toolbar-card">
+        <div class="toolbar-grid">
+          <div class="field">
+            <label for="searchInput">Tìm kiếm</label>
+            <input id="searchInput" class="input" type="text" placeholder="Tên nội thất, số phòng..." />
+          </div>
+          <div class="field">
+            <label for="apartmentFilter">Căn hộ</label>
+            <select id="apartmentFilter" class="select"><option value="">Tất cả căn hộ</option></select>
+          </div>
+          <div class="field">
+            <label for="statusFilter">Tình trạng</label>
+            <select id="statusFilter" class="select">
+              <option value="">Tất cả tình trạng</option>
+              <option value="Mới">Mới</option>
+              <option value="Đang Sử Dụng">Đang sử dụng</option>
+              <option value="Hư Hỏng">Hư hỏng</option>
+              <option value="Cần Thay Thế">Cần thay thế</option>
+            </select>
+          </div>
+          <button class="btn" onclick="resetFilters()">Xóa lọc</button>
+        </div>
+      </section>
+      <section class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Tên nội thất</th>
+              <th>Phòng</th>
+              <th>Căn hộ</th>
+              <th>Tình trạng</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="featureTableBody"></tbody>
+        </table>
+        <div class="pagination">
+          <div id="paginationInfo">Đang tải...</div>
+          <div class="pagination-buttons" id="paginationButtons"></div>
+        </div>
+      </section>
+    </main>
+    <script src="./js/feature-list.js"></script>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tạo mới hóa đơn</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f28c28'/%3E%3Cpath d='M18 16h28v32H18z' fill='white' opacity='.92'/%3E%3Cpath d='M24 26h16M24 33h16M24 40h10' stroke='%23f28c28' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="invoice-shell" aria-labelledby="page-title">
+        <header class="page-header">
+          <a
+            href="../dashboard/Dashboard.html"
+            class="button button-secondary"
+            style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; margin-bottom: 16px"
+          >
+            ← Về dashboard
+          </a>
+          <p class="eyebrow">Admin / Hóa đơn</p>
+          <h1 id="page-title">Tạo mới hóa đơn</h1>
+          <p class="page-description">
+            Tạo hoặc cập nhật hóa đơn theo hợp đồng đã có trong hệ thống.
+          </p>
+        </header>
+
+        <form id="create-invoice-form" class="invoice-form" novalidate>
+          <div class="field-group">
+            <label class="field-label" for="contract-id">Hợp đồng</label>
+            <select id="contract-id" name="contractId" class="field-control">
+              <option value="">Chọn hợp đồng</option>
+            </select>
+            <p class="field-error" id="contract-id-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="invoice-amount">Số tiền</label>
+            <input
+              id="invoice-amount"
+              name="invoiceAmount"
+              type="number"
+              class="field-control"
+              placeholder="Nhập số tiền hóa đơn..."
+              min="0"
+            />
+            <p
+              class="field-error"
+              id="invoice-amount-error"
+              aria-live="polite"
+            ></p>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="invoice-status">Trạng thái</label>
+            <select id="invoice-status" name="invoiceStatus" class="field-control">
+              <option value="CHƯA THANH TOÁN">Chưa thanh toán</option>
+              <option value="ĐÃ THANH TOÁN">Đã thanh toán</option>
+              <option value="QUÁ HẠN">Quá hạn</option>
+            </select>
+            <p
+              class="field-error"
+              id="invoice-status-error"
+              aria-live="polite"
+            ></p>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="created-date">Ngày tạo</label>
+            <input
+              id="created-date"
+              name="createdDate"
+              type="date"
+              class="field-control"
+            />
+            <p
+              class="field-error"
+              id="created-date-error"
+              aria-live="polite"
+            ></p>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="invoice-note">Ghi chú</label>
+            <textarea
+              id="invoice-note"
+              name="invoiceNote"
+              class="field-control"
+              placeholder="Nhập ghi chú nếu có..."
+              style="min-height: 120px; padding-top: 16px"
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              id="back-button"
+              class="button button-secondary"
+            >
+              Quay lại
+            </button>
+            <button type="submit" class="button button-primary">
+              Lưu hóa đơn
+            </button>
+          </div>
+
+          <p class="form-status" id="form-status" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <script src="./js/script.js"></script>
+  </body>
+</html>
