@@ -3,11 +3,11 @@ import request from "supertest";
 
 import hopDongRouter from "../src/routes/hopDong.router.js";
 
-describe("POST /api/hop-dong - Tao hop dong", () => {
+describe("POST /api/contracts - Tao hop dong", () => {
   const buildApp = () => {
     const app = express();
     app.use(express.json());
-    app.use("/api/hop-dong", hopDongRouter);
+    app.use("/api/contracts", hopDongRouter);
     return app;
   };
 
@@ -23,7 +23,7 @@ describe("POST /api/hop-dong - Tao hop dong", () => {
   it("tao thanh cong voi du lieu hop le", async () => {
     const app = buildApp();
 
-    const res = await request(app).post("/api/hop-dong").send(validPayload);
+    const res = await request(app).post("/api/contracts").send(validPayload);
 
     expect(res.status).toBe(201);
     expect(res.headers["content-type"]).toMatch(/json/i);
@@ -41,7 +41,7 @@ describe("POST /api/hop-dong - Tao hop dong", () => {
       nguoi_thue_id: undefined,
     };
 
-    const res = await request(app).post("/api/hop-dong").send(invalidPayload);
+    const res = await request(app).post("/api/contracts").send(invalidPayload);
 
     expect(res.status).toBe(400);
     expect(res.body).toEqual(
@@ -59,7 +59,7 @@ describe("POST /api/hop-dong - Tao hop dong", () => {
       ngay_ket_thuc: "2026-12-31",
     };
 
-    const res = await request(app).post("/api/hop-dong").send(invalidPayload);
+    const res = await request(app).post("/api/contracts").send(invalidPayload);
 
     expect(res.status).toBe(400);
     expect(res.body).toEqual(
@@ -78,7 +78,7 @@ describe("POST /api/hop-dong - Tao hop dong", () => {
       tien_dat_coc: -1000,
     };
 
-    const res = await request(app).post("/api/hop-dong").send(invalidPayload);
+    const res = await request(app).post("/api/contractss").send(invalidPayload);
 
     expect(res.status).toBe(400);
     expect(res.body).toEqual(

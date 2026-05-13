@@ -1,12 +1,12 @@
-import hopDongModel from "../models/hopDong.model.js";
+import contractModel from "../models/contract.model.js";
 
 // In-memory store for test contracts
 const testContractStore = {};
 
-class HopDongRepository {
+class ContractRepository {
   async getAllContracts(filters = {}) {
     try {
-      const query = hopDongModel
+      const query = contractModel
         .find(filters)
         .populate("nguoi_thue_id", "ho_ten email so_dien_thoai")
         .populate("phong_id", "so_phong gia");
@@ -25,7 +25,7 @@ class HopDongRepository {
         // This prevents state from previous tests affecting new tests
         // Try to find in DB first
         try {
-          const contract = await hopDongModel
+          const contract = await contractModel
             .findById(contractId)
             .populate("nguoi_thue_id")
             .populate("phong_id");
@@ -59,7 +59,7 @@ class HopDongRepository {
         return mockContract;
       }
 
-      return await hopDongModel
+      return await contractModel
         .findById(contractId)
         .populate("nguoi_thue_id")
         .populate("phong_id");
@@ -70,7 +70,7 @@ class HopDongRepository {
 
   async getContractsByStatus(status) {
     try {
-      return await hopDongModel
+      return await contractModel
         .find({ trang_thai: status })
         .populate("nguoi_thue_id")
         .populate("phong_id");
@@ -86,7 +86,7 @@ class HopDongRepository {
         today.getTime() + 30 * 24 * 60 * 60 * 1000,
       );
 
-      return await hopDongModel
+      return await contractModel
         .find({
           ngay_ket_thuc: { $gte: today, $lte: thirtyDaysLater },
           trang_thai: "active",
@@ -99,7 +99,7 @@ class HopDongRepository {
   }
 
   async createContract(contractData) {
-    const contract = new hopDongModel(contractData);
+    const contract = new contractModel(contractData);
     await contract.validate();
 
     if (process.env.NODE_ENV === "test") {
@@ -111,7 +111,7 @@ class HopDongRepository {
 
   async updateContract(contractId, updateData) {
     try {
-      return await hopDongModel.findByIdAndUpdate(contractId, updateData, {
+      return await contractModel.findByIdAndUpdate(contractId, updateData, {
         new: true,
       });
     } catch (err) {
@@ -121,7 +121,7 @@ class HopDongRepository {
 
   async deleteContract(contractId) {
     try {
-      return await hopDongModel.findByIdAndDelete(contractId);
+      return await contractModel.findByIdAndDelete(contractId);
     } catch (err) {
       throw new Error(`Database error: ${err.message}`);
     }
@@ -148,7 +148,7 @@ class HopDongRepository {
         return contract.toObject ? contract.toObject() : { ...contract };
       }
 
-      const contract = await hopDongModel.findById(contractId);
+      const contract = await contractModel.findById(contractId);
 
       if (!contract) {
         return null;
@@ -176,4 +176,4 @@ class HopDongRepository {
   }
 }
 
-export default new HopDongRepository();
+export default new ContractRepository();

@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../app.js";
 
-describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () => {
+describe("Thanh lý hợp đồng API - POST /api/contractss/:id/terminate", () => {
   const validContractId = "507f1f77bcf86cd799439011";
 
   describe("Thanh lý thành công với dữ liệu hợp lệ", () => {
@@ -13,7 +13,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contractss/${validContractId}/terminate`)
         .send(terminationData)
         .expect(200);
 
@@ -32,7 +32,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(200);
 
@@ -48,7 +48,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(200);
 
@@ -65,7 +65,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(200);
 
@@ -79,7 +79,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -98,7 +98,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(200);
 
@@ -114,7 +114,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(200);
 
@@ -133,7 +133,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -150,7 +150,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -169,7 +169,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -186,7 +186,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -202,7 +202,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -219,7 +219,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -238,7 +238,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -257,7 +257,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/invalid-id/terminate`)
+        .post(`/api/contracts/invalid-id/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -271,7 +271,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/507f1f77bcf86cd799439999/terminate`)
+        .post(`/api/contracts/507f1f77bcf86cd799439999/terminate`)
         .send(terminationData)
         .expect(404);
 
@@ -281,7 +281,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
 
     it("trả lỗi 400 nếu payload không hợp lệ (không phải JSON object)", async () => {
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send("invalid string payload")
         .expect(400);
 
@@ -295,7 +295,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(400);
 
@@ -311,7 +311,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(200);
 
@@ -329,7 +329,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(200);
 
@@ -348,7 +348,7 @@ describe("Thanh lý hợp đồng API - POST /api/hop-dong/:id/terminate", () =>
       };
 
       const response = await request(app)
-        .post(`/api/hop-dong/${validContractId}/terminate`)
+        .post(`/api/contracts/${validContractId}/terminate`)
         .send(terminationData)
         .expect(200);
 

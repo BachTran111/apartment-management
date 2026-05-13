@@ -14,7 +14,9 @@
     <div class="main-container">
       <section class="header-section">
         <div class="header-info header-copy">
-          <a class="back-link" href="../dashboard/Dashboard.html">← Về dashboard</a>
+          <a class="back-link" href="../dashboard/Dashboard.html"
+            >← Về dashboard</a
+          >
           <h1>
             <i
               class="fas fa-file-contract"
@@ -24,10 +26,10 @@
           </h1>
           <p>Theo dõi và quản lý toàn bộ hợp đồng cho thuê căn hộ</p>
         </div>
-        <button class="btn-add-contract">
+        <a class="btn-add-contract" href="./ContractForm.html">
           <i class="fas fa-plus"></i>
           Thêm hợp đồng mới
-        </button>
+        </a>
       </section>
 
       <section class="stats-section">
@@ -123,19 +125,19 @@
               <input
                 type="radio"
                 name="status-filter"
-                value="expiring"
+                value="expired"
                 class="status-filter"
               />
-              <span>Sắp hết hạn</span>
+              <span>Hết hạn</span>
             </label>
             <label class="filter-option">
               <input
                 type="radio"
                 name="status-filter"
-                value="expired"
+                value="terminated"
                 class="status-filter"
               />
-              <span>Hết hạn</span>
+              <span>Đã thanh lý</span>
             </label>
           </div>
           <div class="filter-actions">

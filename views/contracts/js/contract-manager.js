@@ -54,14 +54,12 @@ class ContractManager {
 
     const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
 
-    // Determine status from API and days remaining
-    let status = apiContract.trang_thai; // "active" or "expired" from API
+    // Keep only the three real enum values from the API.
+    // "Sắp hết hạn" is shown as a separate time-based filter/state, not a stored status.
+    let status = apiContract.trang_thai || "active";
 
-    // Override if days remaining is past due
-    if (daysRemaining < 0) {
+    if (daysRemaining < 0 && status !== "terminated") {
       status = "expired";
-    } else if (daysRemaining <= 30 && daysRemaining > 0) {
-      status = "expiring";
     }
 
     return {
@@ -159,6 +157,12 @@ class ContractManager {
         this.handleEdit(e.target.closest(".edit-btn"));
       }
       if (
+        e.target.classList.contains("terminate-btn") ||
+        e.target.closest(".terminate-btn")
+      ) {
+        this.handleTerminate(e.target.closest(".terminate-btn"));
+      }
+      if (
         e.target.classList.contains("view-btn") ||
         e.target.closest(".view-btn")
       ) {
@@ -246,7 +250,10 @@ class ContractManager {
         result = result.filter((c) => c.status === "active");
         break;
       case "expiring-soon":
-        result = result.filter((c) => c.status === "expiring");
+        result = result.filter((c) => {
+          const remaining = Number(c.daysRemaining);
+          return c.status === "active" && remaining > 0 && remaining <= 30;
+        });
         break;
       case "expired":
         result = result.filter((c) => c.status === "expired");
@@ -319,15 +326,51 @@ class ContractManager {
   }
 
   handleEdit(btn) {
-    const row = btn.closest("tr");
-    const tenantName = row.querySelector(".tenant-name").textContent;
-    this.showNotification(`Chỉnh sửa hợp đồng: ${tenantName}`, "info");
+    const contractId = btn?.dataset?.contractId;
+
+    if (!contractId) {
+      this.showNotification(
+        "Không xác định được hợp đồng cần chỉnh sửa",
+        "danger",
+      );
+      return;
+    }
+
+    const editUrl = new URL("./ContractEdit.html", window.location.href);
+    editUrl.searchParams.set("id", contractId);
+    window.location.href = editUrl.toString();
   }
 
   handleView(btn) {
-    const row = btn.closest("tr");
-    const tenantName = row.querySelector(".tenant-name").textContent;
-    this.showNotification(`Xem chi tiết: ${tenantName}`, "info");
+    const contractId = btn?.dataset?.contractId;
+
+    if (!contractId) {
+      this.showNotification("Không xác định được hợp đồng cần xem", "danger");
+      return;
+    }
+
+    const detailUrl = new URL("./ContractDetail.html", window.location.href);
+    detailUrl.searchParams.set("id", contractId);
+    window.location.href = detailUrl.toString();
+  }
+
+  handleTerminate(btn) {
+    const contractId = btn?.dataset?.contractId;
+
+    if (!contractId) {
+      this.showNotification(
+        "Không xác định được hợp đồng cần thanh lý",
+        "danger",
+      );
+      return;
+    }
+
+    const terminateUrl = new URL(
+      "./ContractTerminate.html",
+      window.location.href,
+    );
+    terminateUrl.searchParams.set("id", contractId);
+    window.location.href = terminateUrl.toString();
   }
 
   renderTable() {
@@ -379,10 +422,11 @@ class ContractManager {
                     </span>
                 </td>
                 <td>
-                    <div class="actions">
-                        <button class="action-btn edit-btn" title="Chỉnh sửa"><i class="fas fa-pen"></i></button>
-                        <button class="action-btn view-btn" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
-                    </div>
+                  <div class="actions">
+                    <button class="action-btn edit-btn" title="Chỉnh sửa" data-contract-id="${contract.id}"><i class="fas fa-pen"></i></button>
+                    <button class="action-btn view-btn" title="Xem chi tiết" data-contract-id="${contract.id}"><i class="fas fa-eye"></i></button>
+                      <button class="action-btn terminate-btn" title="Thanh lý" data-contract-id="${contract.id}"><i class="fas fa-balance-scale-right"></i></button>
+                  </div>
                 </td>
             </tr>
         `,
@@ -395,9 +439,8 @@ class ContractManager {
   getStatusLabel(status) {
     const labels = {
       active: "Đang hoạt động",
-      expiring: "Sắp hết hạn",
       expired: "Hết hạn",
-      pending: "Chờ thanh toán",
+      terminated: "Đã thanh lý",
     };
     return labels[status] || "Không xác định";
   }
@@ -494,9 +537,10 @@ class ContractManager {
     const activeCount = this.filteredContracts.filter(
       (c) => c.status === "active",
     ).length;
-    const expiringCount = this.filteredContracts.filter(
-      (c) => c.status === "expiring",
-    ).length;
+    const expiringCount = this.filteredContracts.filter((c) => {
+      const remainingDays = Number(c.daysRemaining);
+      return c.status === "active" && remainingDays > 0 && remainingDays <= 30;
+    }).length;
     const expiredCount = this.filteredContracts.filter(
       (c) => c.status === "expired",
     ).length;

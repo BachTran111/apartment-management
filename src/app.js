@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import path from "node:path";
 
 import instanceMongoDB from "./configs/db.config.js";
 import roomRouter from "./routes/room.route.js"; // Đã cập nhật tên file theo chuẩn
@@ -16,6 +17,11 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
+app.use(express.static(path.resolve("views")));
+
+app.get("/", (_req, res) => {
+  res.sendFile(path.resolve("views/dashboard/Dashboard.html"));
+});
 
 app.use("/api/rooms", roomRouter);
 app.use("/api/apartments", apartmentRouter);
