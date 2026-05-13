@@ -1,55 +1,59 @@
 import mongoose from "mongoose";
-
 const { Schema } = mongoose;
 
-const contractSchema = new Schema(
+const ContractSchema = new Schema(
   {
     nguoi_thue_id: {
       type: Schema.Types.ObjectId,
       ref: "NguoiThue",
-      required: [true, "ID Người thuê không được để trống"],
+      required: true,
     },
     phong_id: {
       type: Schema.Types.ObjectId,
       ref: "Phong",
-      required: [true, "ID Phòng không được để trống"],
+      required: true,
     },
     ngay_bat_dau: {
       type: Date,
-      required: [true, "Ngày bắt đầu hợp đồng không được để trống"],
+      required: [true, "ngay_bat_dau is required"],
     },
     ngay_ket_thuc: {
       type: Date,
-      required: [true, "Ngày kết thúc hợp đồng không được để trống"],
+      required: [true, "ngay_ket_thuc is required"],
+      validate: {
+        validator(value) {
+          if (!this.ngay_bat_dau || !value) {
+            return true;
+          }
+          return this.ngay_bat_dau < value;
+        },
+        message: "ngay_bat_dau must be before ngay_ket_thuc",
+      },
     },
     tien_dat_coc: {
       type: Number,
-      required: [true, "Tiền đặt cọc không được để trống"],
-      min: [0, "Tiền đặt cọc phải lớn hơn hoặc bằng 0"],
+      min: [0, "tien_dat_coc cannot be negative"],
     },
     trang_thai: {
       type: String,
-      enum: {
-        values: ["KHẢ DỤNG", "HẾT HẠN"],
-        message: "{VALUE} không phải là trạng thái hợp lệ",
-      },
-      default: "KHẢ DỤNG",
+      enum: ["active", "expired", "terminated"],
+      default: "active",
+    },
+    ngay_thanh_ly: {
+      type: Date,
+      default: null,
+    },
+    chi_phi_phat_sinh: {
+      type: Number,
+      min: [0, "chi_phi_phat_sinh cannot be negative"],
+      default: 0,
+    },
+    ghi_chu: {
+      type: String,
+      default: null,
     },
   },
-  {
-    timestamps: true, // Tự động tạo createdAt và updatedAt
-    // Chỉ định chính xác tên collection trên MongoDB Atlas
-    collection: "HopDong",
-  },
+  { collection: "HopDong" },
 );
 
-// ==========================================
-// INDEXES TỐI ƯU TRUY VẤN
-// ==========================================
-// Đánh index để tăng tốc khi tìm kiếm hợp đồng theo phòng hoặc theo người thuê
-contractSchema.index({ phong_id: 1 });
-contractSchema.index({ nguoi_thue_id: 1 });
-
-const Contract = mongoose.model("HopDong", contractSchema);
-
-export default Contract;
+export default mongoose.model("HopDong", ContractSchema);

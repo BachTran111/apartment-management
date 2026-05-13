@@ -8,7 +8,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="./css/Dashboard.css" />
+    <link rel="stylesheet" href="/dashboard/css/Dashboard.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
@@ -165,7 +165,9 @@
                   <td>Tiền phòng tháng 4</td>
                   <td>22/04/2026</td>
                   <td>4.000.000đ</td>
-                  <td><span class="badge badge-success">Đã thanh toán</span></td>
+                  <td>
+                    <span class="badge badge-success">Đã thanh toán</span>
+                  </td>
                 </tr>
                 <tr>
                   <td><strong>Phạm Thị E</strong></td>
@@ -173,7 +175,9 @@
                   <td>Điện nước</td>
                   <td>21/04/2026</td>
                   <td>650.000đ</td>
-                  <td><span class="badge badge-success">Đã thanh toán</span></td>
+                  <td>
+                    <span class="badge badge-success">Đã thanh toán</span>
+                  </td>
                 </tr>
                 <tr>
                   <td><strong>Vũ Văn F</strong></td>
@@ -195,7 +199,14 @@
       new Chart(ctx, {
         type: "line",
         data: {
-          labels: ["Tháng 11", "Tháng 12", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4"],
+          labels: [
+            "Tháng 11",
+            "Tháng 12",
+            "Tháng 1",
+            "Tháng 2",
+            "Tháng 3",
+            "Tháng 4",
+          ],
           datasets: [
             {
               label: "Doanh thu (VNĐ)",

@@ -3,17 +3,9 @@ import ApartmentController from "../controllers/apartment.controller.js";
 
 const router = express.Router();
 
-// ==========================================
-// LẤY DANH SÁCH & TÌM KIẾM
-// ==========================================
-// Lấy danh sách căn hộ (Hỗ trợ phân trang và filter qua req.query)
-// Ví dụ: GET /api/apartments?skip=0&limit=10&ten=Sunrise
 router.get("/search", ApartmentController.search);
 router.get("/", ApartmentController.getAll);
 
-// ==========================================
-// QUẢN LÝ THÔNG TIN CĂN HỘ (CRUD)
-// ==========================================
 // Thêm mới căn hộ
 router.post("/", ApartmentController.create);
 
