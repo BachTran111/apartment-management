@@ -3,47 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quản Lý Hợp Đồng - Apartment Management System</title>
-
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <!-- Font Awesome for Icons -->
+    <title>Quản lý hợp đồng</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <div class="main-container">
-      <!-- Header Section -->
       <section class="header-section">
-        <div class="header-info">
+        <div class="header-info header-copy">
+          <a class="back-link" href="../dashboard/Dashboard.html">← Về dashboard</a>
           <h1>
             <i
               class="fas fa-file-contract"
               style="color: var(--primary-color); margin-right: 10px"
             ></i>
-            Quản Lý Hợp Đồng
+            Quản lý hợp đồng
           </h1>
           <p>Theo dõi và quản lý toàn bộ hợp đồng cho thuê căn hộ</p>
         </div>
         <button class="btn-add-contract">
           <i class="fas fa-plus"></i>
-          Thêm Hợp Đồng Mới
+          Thêm hợp đồng mới
         </button>
       </section>
 
-      <!-- Stats Section -->
       <section class="stats-section">
         <div class="stat-card">
           <div class="stat-card-content">
-            <h3>Hợp Đồng Hoạt Động</h3>
+            <h3>Hợp đồng hoạt động</h3>
             <div class="stat-card-value">
               <span class="value" id="statActive">100</span>
               <span class="unit">bản</span>
@@ -53,7 +43,7 @@
 
         <div class="stat-card">
           <div class="stat-card-content">
-            <h3>Sắp Hết Hạn</h3>
+            <h3>Sắp hết hạn</h3>
             <div class="stat-card-value">
               <span class="value" id="statExpiring">5</span>
               <span class="unit">bản</span>
@@ -66,7 +56,7 @@
 
         <div class="stat-card">
           <div class="stat-card-content">
-            <h3>Đã Hết Hạn</h3>
+            <h3>Đã hết hạn</h3>
             <div class="stat-card-value">
               <span class="value" id="statPending">12</span>
               <span class="unit">bản</span>
@@ -78,61 +68,79 @@
         </div>
       </section>
 
-      <!-- Controls Section -->
       <section class="controls-section">
         <div class="search-box">
           <i class="fas fa-magnifying-glass search-icon"></i>
           <input
             type="text"
             id="searchInput"
-            placeholder="Tìm kiếm theo tên người thuê, căn hộ..."
-            class="form-control"
+            placeholder="Tìm kiếm theo người thuê, căn hộ..."
           />
         </div>
         <div class="controls-actions">
           <button class="btn-control" id="filterStatusBtn">
             <i class="fas fa-filter"></i>
-            Trạng Thái
+            Trạng thái
           </button>
           <button class="btn-control" id="filterTimeBtn">
             <i class="fas fa-calendar-alt"></i>
-            Thời Gian
+            Thời gian
           </button>
           <button class="btn-control btn-download" id="downloadBtn">
             <i class="fas fa-download"></i>
-            Xuất Danh Sách
+            Xuất danh sách
           </button>
         </div>
       </section>
 
-      <!-- Filter Popups -->
       <div class="filter-modal" id="statusFilterModal">
         <div class="filter-popup">
           <div class="filter-header">
-            <h3>Lọc theo Trạng Thái</h3>
+            <h3>Lọc theo trạng thái</h3>
             <button class="close-btn">&times;</button>
           </div>
           <div class="filter-options">
             <label class="filter-option">
-              <input type="radio" name="status-filter" value="all" class="status-filter" checked>
+              <input
+                type="radio"
+                name="status-filter"
+                value="all"
+                class="status-filter"
+                checked
+              />
               <span>Tất cả</span>
             </label>
             <label class="filter-option">
-              <input type="radio" name="status-filter" value="active" class="status-filter">
+              <input
+                type="radio"
+                name="status-filter"
+                value="active"
+                class="status-filter"
+              />
               <span>Đang hoạt động</span>
             </label>
             <label class="filter-option">
-              <input type="radio" name="status-filter" value="expiring" class="status-filter">
+              <input
+                type="radio"
+                name="status-filter"
+                value="expiring"
+                class="status-filter"
+              />
               <span>Sắp hết hạn</span>
             </label>
             <label class="filter-option">
-              <input type="radio" name="status-filter" value="expired" class="status-filter">
+              <input
+                type="radio"
+                name="status-filter"
+                value="expired"
+                class="status-filter"
+              />
               <span>Hết hạn</span>
             </label>
           </div>
           <div class="filter-actions">
             <button class="btn-cancel">Hủy</button>
-            <button class="btn-apply">Áp Dụng</button>
+            <button class="btn-apply">Áp dụng</button>
           </div>
         </div>
       </div>
@@ -140,89 +148,81 @@
       <div class="filter-modal" id="timeFilterModal">
         <div class="filter-popup">
           <div class="filter-header">
-            <h3>Lọc theo Thời Gian</h3>
+            <h3>Lọc theo thời gian</h3>
             <button class="close-btn">&times;</button>
           </div>
           <div class="filter-options">
             <label class="filter-option">
-              <input type="radio" name="time-filter" value="all" class="time-filter" checked>
+              <input
+                type="radio"
+                name="time-filter"
+                value="all"
+                class="time-filter"
+                checked
+              />
               <span>Tất cả</span>
             </label>
             <label class="filter-option">
-              <input type="radio" name="time-filter" value="active-only" class="time-filter">
+              <input
+                type="radio"
+                name="time-filter"
+                value="active-only"
+                class="time-filter"
+              />
               <span>Còn hoạt động</span>
             </label>
             <label class="filter-option">
-              <input type="radio" name="time-filter" value="expiring-soon" class="time-filter">
+              <input
+                type="radio"
+                name="time-filter"
+                value="expiring-soon"
+                class="time-filter"
+              />
               <span>Sắp hết hạn (≤30 ngày)</span>
             </label>
             <label class="filter-option">
-              <input type="radio" name="time-filter" value="expired" class="time-filter">
+              <input
+                type="radio"
+                name="time-filter"
+                value="expired"
+                class="time-filter"
+              />
               <span>Đã hết hạn</span>
             </label>
           </div>
           <div class="filter-actions">
             <button class="btn-cancel">Hủy</button>
-            <button class="btn-apply">Áp Dụng</button>
+            <button class="btn-apply">Áp dụng</button>
           </div>
         </div>
       </div>
-      </section>
 
-      <!-- Table Section -->
       <section class="table-section">
         <div class="table-responsive">
           <table class="table-custom">
             <thead>
               <tr>
-                <th>
-                  <i class="fas fa-user"></i>
-                  Người Thuê
-                </th>
-                <th>
-                  <i class="fas fa-building"></i>
-                  Căn Hộ/BĐS
-                </th>
-                <th>
-                  <i class="fas fa-calendar"></i>
-                  Thời Hạn Thuê
-                </th>
-                <th>
-                  <i class="fas fa-money-bill"></i>
-                  Giá Thuê/Tháng
-                </th>
-                <th>
-                  <i class="fas fa-info-circle"></i>
-                  Trạng Thái
-                </th>
-                <th>
-                  <i class="fas fa-cogs"></i>
-                  Hành Động
-                </th>
+                <th><i class="fas fa-user"></i> Người thuê</th>
+                <th><i class="fas fa-building"></i> Căn hộ/BĐS</th>
+                <th><i class="fas fa-calendar"></i> Thời hạn thuê</th>
+                <th><i class="fas fa-money-bill"></i> Tiền đặt cọc</th>
+                <th><i class="fas fa-info-circle"></i> Trạng thái</th>
+                <th><i class="fas fa-cogs"></i> Hành động</th>
               </tr>
             </thead>
-            <tbody id="contractTableBody">
-              <!-- Table rows will be inserted here by JavaScript -->
-            </tbody>
+            <tbody id="contractTableBody"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- Pagination Section -->
       <section class="pagination-section">
         <div class="pagination-info" id="paginationInfo">
           Hiển thị 1 đến 10 trong số 100 hợp đồng
         </div>
-        <div class="pagination-controls" id="paginationContainer">
-          <!-- Pagination buttons will be inserted here by JavaScript -->
-        </div>
+        <div class="pagination-controls" id="paginationContainer"></div>
       </section>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Custom JavaScript -->
     <script src="js/contract-manager.js"></script>
   </body>
 </html>

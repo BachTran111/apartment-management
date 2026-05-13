@@ -1,5 +1,13 @@
 import Interior from "../models/interior.model.js";
 
+const roomPopulate = {
+  path: "phong_id",
+  populate: {
+    path: "can_ho_id",
+    select: "ten dia_chi",
+  },
+};
+
 class InteriorService {
   /**
    * Lấy danh sách nội thất có phân trang
@@ -12,7 +20,7 @@ class InteriorService {
       .skip(skip)
       .limit(limit)
       .sort(sort)
-      .populate("phong_id")
+      .populate(roomPopulate)
       .lean();
   }
 
@@ -21,7 +29,7 @@ class InteriorService {
    */
   async getById(id) {
     if (!id) return null;
-    return Interior.findById(id).populate("phong_id").lean();
+    return Interior.findById(id).populate(roomPopulate).lean();
   }
 
   /**
@@ -83,7 +91,7 @@ class InteriorService {
     return Interior.find({ phong_id: roomId })
       .skip(skip)
       .limit(limit)
-      .populate("phong_id")
+      .populate(roomPopulate)
       .lean();
   }
 }
