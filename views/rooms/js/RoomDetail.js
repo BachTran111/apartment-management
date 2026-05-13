@@ -45,7 +45,13 @@ function bindEvents() {
   });
 
   tenantDetailButton.addEventListener("click", () => {
-    setNotice("Thông tin chi tiết người thuê hiện chưa được kết nối.", false);
+    const tenantId = tenantDetailButton.dataset.tenantId;
+    if (!tenantId) {
+      setNotice("Phòng này hiện chưa có người thuê để xem chi tiết.", false);
+      return;
+    }
+
+    window.location.href = `../tenants/TenantDetail.html?id=${encodeURIComponent(tenantId)}`;
   });
 }
 
@@ -85,7 +91,7 @@ function renderLoadingState() {
   ]);
   tenantInfo.innerHTML = buildTenantFields([
     { label: "Họ và tên", value: DETAIL_LABELS.loading },
-    { label: "Loại hợp đồng", value: DETAIL_LABELS.loading },
+    { label: "Email", value: DETAIL_LABELS.loading },
     { label: "Thời hạn hợp đồng", value: DETAIL_LABELS.loading },
     { label: "Số điện thoại", value: DETAIL_LABELS.loading },
   ]);
@@ -104,7 +110,7 @@ function renderEmptyState() {
   ]);
   tenantInfo.innerHTML = buildTenantFields([
     { label: "Họ và tên", value: DETAIL_LABELS.empty },
-    { label: "Loại hợp đồng", value: DETAIL_LABELS.empty },
+    { label: "Email", value: DETAIL_LABELS.empty },
     { label: "Thời hạn hợp đồng", value: DETAIL_LABELS.empty },
     { label: "Số điện thoại", value: DETAIL_LABELS.empty },
   ]);
@@ -114,15 +120,13 @@ function renderEmptyState() {
 }
 
 async function renderDetail(metadata) {
-  const noiThat = await resolveFurniture(metadata);
+  const noiThat = Array.isArray(metadata.noiThat) ? metadata.noiThat : [];
   const phong = metadata.phong || {};
-
-  // Lấy từ hop_dong_ids
-  const hopDong = Array.isArray(phong.hop_dong_ids) ? phong.hop_dong_ids : [];
-
-  // Lấy người thuê từ hợp đồng đầu tiên
-  const nguoiThue = hopDong.length > 0 ? hopDong[0].nguoi_thue_id : null;
+  const hopDong = Array.isArray(metadata.hopDong) ? metadata.hopDong : [];
+  const currentContract = hopDong[0] || null;
+  const nguoiThue = metadata.nguoiThue || currentContract?.nguoi_thue_id || null;
   currentCanHoId = currentCanHoId || String(phong.can_ho_id || "").trim();
+  tenantDetailButton.dataset.tenantId = nguoiThue?._id || "";
 
   roomTitle.textContent = phong.so_phong
     ? `Phòng ${phong.so_phong}`
@@ -137,7 +141,7 @@ async function renderDetail(metadata) {
 
   tenantInfo.innerHTML = buildTenantFields([
     { label: "Họ và tên", value: nguoiThue?.ho_ten || DETAIL_LABELS.empty },
-    { label: "Loại hợp đồng", value: getContractType(hopDong) },
+    { label: "Email", value: nguoiThue?.email || DETAIL_LABELS.empty },
     { label: "Thời hạn hợp đồng", value: getContractDuration(hopDong) },
     {
       label: "Số điện thoại",
@@ -149,11 +153,12 @@ async function renderDetail(metadata) {
     ? hopDong
         .map((item) => {
           const contractStatus = mapContractStatus(item.trang_thai);
+          const itemTenant = item.nguoi_thue_id || null;
           return `
             <tr>
-              <td>${escapeHtml(item.nguoi_thue?.ho_ten || nguoiThue?.ho_ten || DETAIL_LABELS.empty)}</td>
+              <td>${escapeHtml(itemTenant?.ho_ten || nguoiThue?.ho_ten || DETAIL_LABELS.empty)}</td>
               <td>${escapeHtml(formatContractRange(item))}</td>
-              <td>${escapeHtml(item.loai_hop_dong || DETAIL_LABELS.empty)}</td>
+              <td>${escapeHtml(item.trang_thai || DETAIL_LABELS.empty)}</td>
               <td><span class="status-pill ${contractStatus.kind}">${contractStatus.label}</span></td>
             </tr>
           `;
@@ -243,45 +248,12 @@ function resolveNoiThatApiBase() {
   return resolvedApiBase.replace(/\/api\/rooms$/, "/api/noithat");
 }
 
-async function resolveFurniture(metadata) {
-  if (Array.isArray(metadata.noiThat) && metadata.noiThat.length) {
-    return metadata.noiThat;
-  }
-
-  const furnitureIds = Array.isArray(metadata.phong?.noi_that_ids)
-    ? metadata.phong.noi_that_ids.filter(Boolean)
-    : [];
-
-  if (!furnitureIds.length) {
-    return [];
-  }
-
-  const items = await Promise.all(
-    furnitureIds.map(async (id) => {
-      try {
-        const response = await fetch(
-          `${resolvedNoiThatApiBase}/${encodeURIComponent(id)}`,
-        );
-        const payload = await parseJsonResponse(response);
-        if (!response.ok) {
-          return null;
-        }
-        return payload.metadata || null;
-      } catch (error) {
-        return null;
-      }
-    }),
-  );
-
-  return items.filter(Boolean);
-}
-
 function buildImageUrl(imagePath) {
   if (/^https?:\/\//i.test(imagePath)) {
     return imagePath;
   }
 
-  const origin = resolvedApiBase.replace(/\/api\/phongs$/, "");
+  const origin = resolvedApiBase.replace(/\/api\/rooms$/, "");
   return `${origin}/${String(imagePath).replace(/^\/+/, "")}`;
 }
 

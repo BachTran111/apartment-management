@@ -1,47 +1,41 @@
 import mongoose from "mongoose";
-import Room from "../models/room.model.js"; // Cập nhật import theo tên file mới
+import Contract from "../models/contract.model.js";
 import NoiThatModel from "../models/interior.model.js";
+import Room from "../models/room.model.js";
 
 class RoomService {
-  /**
-   * Lấy danh sách phòng với phân trang và sắp xếp
-   */
   async getAll(
     filter = {},
     { skip = 0, limit = 50, sort = { createdAt: -1 } } = {},
   ) {
-    return Room.find(filter)
+    const rooms = await Room.find(filter)
       .skip(skip)
       .limit(limit)
       .sort(sort)
-      .populate({
-        path: "hop_dong_ids", // Lớp 1: Lấy danh sách hợp đồng
-        populate: {
-          path: "nguoi_thue_id", // Lớp 2: Lấy thông tin người thuê bên trong hợp đồng đó
-          select: "ho_ten so_dien_thoai email", // (Tùy chọn) Chỉ lấy các trường cần thiết
-        },
-      })
       .lean();
+
+    return this.attachContractSummaries(rooms);
   }
 
-  /**
-   * Lấy chi tiết một phòng
-   */
   async getById(id) {
     if (!id) return null;
-    return Room.findById(id)
+    return Room.findById(id).lean();
+  }
+
+  async getContractsByPhongId(phongId) {
+    if (!phongId) {
+      return [];
+    }
+
+    return Contract.find({ phong_id: phongId })
+      .sort({ ngay_bat_dau: -1, ngay_ket_thuc: -1 })
       .populate({
-        path: "hop_dong_ids",
-        populate: {
-          path: "nguoi_thue_id",
-        },
+        path: "nguoi_thue_id",
+        select: "ho_ten so_dien_thoai email",
       })
       .lean();
   }
 
-  /**
-   * Tạo phòng mới
-   */
   async create(data) {
     const exists = await Room.findOne({
       can_ho_id: data.can_ho_id,
@@ -49,25 +43,21 @@ class RoomService {
     }).lean();
 
     if (exists) {
-      throw new Error("Số phòng này đã tồn tại trong căn hộ");
+      throw new Error("So phong nay da ton tai trong can ho");
     }
 
     const doc = await Room.create(data);
     return doc.toObject();
   }
 
-  /**
-   * Cập nhật thông tin phòng
-   */
   async update(id, updateData) {
     if (updateData.so_phong || updateData.can_ho_id) {
-      const existingPhong = await Room.findById(id).lean();
-      if (!existingPhong) throw new Error("Không tìm thấy phòng");
+      const existingRoom = await Room.findById(id).lean();
+      if (!existingRoom) throw new Error("Khong tim thay phong");
 
-      const canHoId = updateData.can_ho_id || existingPhong.can_ho_id;
-      const soPhong = updateData.so_phong || existingPhong.so_phong;
+      const canHoId = updateData.can_ho_id || existingRoom.can_ho_id;
+      const soPhong = updateData.so_phong || existingRoom.so_phong;
 
-      // Kiểm tra trùng lặp số phòng nếu có sự thay đổi
       const exists = await Room.findOne({
         can_ho_id: canHoId,
         so_phong: soPhong,
@@ -75,23 +65,16 @@ class RoomService {
       }).lean();
 
       if (exists) {
-        throw new Error("Số phòng này đã tồn tại trong căn hộ");
+        throw new Error("So phong nay da ton tai trong can ho");
       }
     }
 
     return Room.findByIdAndUpdate(id, updateData, { new: true }).lean();
   }
 
-  /**
-   * Xóa phòng
-   */
   async remove(id) {
     return Room.findByIdAndDelete(id).lean();
   }
-
-  // ==========================================
-  // QUẢN LÝ NỘI THẤT
-  // ==========================================
 
   async getAllNoiThat(phongId, { skip = 0, limit = 100 } = {}) {
     if (!phongId) return [];
@@ -103,7 +86,7 @@ class RoomService {
   }
 
   async addNoiThat(phongId, data) {
-    if (!phongId) throw new Error("Thiếu phongId");
+    if (!phongId) throw new Error("Thieu phongId");
 
     return NoiThatModel.create({
       ...data,
@@ -115,13 +98,6 @@ class RoomService {
     return NoiThatModel.findByIdAndDelete(noiThatId).lean();
   }
 
-  // ==========================================
-  // CÁC HÀM TIỆN ÍCH BỔ SUNG
-  // ==========================================
-
-  /**
-   * Tìm phòng theo số phòng và ID căn hộ
-   */
   async findBySoPhong(canHoId, soPhong) {
     return Room.findOne({
       can_ho_id: canHoId,
@@ -129,14 +105,10 @@ class RoomService {
     }).lean();
   }
 
-  /**
-   * Thống kê số lượng phòng theo từng trạng thái trong một căn hộ
-   */
   async countAllTrangThai(canHoId) {
     return Room.aggregate([
       {
         $match: {
-          // Ép kiểu thủ công ở $match aggregation để đảm bảo chính xác
           can_ho_id: new mongoose.Types.ObjectId(canHoId),
         },
       },
@@ -147,6 +119,78 @@ class RoomService {
         },
       },
     ]);
+  }
+
+  async attachContractSummaries(rooms = []) {
+    if (!Array.isArray(rooms) || rooms.length === 0) {
+      return [];
+    }
+
+    const roomIds = rooms.map((room) => room?._id).filter(Boolean);
+    if (!roomIds.length) {
+      return rooms;
+    }
+
+    const contracts = await Contract.find({
+      phong_id: { $in: roomIds },
+    })
+      .sort({ ngay_bat_dau: -1, ngay_ket_thuc: -1 })
+      .populate({
+        path: "nguoi_thue_id",
+        select: "ho_ten so_dien_thoai email",
+      })
+      .lean();
+
+    const contractsByRoomId = new Map(
+      roomIds.map((roomId) => [String(roomId), []]),
+    );
+
+    contracts.forEach((contract) => {
+      const roomId = String(contract.phong_id || "");
+      if (!roomId) {
+        return;
+      }
+
+      const bucket = contractsByRoomId.get(roomId) || [];
+      bucket.push(contract);
+      contractsByRoomId.set(roomId, bucket);
+    });
+
+    return rooms.map((room) => {
+      const roomContracts = this.sortContractsByPriority(
+        contractsByRoomId.get(String(room._id)) || [],
+      );
+      const currentContract = roomContracts[0] || null;
+
+      return {
+        ...room,
+        hop_dong_hien_tai: currentContract,
+        nguoi_thue_hien_tai: currentContract?.nguoi_thue_id || null,
+        tong_hop_dong: roomContracts.length,
+      };
+    });
+  }
+
+  sortContractsByPriority(contracts = []) {
+    const statusPriority = {
+      active: 0,
+      expired: 1,
+      terminated: 2,
+    };
+
+    return [...contracts].sort((left, right) => {
+      const leftPriority = statusPriority[left?.trang_thai] ?? 99;
+      const rightPriority = statusPriority[right?.trang_thai] ?? 99;
+
+      if (leftPriority !== rightPriority) {
+        return leftPriority - rightPriority;
+      }
+
+      return (
+        new Date(right?.ngay_bat_dau || 0).getTime() -
+        new Date(left?.ngay_bat_dau || 0).getTime()
+      );
+    });
   }
 }
 

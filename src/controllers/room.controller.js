@@ -1,17 +1,13 @@
 import mongoose from "mongoose";
-import RoomService from "../services/room.service.js"; // Cập nhật tên import
-import NoiThatService from "../services/interior.service.js";
 import { OK } from "../handler/success-response.js";
+import NoiThatService from "../services/interior.service.js";
+import RoomService from "../services/room.service.js";
 import {
   roomCreateSchema,
   roomUpdateSchema,
 } from "../utils/validations/room.validation.js";
 
 class RoomController {
-  // ==========================================
-  // QUẢN LÝ THÔNG TIN PHÒNG
-  // ==========================================
-
   getAll = async (req, res) => {
     try {
       const { canHoId } = req.params;
@@ -20,7 +16,7 @@ class RoomController {
       if (!mongoose.Types.ObjectId.isValid(canHoId)) {
         return res
           .status(400)
-          .json({ status: "ERROR", message: "ID căn hộ không hợp lệ" });
+          .json({ status: "ERROR", message: "ID can ho khong hop le" });
       }
 
       const phongs = await RoomService.getAll(
@@ -31,7 +27,6 @@ class RoomController {
         },
       );
 
-      // Đồng bộ sử dụng object OK cho tất cả success response
       return res.status(200).json(new OK({ metadata: phongs }));
     } catch (err) {
       console.error(err);
@@ -41,27 +36,30 @@ class RoomController {
 
   getById = async (req, res) => {
     try {
-      const { id } = req.params; // Chuẩn hóa tham số thành `id`
+      const { id } = req.params;
 
-      const [phong, noiThat] = await Promise.all([
+      const [phong, noiThat, hopDong] = await Promise.all([
         RoomService.getById(id),
-        NoiThatService.getAllByPhong(id).catch(() => []), // Fallback nếu lỗi
+        NoiThatService.getAllByPhong(id).catch(() => []),
+        RoomService.getContractsByPhongId(id).catch(() => []),
       ]);
 
       if (!phong) {
         return res
           .status(404)
-          .json({ status: "ERROR", message: "Không tìm thấy phòng" });
+          .json({ status: "ERROR", message: "Khong tim thay phong" });
       }
 
-      const result = {
-        phong,
-        noiThat: noiThat || [],
-        nguoiThue: null,
-        hopDong: [], // Tránh crash khi frontend map()
-      };
-
-      return res.status(200).json(new OK({ metadata: result }));
+      return res.status(200).json(
+        new OK({
+          metadata: {
+            phong,
+            noiThat: Array.isArray(noiThat) ? noiThat : [],
+            nguoiThue: hopDong[0]?.nguoi_thue_id || null,
+            hopDong: Array.isArray(hopDong) ? hopDong : [],
+          },
+        }),
+      );
     } catch (err) {
       return res.status(400).json({ status: "ERROR", message: err.message });
     }
@@ -69,11 +67,8 @@ class RoomController {
 
   create = async (req, res) => {
     try {
-      // 1. Lấy dữ liệu từ body
       const payload = { ...req.body };
 
-      // 2. TIỀN XỬ LÝ (PRE-PROCESS): Xử lý định dạng MongoDB Extended JSON
-      // Nếu can_ho_id được gửi lên là một object chứa $oid, ta bóc tách lấy chuỗi bên trong
       if (
         payload.can_ho_id &&
         typeof payload.can_ho_id === "object" &&
@@ -82,7 +77,6 @@ class RoomController {
         payload.can_ho_id = payload.can_ho_id.$oid;
       }
 
-      // Dùng `value` từ Joi để lấy dữ liệu đã được làm sạch (strip unknown, type casting)
       const { error, value } = roomCreateSchema.validate(payload, {
         abortEarly: false,
       });
@@ -96,7 +90,7 @@ class RoomController {
 
       return res
         .status(201)
-        .json(new OK({ message: "Tạo phòng thành công", metadata: phong }));
+        .json(new OK({ message: "Tao phong thanh cong", metadata: phong }));
     } catch (err) {
       return res.status(400).json({ status: "ERROR", message: err.message });
     }
@@ -104,7 +98,7 @@ class RoomController {
 
   update = async (req, res) => {
     try {
-      const { id } = req.params; // Chuẩn hóa lấy trực tiếp từ `id`
+      const { id } = req.params;
 
       const { error, value } = roomUpdateSchema.validate(req.body, {
         abortEarly: false,
@@ -120,14 +114,12 @@ class RoomController {
       if (!phong) {
         return res
           .status(404)
-          .json({ status: "ERROR", message: "Không tìm thấy phòng" });
+          .json({ status: "ERROR", message: "Khong tim thay phong" });
       }
 
-      return res
-        .status(200)
-        .json(
-          new OK({ message: "Cập nhật phòng thành công", metadata: phong }),
-        );
+      return res.status(200).json(
+        new OK({ message: "Cap nhat phong thanh cong", metadata: phong }),
+      );
     } catch (err) {
       return res.status(400).json({ status: "ERROR", message: err.message });
     }
@@ -141,20 +133,16 @@ class RoomController {
       if (!removed) {
         return res
           .status(404)
-          .json({ status: "ERROR", message: "Không tìm thấy phòng" });
+          .json({ status: "ERROR", message: "Khong tim thay phong" });
       }
 
-      return res
-        .status(200)
-        .json(new OK({ message: "Xóa phòng thành công", metadata: removed }));
+      return res.status(200).json(
+        new OK({ message: "Xoa phong thanh cong", metadata: removed }),
+      );
     } catch (err) {
       return res.status(400).json({ status: "ERROR", message: err.message });
     }
   };
-
-  // ==========================================
-  // QUẢN LÝ NỘI THẤT TRONG PHÒNG
-  // ==========================================
 
   getAllNoiThat = async (req, res) => {
     try {
@@ -174,20 +162,20 @@ class RoomController {
 
   addNoiThat = async (req, res) => {
     try {
-      const { id: phong_id } = req.params; // Lấy `id` từ params và đổi tên thành `phong_id`
+      const { id: phong_id } = req.params;
       const { noi_that_id } = req.body;
 
       if (!noi_that_id) {
         return res
           .status(400)
-          .json({ status: "ERROR", message: "Thiếu noi_that_id" });
+          .json({ status: "ERROR", message: "Thieu noi_that_id" });
       }
 
       const updated = await NoiThatService.assignToPhong(noi_that_id, phong_id);
 
       return res.status(200).json(
         new OK({
-          message: "Đã thêm nội thất vào phòng",
+          message: "Da them noi that vao phong",
           metadata: updated,
         }),
       );
@@ -196,10 +184,6 @@ class RoomController {
     }
   };
 
-  // ==========================================
-  // TÌM KIẾM VÀ THỐNG KÊ
-  // ==========================================
-
   getBySoPhong = async (req, res) => {
     try {
       const { canHoId, soPhong } = req.params;
@@ -207,7 +191,7 @@ class RoomController {
       if (!mongoose.Types.ObjectId.isValid(canHoId)) {
         return res
           .status(400)
-          .json({ status: "ERROR", message: "ID căn hộ không hợp lệ" });
+          .json({ status: "ERROR", message: "ID can ho khong hop le" });
       }
 
       const phong = await RoomService.findBySoPhong(canHoId, soPhong);
@@ -215,7 +199,7 @@ class RoomController {
       if (!phong) {
         return res
           .status(404)
-          .json({ status: "ERROR", message: "Không tìm thấy phòng" });
+          .json({ status: "ERROR", message: "Khong tim thay phong" });
       }
 
       return res.status(200).json(new OK({ metadata: phong }));
@@ -232,7 +216,7 @@ class RoomController {
       if (!mongoose.Types.ObjectId.isValid(canHoId)) {
         return res
           .status(400)
-          .json({ status: "ERROR", message: "ID căn hộ không hợp lệ" });
+          .json({ status: "ERROR", message: "ID can ho khong hop le" });
       }
 
       const result = await RoomService.countAllTrangThai(canHoId);
@@ -251,24 +235,25 @@ class RoomController {
       if (!mongoose.Types.ObjectId.isValid(canHoId)) {
         return res
           .status(400)
-          .json({ status: "ERROR", message: "ID căn hộ không hợp lệ" });
+          .json({ status: "ERROR", message: "ID can ho khong hop le" });
       }
 
       if (!trang_thai) {
         return res
           .status(400)
-          .json({ status: "ERROR", message: "Thiếu trạng thái để lọc" });
+          .json({ status: "ERROR", message: "Thieu trang thai de loc" });
       }
 
-      const filter = {
-        can_ho_id: canHoId,
-        trang_thai: trang_thai,
-      };
-
-      const phongs = await RoomService.getAll(filter, {
-        skip: Number(skip),
-        limit: Number(limit),
-      });
+      const phongs = await RoomService.getAll(
+        {
+          can_ho_id: canHoId,
+          trang_thai,
+        },
+        {
+          skip: Number(skip),
+          limit: Number(limit),
+        },
+      );
 
       return res.status(200).json(new OK({ metadata: phongs }));
     } catch (err) {

@@ -1,4 +1,5 @@
 import contractModel from "../models/contract.model.js";
+import Tenant from "../models/tenant.model.js";
 
 // In-memory store for test contracts
 const testContractStore = {};
@@ -106,7 +107,15 @@ class ContractRepository {
       return contract.toObject();
     }
 
-    return await contract.save();
+    const savedContract = await contract.save();
+
+    await Tenant.findByIdAndUpdate(savedContract.nguoi_thue_id, {
+      phong_id: savedContract.phong_id,
+      ngay_bat_dau: savedContract.ngay_bat_dau,
+      ngay_ket_thuc: savedContract.ngay_ket_thuc,
+    });
+
+    return savedContract;
   }
 
   async updateContract(contractId, updateData) {

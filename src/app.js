@@ -13,14 +13,16 @@ import interiorRouter from "./routes/interior.route.js";
 import { errorHandler } from "./middlewares/error-handler.js";
 
 const app = express();
+const viewsPath = path.resolve("views");
 
 app.use(express.json());
 app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
-app.use(express.static(path.resolve("views")));
+app.use(express.static(viewsPath));
+app.use("/views", express.static(viewsPath));
 
 app.get("/", (_req, res) => {
-  res.sendFile(path.resolve("views/dashboard/Dashboard.html"));
+  res.sendFile(path.join(viewsPath, "dashboard", "Dashboard.html"));
 });
 
 app.use("/api/rooms", roomRouter);

@@ -231,11 +231,46 @@ function formatCurrency(value) {
 }
 
 function formatContract(room) {
-  if (Array.isArray(room.hop_dong_ids) && room.hop_dong_ids.length) {
-    return `${room.hop_dong_ids.length} hợp đồng`;
+  const currentContract = room.hop_dong_hien_tai || null;
+  const currentTenant =
+    room.nguoi_thue_hien_tai || currentContract?.nguoi_thue_id || null;
+  const totalContracts = Number(room.tong_hop_dong || 0);
+
+  if (currentContract && currentTenant) {
+    const endDate = formatDate(currentContract.ngay_ket_thuc);
+    return `${currentTenant.ho_ten || "Người thuê"}${endDate !== "Chưa rõ" ? ` - đến ${endDate}` : ""}`;
+  }
+
+  if (currentContract) {
+    return `1 hợp đồng (${mapContractStatus(currentContract.trang_thai)})`;
+  }
+
+  if (totalContracts > 0) {
+    return `${totalContracts} hợp đồng`;
   }
 
   return "Không có";
+}
+
+function mapContractStatus(status) {
+  const value = String(status || "").toLowerCase();
+  if (value === "active") return "còn hiệu lực";
+  if (value === "expired") return "hết hạn";
+  if (value === "terminated") return "đã thanh lý";
+  return "chưa rõ";
+}
+
+function formatDate(value) {
+  if (!value) {
+    return "Chưa rõ";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "Chưa rõ";
+  }
+
+  return date.toLocaleDateString("vi-VN");
 }
 
 function normalizeStatus(rawStatus) {
@@ -315,7 +350,7 @@ async function parseJsonResponse(response) {
 
   try {
     return JSON.parse(rawText);
-  } catch (error) {
+  } catch {
     throw new Error(
       `API ${response.url} không trả JSON hợp lệ. Hãy kiểm tra lại apiBase hoặc cổng backend.`,
     );
