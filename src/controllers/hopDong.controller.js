@@ -117,6 +117,53 @@ class HopDongController {
       });
     }
   };
+
+  // POST /api/hop-dong/:id/terminate - Thanh lý hợp đồng
+  terminateContract = async (req, res, next) => {
+    try {
+      // Validate contract ID format
+      if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: "ID hợp đồng không hợp lệ",
+        });
+      }
+
+      const terminatedContract = await HopDongService.terminateContract(
+        req.params.id,
+        req.body,
+      );
+
+      res.status(200).json(
+        new OK({
+          message: "Hợp đồng thanh lý thành công",
+          metadata: terminatedContract,
+        }),
+      );
+    } catch (err) {
+      const isValidationError =
+        err?.name === "ValidationError" || err?.name === "CastError";
+
+      if (err?.name === "NotFoundError") {
+        return res.status(404).json({
+          status: "ERROR",
+          message: err.message,
+        });
+      }
+
+      if (isValidationError) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: err.message,
+        });
+      }
+
+      return res.status(500).json({
+        status: "ERROR",
+        message: "Internal server error",
+      });
+    }
+  };
 }
 
 export default new HopDongController();

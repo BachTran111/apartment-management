@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập - Quản Lý Căn Hộ</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/login-style.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <!-- Left Panel - Illustration -->
+      <div class="login-panel login-panel-left">
+        <div class="illustration">
+          <div class="building-icon">
+            <i class="fas fa-building"></i>
+          </div>
+          <h2>Quản Lý Căn Hộ</h2>
+          <p class="subtitle">
+            Hệ thống quản lý toàn diện cho các tòa nhà và căn hộ
+          </p>
+          <div class="features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Quản lý hợp đồng dễ dàng</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Theo dõi thanh toán tự động</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Báo cáo chi tiết và thống kê</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Hỗ trợ 24/7</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel - Login Form -->
+      <div class="login-panel login-panel-right">
+        <div class="form-wrapper">
+          <div class="logo-section">
+            <div class="logo">
+              <i class="fas fa-key"></i>
+            </div>
+            <h1>Đăng Nhập</h1>
+            <p class="welcome-text">Chào mừng quay trở lại!</p>
+          </div>
+
+          <!-- Alert Messages -->
+          <div id="alertContainer"></div>
+
+          <!-- Login Form -->
+          <form id="loginForm" class="login-form">
+            <div class="form-group">
+              <label for="username">
+                <i class="fas fa-user"></i>
+                Tên đăng nhập
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-control"
+                placeholder="Nhập tên đăng nhập"
+                required
+              />
+              <small class="error-text" id="usernameError"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="password">
+                <i class="fas fa-lock"></i>
+                Mật khẩu
+              </label>
+              <div class="password-input-group">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-control"
+                  placeholder="Nhập mật khẩu"
+                  required
+                />
+                <button
+                  type="button"
+                  class="btn-toggle-password"
+                  id="togglePassword"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <small class="error-text" id="passwordError"></small>
+            </div>
+
+            <div class="form-check remember-section">
+              <input
+                type="checkbox"
+                id="rememberMe"
+                name="rememberMe"
+                class="form-check-input"
+              />
+              <label class="form-check-label" for="rememberMe">
+                Nhớ mật khẩu của tôi
+              </label>
+              <a href="#" class="forgot-password">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" class="btn-login">
+              <span id="btnText">Đăng Nhập</span>
+              <i class="fas fa-arrow-right" id="btnIcon"></i>
+            </button>
+          </form>
+
+          <!-- Divider -->
+          <div class="divider-section">
+            <span>Chưa có tài khoản?</span>
+          </div>
+
+          <!-- Register Link -->
+          <button type="button" class="btn-register" id="btnRegister">
+            <i class="fas fa-user-plus"></i>
+            Tạo tài khoản mới
+          </button>
+
+          <!-- Footer -->
+          <div class="login-footer">
+            <p>&copy; 2024 Quản Lý Căn Hộ. Tất cả quyền được bảo lưu.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Spinner Modal -->
+    <div class="loading-modal" id="loadingModal">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/login.js"></script>
+  </body>
+</html>

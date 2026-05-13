@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const UserSchema = new Schema(
   {
-    username: {
+    email: {
       type: String,
       required: true,
       unique: true,
@@ -13,18 +13,9 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    role: {
-      type: String,
-      enum: ["admin", "staff", "tenant"],
-      default: "tenant",
-    },
-    email: {
-      type: String,
-      unique: true,
-      sparse: true,
-    },
     fullName: {
       type: String,
+      required: true,
     },
     isActive: {
       type: Boolean,

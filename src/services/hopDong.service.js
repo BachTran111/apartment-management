@@ -76,6 +76,112 @@ class HopDongService {
       throw new Error(`Service error: ${err.message}`);
     }
   }
+
+  // Thanh lý hợp đồng
+  async terminateContract(contractId, terminationData) {
+    try {
+      // Validation: check payload
+      if (!terminationData || typeof terminationData !== "object") {
+        const validationError = new Error("Invalid termination payload");
+        validationError.name = "ValidationError";
+        throw validationError;
+      }
+
+      // Validation: check ngay_thanh_ly is provided
+      if (!terminationData.ngay_thanh_ly) {
+        const validationError = new Error("ngay_thanh_ly is required");
+        validationError.name = "ValidationError";
+        throw validationError;
+      }
+
+      // Validation: parse and validate termination date
+      const ngayThanhLy = new Date(terminationData.ngay_thanh_ly);
+      if (isNaN(ngayThanhLy.getTime())) {
+        const validationError = new Error(
+          "ngay_thanh_ly định dạng không hợp lệ",
+        );
+        validationError.name = "ValidationError";
+        throw validationError;
+      }
+
+      // Get contract first to validate date range
+      const contract = await HopDongRepository.getContractById(contractId);
+
+      if (!contract) {
+        const notFoundError = new Error("Hợp đồng không được tìm thấy");
+        notFoundError.name = "NotFoundError";
+        throw notFoundError;
+      }
+
+      // Validation: check if already terminated
+      if (contract.trang_thai === "terminated") {
+        const validationError = new Error(
+          "Hợp đồng đã thanh lý trước đó, không thể thanh lý lại",
+        );
+        validationError.name = "ValidationError";
+        throw validationError;
+      }
+
+      // Validation: ngay_thanh_ly must be between ngay_bat_dau and ngay_ket_thuc
+      const ngayBatDau = new Date(contract.ngay_bat_dau);
+      const ngayKetThuc = new Date(contract.ngay_ket_thuc);
+      const ngayThanhLyCompare = new Date(ngayThanhLy);
+
+      // Normalize all dates to compare only date part (not time)
+      ngayBatDau.setHours(0, 0, 0, 0);
+      ngayKetThuc.setHours(0, 0, 0, 0);
+      ngayThanhLyCompare.setHours(0, 0, 0, 0);
+
+      if (ngayThanhLyCompare < ngayBatDau) {
+        const validationError = new Error(
+          "ngay_thanh_ly phải sau hoặc bằng ngay_bat_dau",
+        );
+        validationError.name = "ValidationError";
+        throw validationError;
+      }
+
+      if (ngayThanhLyCompare > ngayKetThuc) {
+        const validationError = new Error(
+          "ngay_thanh_ly phải trước hoặc bằng ngay_ket_thuc",
+        );
+        validationError.name = "ValidationError";
+        throw validationError;
+      }
+
+      // Validation: chi_phi_phat_sinh validation
+      const chiPhi = parseFloat(terminationData.chi_phi_phat_sinh);
+
+      if (isNaN(chiPhi)) {
+        const validationError = new Error(
+          "chi_phi_phat_sinh phải là một số hợp lệ",
+        );
+        validationError.name = "ValidationError";
+        throw validationError;
+      }
+
+      if (chiPhi < 0) {
+        const validationError = new Error(
+          "chi_phi_phat_sinh không thể là giá trị âm",
+        );
+        validationError.name = "ValidationError";
+        throw validationError;
+      }
+
+      // Prepare termination data
+      const updateData = {
+        ngay_thanh_ly: ngayThanhLyCompare,
+        chi_phi_phat_sinh: chiPhi,
+      };
+
+      if (terminationData.ghi_chu) {
+        updateData.ghi_chu = terminationData.ghi_chu;
+      }
+
+      return await HopDongRepository.terminateContract(contractId, updateData);
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 export default new HopDongService();

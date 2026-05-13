@@ -36,8 +36,21 @@ const HopDongSchema = new Schema(
     },
     trang_thai: {
       type: String,
-      enum: ["active", "expired"],
+      enum: ["active", "expired", "terminated"],
       default: "active",
+    },
+    ngay_thanh_ly: {
+      type: Date,
+      default: null,
+    },
+    chi_phi_phat_sinh: {
+      type: Number,
+      min: [0, "chi_phi_phat_sinh cannot be negative"],
+      default: 0,
+    },
+    ghi_chu: {
+      type: String,
+      default: null,
     },
   },
   { collection: "HopDong" },

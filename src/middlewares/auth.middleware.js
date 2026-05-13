@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const SECRET = "super_secret_key";
+const SECRET = process.env.JWT_SECRET || "super_secret_key";
 
 export const authenticateToken = (req, res, next) => {
   try {
@@ -34,10 +34,11 @@ export const authorizeRole = (...roles) => {
       });
     }
 
-    if (!roles.includes(req.user.role)) {
+    const userRole = req.user.role || "USER";
+    if (!roles.includes(userRole)) {
       return res.status(403).json({
         status: "ERROR",
-        message: "Access denied",
+        message: "Access denied - insufficient permissions",
       });
     }
 
