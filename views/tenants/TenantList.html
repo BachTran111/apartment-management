@@ -15,9 +15,7 @@
     <div class="main-container">
       <section class="header-section">
         <div class="header-info header-copy">
-          <a class="back-link" href="../dashboard/Dashboard.html"
-            >← Về dashboard</a
-          >
+          <a class="back-link" href="../dashboard/Dashboard.html">← Về dashboard</a>
           <h1>
             <i
               class="fas fa-users"
@@ -25,7 +23,7 @@
             ></i>
             Quản lý người thuê
           </h1>
-          <p>Theo dõi và quản lý thông tin các cư dân trong các căn hộ</p>
+          <p>Theo dõi và quản lý thông tin cư dân trong các căn hộ</p>
         </div>
         <button class="btn-add-tenant" onclick="openModal()">
           <i class="fas fa-plus"></i>
@@ -77,48 +75,7 @@
             placeholder="Tìm kiếm theo tên, CMND/CCCD, phòng..."
           />
         </div>
-        <div class="controls-actions">
-          <button class="btn-control" id="filterStatusBtn">
-            <i class="fas fa-filter"></i>
-            Trạng thái
-          </button>
-          <button class="btn-control btn-download" id="downloadBtn">
-            <i class="fas fa-download"></i>
-            Xuất danh sách
-          </button>
-        </div>
       </section>
-
-      <div class="filter-modal" id="statusFilterModal">
-        <div class="filter-popup">
-          <div class="filter-header">
-            <h3>Lọc theo trạng thái</h3>
-            <button class="close-btn">&times;</button>
-          </div>
-          <div class="filter-options">
-            <label class="filter-option">
-              <input type="radio" name="status-filter" value="all" checked />
-              <span>Tất cả</span>
-            </label>
-            <label class="filter-option">
-              <input type="radio" name="status-filter" value="active" />
-              <span>Hoạt động</span>
-            </label>
-            <label class="filter-option">
-              <input type="radio" name="status-filter" value="expiring" />
-              <span>Sắp hết hạn</span>
-            </label>
-            <label class="filter-option">
-              <input type="radio" name="status-filter" value="expired" />
-              <span>Hết hạn</span>
-            </label>
-          </div>
-          <div class="filter-actions">
-            <button class="btn-cancel">Hủy</button>
-            <button class="btn-apply">Áp dụng</button>
-          </div>
-        </div>
-      </div>
 
       <section class="table-section">
         <div class="table-responsive">
@@ -135,20 +92,12 @@
                 <th>Hành động</th>
               </tr>
             </thead>
-            <tbody id="tenantTableBody">
-              <!-- Data will be populated by JS -->
-            </tbody>
+            <tbody id="tenantTableBody"></tbody>
           </table>
         </div>
       </section>
-
-      <section class="pagination-section">
-        <div id="paginationInfo" class="pagination-info">Đang tải...</div>
-        <div id="paginationButtons" class="pagination"></div>
-      </section>
     </div>
 
-    <!-- Modal -->
     <div class="modal" id="tenantModal">
       <div class="modal-content">
         <div class="modal-header">
@@ -163,33 +112,18 @@
           <div class="form-row">
             <div class="form-group">
               <label>Họ và tên *</label>
-              <input
-                type="text"
-                id="formName"
-                placeholder="Nguyễn Văn A"
-                required
-              />
+              <input type="text" id="formName" placeholder="Nguyễn Văn A" required />
             </div>
             <div class="form-group">
               <label>Số điện thoại *</label>
-              <input
-                type="tel"
-                id="formPhone"
-                placeholder="0901234567"
-                required
-              />
+              <input type="tel" id="formPhone" placeholder="0901234567" required />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>CMND/CCCD *</label>
-              <input
-                type="text"
-                id="formIdCard"
-                placeholder="123456789"
-                required
-              />
+              <input type="text" id="formIdCard" placeholder="123456789" required />
             </div>
             <div class="form-group">
               <label>Tuổi</label>
@@ -203,45 +137,45 @@
               <input type="text" id="formHometown" placeholder="Hà Nội" />
             </div>
             <div class="form-group">
-              <label>Nghề nghiệp</label>
-              <input type="text" id="formOccupation" placeholder="Kỹ sư" />
+              <label>Email</label>
+              <input type="email" id="formEmail" placeholder="tenant@example.com" />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Căn hộ *</label>
-              <select id="formApartment" required>
-                <option value="">-- Chọn căn hộ --</option>
+              <label>Căn hộ</label>
+              <select id="formApartment" disabled>
+                <option value="">Quản lý tại module hợp đồng</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Phòng *</label>
-              <select id="formRoom" required>
-                <option value="">-- Chọn phòng --</option>
+              <label>Phòng</label>
+              <select id="formRoom" disabled>
+                <option value="">Quản lý tại module hợp đồng</option>
               </select>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Ngày bắt đầu *</label>
-              <input type="date" id="formStartDate" required />
+              <label>Ngày bắt đầu</label>
+              <input type="date" id="formStartDate" disabled />
             </div>
             <div class="form-group">
-              <label>Ngày kết thúc *</label>
-              <input type="date" id="formEndDate" required />
+              <label>Ngày kết thúc</label>
+              <input type="date" id="formEndDate" disabled />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Tiền phòng (VNĐ) *</label>
+              <label>Tiền phòng (VNĐ)</label>
               <input
                 type="number"
                 id="formRentPrice"
-                placeholder="3000000"
-                required
+                placeholder="Quản lý tại module hợp đồng"
+                disabled
               />
             </div>
             <div class="form-group">
@@ -249,10 +183,14 @@
               <input
                 type="text"
                 id="formEmergencyContact"
-                placeholder="Họ tên"
+                placeholder="Họ tên hoặc số điện thoại"
               />
             </div>
           </div>
+
+          <p style="margin: 0; color: #7c6f64; font-size: 13px">
+            Các thông tin căn hộ, phòng, thời hạn thuê và tiền phòng được quản lý tại module hợp đồng.
+          </p>
 
           <div class="form-actions">
             <button type="button" class="btn-cancel" onclick="closeModal()">

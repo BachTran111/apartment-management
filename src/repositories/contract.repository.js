@@ -120,9 +120,41 @@ class ContractRepository {
 
   async updateContract(contractId, updateData) {
     try {
-      return await contractModel.findByIdAndUpdate(contractId, updateData, {
-        new: true,
+      const existingContract = await contractModel.findById(contractId);
+      const updatedContract = await contractModel.findByIdAndUpdate(
+        contractId,
+        updateData,
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedContract) {
+        return null;
+      }
+
+      if (
+        existingContract &&
+        String(existingContract.nguoi_thue_id) !== String(updatedContract.nguoi_thue_id)
+      ) {
+        await Tenant.findByIdAndUpdate(existingContract.nguoi_thue_id, {
+          $unset: {
+            phong_id: "",
+            ngay_bat_dau: "",
+            ngay_ket_thuc: "",
+          },
+          trang_thai: "inactive",
+        });
+      }
+
+      await Tenant.findByIdAndUpdate(updatedContract.nguoi_thue_id, {
+        phong_id: updatedContract.phong_id,
+        ngay_bat_dau: updatedContract.ngay_bat_dau,
+        ngay_ket_thuc: updatedContract.ngay_ket_thuc,
+        trang_thai: updatedContract.trang_thai === "active" ? "active" : "inactive",
       });
+
+      return updatedContract;
     } catch (err) {
       throw new Error(`Database error: ${err.message}`);
     }
@@ -130,7 +162,20 @@ class ContractRepository {
 
   async deleteContract(contractId) {
     try {
-      return await contractModel.findByIdAndDelete(contractId);
+      const contract = await contractModel.findByIdAndDelete(contractId);
+
+      if (contract?.nguoi_thue_id) {
+        await Tenant.findByIdAndUpdate(contract.nguoi_thue_id, {
+          $unset: {
+            phong_id: "",
+            ngay_bat_dau: "",
+            ngay_ket_thuc: "",
+          },
+          trang_thai: "inactive",
+        });
+      }
+
+      return contract;
     } catch (err) {
       throw new Error(`Database error: ${err.message}`);
     }
@@ -171,7 +216,13 @@ class ContractRepository {
         contract.ghi_chu = terminationData.ghi_chu;
       }
 
-      return await contract.save();
+      const terminatedContract = await contract.save();
+
+      await Tenant.findByIdAndUpdate(terminatedContract.nguoi_thue_id, {
+        trang_thai: "inactive",
+      });
+
+      return terminatedContract;
     } catch (err) {
       throw new Error(`Database error: ${err.message}`);
     }
