@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý hóa đơn | Admin Dashboard</title>
+    <link rel="stylesheet" href="./css/invoice-mgt.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div style="margin-bottom: 16px">
+        <a
+          href="../dashboard/Dashboard.html"
+          class="btn btn-outline"
+          style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none"
+        >
+          ← Về dashboard
+        </a>
+      </div>
+      <div class="header">
+        <h1>Quản lý hóa đơn</h1>
+        <button
+          class="btn btn-primary"
+          onclick="window.location.href = 'BillForm.html'"
+        >
+          <span style="font-size: 1.2rem">+</span> Tạo hóa đơn
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="filter-section">
+          <input
+            type="text"
+            id="searchInput"
+            class="form-control"
+            placeholder="Tìm theo người thuê, phòng, ghi chú..."
+          />
+
+          <select id="statusFilter" class="form-control">
+            <option value="">Tất cả trạng thái</option>
+            <option value="ĐÃ THANH TOÁN">Đã thanh toán</option>
+            <option value="CHƯA THANH TOÁN">Chưa thanh toán</option>
+            <option value="QUÁ HẠN">Quá hạn</option>
+          </select>
+
+          <button
+            id="clearBtn"
+            class="btn btn-outline"
+            onclick="clearFilters()"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-responsive">
+          <table id="invoiceTable">
+            <thead>
+              <tr>
+                <th>Người thuê / Phòng</th>
+                <th>Số tiền</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination-container">
+          <div id="paginationInfo" class="pagination-info">Đang tải...</div>
+          <div id="paginationButtons" class="pagination"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/invoice-mgt.js"></script>
+  </body>
+</html>

@@ -3,13 +3,23 @@ const LABELS = {
   occupied: "Đang có người ở",
   available: "Phòng trống",
   maintenance: "Đang bảo trì",
-  inactive: "Không sử dụng"
+  inactive: "Không sử dụng",
 };
 
 const DEFAULT_STATS = [
   { key: "occupied", markerClass: "filled", label: LABELS.occupied, value: 0 },
-  { key: "available", markerClass: "outline", label: LABELS.available, value: 0 },
-  { key: "maintenance", markerClass: "filled accent", label: LABELS.maintenance, value: 0 }
+  {
+    key: "available",
+    markerClass: "outline",
+    label: LABELS.available,
+    value: 0,
+  },
+  {
+    key: "maintenance",
+    markerClass: "filled accent",
+    label: LABELS.maintenance,
+    value: 0,
+  },
 ];
 
 const bodyDataset = document.body.dataset;
@@ -19,6 +29,8 @@ const roomStatus = document.getElementById("roomStatus");
 const statGrid = document.getElementById("statGrid");
 const roomTableBody = document.getElementById("roomTableBody");
 const roomListNotice = document.getElementById("roomListNotice");
+const btnAddRoom = document.getElementById("btnAddRoom");
+const menuBtn = document.querySelector(".icon-button");
 
 const apiBase = (bodyDataset.apiBase || params.get("apiBase") || "").trim();
 const canHoId = (bodyDataset.canHoId || params.get("canHoId") || "").trim();
@@ -35,14 +47,14 @@ function resolveApiBase() {
 
   const currentHost = window.location.hostname || "localhost";
   if (window.location.port === "5000") {
-    return `${window.location.origin}/api/phongs`;
+    return `${window.location.origin}/api/rooms`;
   }
 
   if (window.location.protocol.startsWith("http")) {
-    return `${window.location.protocol}//${currentHost}:5000/api/phongs`;
+    return `${window.location.protocol}//${currentHost}:5000/api/rooms`;
   }
 
-  return "http://localhost:5000/api/phongs";
+  return "http://localhost:5000/api/rooms";
 }
 
 async function boot() {
@@ -53,6 +65,12 @@ async function boot() {
     setNotice("Cần thêm canHoId trong URL, ví dụ: ?canHoId=<mongo-id>", true);
     renderTableMessage("Chưa có canHoId để tải dữ liệu.");
     return;
+  }
+
+  if (btnAddRoom) {
+    btnAddRoom.addEventListener("click", () => {
+      window.location.href = `RoomForm.html?canHoId=${canHoId}`;
+    });
   }
 
   roomSearch.addEventListener("input", debounce(loadRooms, 300));
@@ -66,7 +84,9 @@ async function boot() {
 
 async function loadStats() {
   try {
-    const response = await fetch(`${resolvedApiBase}/canho/${canHoId}/count-all`);
+    const response = await fetch(
+      `${resolvedApiBase}/apartment/${canHoId}/count-all`,
+    );
     const payload = await parseJsonResponse(response);
 
     if (!response.ok) {
@@ -75,7 +95,9 @@ async function loadStats() {
 
     const counts = Array.isArray(payload.metadata) ? payload.metadata : [];
     const mapped = DEFAULT_STATS.map((item) => {
-      const found = counts.find((entry) => normalizeStatus(entry._id).key === item.key);
+      const found = counts.find(
+        (entry) => normalizeStatus(entry._id).key === item.key,
+      );
       return { ...item, value: found?.count || 0 };
     });
 
@@ -90,7 +112,7 @@ async function fetchAllRooms() {
     setNotice(`Đang tải dữ liệu phòng cho căn hộ ${canHoId}...`);
     renderTableMessage("Đang tải danh sách phòng...");
 
-    const response = await fetch(`${resolvedApiBase}/canho/${canHoId}`);
+    const response = await fetch(`${resolvedApiBase}/apartment/${canHoId}`);
     const payload = await parseJsonResponse(response);
 
     if (!response.ok) {
@@ -118,13 +140,15 @@ function loadRooms() {
     const roomNumber = String(room.so_phong || "").toLowerCase();
     const normalizedStatus = normalizeStatus(room.trang_thai).label;
     const matchKeyword = !keyword || roomNumber.includes(keyword);
-    const matchStatus = selectedStatus === LABELS.all || normalizedStatus === selectedStatus;
+    const matchStatus =
+      selectedStatus === LABELS.all || normalizedStatus === selectedStatus;
     return matchKeyword && matchStatus;
   });
 
   renderRooms(filteredRooms);
 
-  const label = selectedStatus === LABELS.all ? "tất cả trạng thái" : selectedStatus;
+  const label =
+    selectedStatus === LABELS.all ? "tất cả trạng thái" : selectedStatus;
   setNotice(
     `Đã tải ${filteredRooms.length}/${allRooms.length} phòng (${label}${keyword ? `, từ khóa: ${keyword}` : ""}).`,
   );
@@ -163,13 +187,20 @@ function renderRooms(rooms) {
           <td>
             <div class="actions">
               <button class="table-action" type="button" data-room-id="${room._id || ""}" data-detail-url="${escapeAttribute(detailUrl)}">Chi tiết</button>
-              <button class="table-action" type="button" data-room-id="${room._id || ""}">Sửa</button>
+              <button class="table-action btn-edit" type="button" data-room-id="${room._id}">Sửa</button>
             </div>
           </td>
         </tr>
       `;
     })
     .join("");
+
+  document.querySelectorAll(".btn-edit").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.roomId;
+      window.location.href = `RoomForm.html?canHoId=${canHoId}&phongId=${id}`;
+    });
+  });
 }
 
 roomTableBody.addEventListener("click", (event) => {
@@ -215,15 +246,19 @@ function normalizeStatus(rawStatus) {
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 
-  if (compact.includes("bao tri") || source.includes("bảo trì") || source.includes("maintenance")) {
+  if (
+    compact.includes("bao tri") ||
+    source.includes("bảo trì") ||
+    source.includes("maintenance")
+  ) {
     return { key: "maintenance", label: LABELS.maintenance };
   }
 
   if (
-    compact.includes("co nguoi")
-    || compact.includes("nguoi o")
-    || source.includes("người ở")
-    || source.includes("rented")
+    compact.includes("co nguoi") ||
+    compact.includes("nguoi o") ||
+    source.includes("người ở") ||
+    source.includes("rented")
   ) {
     return { key: "occupied", label: LABELS.occupied };
   }
@@ -286,3 +321,9 @@ async function parseJsonResponse(response) {
     );
   }
 }
+
+menuBtn.addEventListener("click", () => {
+  if (!canHoId) return;
+
+  window.location.href = `../apartments/apartment-detail.html?id=${canHoId}`;
+});

@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi tiết căn hộ - Quản lý</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --primary-orange: #f39c12;
+        --bg-gray: #f4f7f6;
+        --text-dark: #333;
+        --text-light: #777;
+        --border-color: #e0e0e0;
+        --white: #ffffff;
+        --modal-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-gray);
+        margin: 0;
+        padding: 0;
+        color: var(--text-dark);
+        min-height: 100vh;
+      }
+
+      .top-nav {
+        background: var(--white);
+        padding: 10px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .nav-left a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--text-dark);
+        text-decoration: none;
+        font-size: 13px;
+      }
+
+      .nav-left a:hover {
+        background: #f2f2f2;
+      }
+
+      .nav-right {
+        display: flex;
+        gap: 20px;
+        color: var(--text-light);
+      }
+
+      .page-shell {
+        min-height: calc(100vh - 58px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+      }
+
+      .modal-backdrop {
+        width: 100%;
+        max-width: 1040px;
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(4px);
+        border-radius: 18px;
+        padding: 20px;
+      }
+
+      .modal-card {
+        background: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        box-shadow: var(--modal-shadow);
+        overflow: hidden;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border-color);
+        background: #fff;
+      }
+
+      .modal-title {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .modal-title strong {
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .modal-title span {
+        font-size: 13px;
+        color: var(--text-light);
+      }
+
+      .btn-close {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 18px;
+        color: var(--text-light);
+        padding: 6px 8px;
+        border-radius: 8px;
+      }
+
+      .btn-close:hover {
+        color: var(--text-dark);
+        background: #f2f2f2;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      .page-title {
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin: 0 0 22px;
+        border-left: 4px solid var(--primary-orange);
+        padding-left: 10px;
+      }
+
+      .section-card {
+        background: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-bottom: 18px;
+        padding: 20px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-dark);
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+
+      .icon-circle {
+        background: var(--primary-orange);
+        color: white;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        flex: 0 0 auto;
+      }
+
+      .info-group {
+        margin-bottom: 15px;
+      }
+
+      .info-row {
+        display: flex;
+        margin-bottom: 12px;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .info-label {
+        width: 150px;
+        font-size: 13px;
+        color: var(--text-light);
+        flex: 0 0 150px;
+      }
+
+      .info-value {
+        flex: 1;
+        padding: 10px 12px;
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .stat-box {
+        border: 1px solid var(--border-color);
+        padding: 18px;
+        text-align: center;
+        border-radius: 10px;
+        background: #fff;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 11px;
+        color: var(--text-light);
+        text-transform: uppercase;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        background: #fff;
+      }
+
+      th {
+        background: #f8f9fa;
+        text-align: left;
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      td {
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        vertical-align: top;
+      }
+
+      .empty-state {
+        text-align: center;
+        color: var(--text-light);
+        padding: 18px;
+      }
+
+      .detail-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 20px 20px;
+        border-top: 1px solid var(--border-color);
+        background: #fff;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        transition: 0.2s ease;
+      }
+
+      .btn-black {
+        background: #111;
+        color: #fff;
+      }
+
+      .btn-black:hover {
+        opacity: 0.92;
+      }
+
+      .btn-white {
+        background: #fff;
+        color: #333;
+        border: 1px solid var(--border-color);
+      }
+
+      .btn-white:hover {
+        background: #f8f8f8;
+      }
+
+      .btn-primary {
+        background: var(--primary-orange);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        filter: brightness(0.96);
+      }
+
+      .btn-outline {
+        background: #fff;
+        color: var(--text-dark);
+        border: 1px solid var(--border-color);
+      }
+
+      .btn-outline:hover {
+        background: #fafafa;
+      }
+
+      .row-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .form-field.full {
+        grid-column: 1 / -1;
+      }
+
+      .form-field label {
+        font-size: 13px;
+        color: var(--text-light);
+        font-weight: 500;
+      }
+
+      .form-control {
+        width: 100%;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 11px 12px;
+        font: inherit;
+        outline: none;
+        background: #fff;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-orange);
+        box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.12);
+      }
+
+      .error-msg,
+      .no-results {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 16px;
+        color: #b00020;
+      }
+
+      .loading-box {
+        background: #fff;
+        border: 1px dashed var(--border-color);
+        border-radius: 10px;
+        padding: 18px;
+        color: var(--text-light);
+      }
+
+      @media (max-width: 900px) {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .info-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .info-label {
+          width: auto;
+          flex: 0 0 auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="top-nav">
+      <div class="nav-left">
+        <a href="../dashboard/Dashboard.html">← Về dashboard</a>
+        <i class="fa-solid fa-bars"></i> QUẢN LÝ CĂN HỘ
+      </div>
+      <div class="nav-right">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <i class="fa-regular fa-circle-user"></i>
+      </div>
+    </nav>
+
+    <div class="page-shell">
+      <div class="modal-backdrop">
+        <div class="modal-card">
+          <div class="modal-header">
+            <div class="modal-title">
+              <strong>Chi tiết căn hộ</strong>
+              <span>Xem thông tin và quản lý nhanh trong modal</span>
+            </div>
+            <button
+              id="btnCloseModal"
+              class="btn-close"
+              type="button"
+              aria-label="Đóng"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="container">
+              <div id="apartment-detail">
+                <div class="loading-box">Đang tải thông tin căn hộ...</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-footer">
+            <a
+              href="/views/apartments/apartment-list.html"
+              class="btn btn-white"
+            >
+              <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+            </a>
+
+            <div class="row-actions">
+              <a id="btnRoomManagement" href="#" class="btn btn-primary">
+                <i class="fa-solid fa-door-open"></i> Quản lý phòng căn hộ này
+              </a>
+              <button id="btnToggleEdit" type="button" class="btn btn-black">
+                <i class="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/apartment-detail.js"></script>
+  </body>
+</html>

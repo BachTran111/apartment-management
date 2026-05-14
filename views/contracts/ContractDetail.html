@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi tiết hợp đồng</title>
+    <link rel="stylesheet" href="./css/contract-detail.css" />
+  </head>
+  <body>
+    <main class="contract-detail-page">
+      <section class="contract-detail-shell">
+        <header class="detail-hero">
+          <div class="hero-copy">
+            <a class="back-link" href="./ContractList.html"
+              >← Về danh sách hợp đồng</a
+            >
+            <p class="eyebrow">Xem chi tiết hợp đồng</p>
+            <h1 id="contractTitle">Đang tải hợp đồng...</h1>
+            <p class="hero-note" id="contractNote">
+              Thông tin hợp đồng sẽ hiển thị sau khi tải xong.
+            </p>
+          </div>
+
+          <div class="hero-actions">
+            <button class="ghost-button" type="button" id="refreshButton">
+              Làm mới
+            </button>
+            <a class="ghost-button" id="editContractLink" href="#">Chỉnh sửa</a>
+            <a class="ghost-button" id="terminateContractLink" href="#"
+              >Thanh lý</a
+            >
+            <a class="primary-button" href="./ContractList.html"
+              >Quay lại danh sách</a
+            >
+          </div>
+        </header>
+
+        <section class="status-strip" id="statusStrip">
+          <div class="status-block">
+            <span class="status-label">Trạng thái</span>
+            <strong id="contractStatus">Đang tải...</strong>
+          </div>
+          <div class="status-block">
+            <span class="status-label">Ngày bắt đầu</span>
+            <strong id="startDate">—</strong>
+          </div>
+          <div class="status-block">
+            <span class="status-label">Ngày kết thúc</span>
+            <strong id="endDate">—</strong>
+          </div>
+          <div class="status-block">
+            <span class="status-label">Còn lại</span>
+            <strong id="daysRemaining">—</strong>
+          </div>
+        </section>
+
+        <section class="summary-grid" id="summaryGrid"></section>
+
+        <section class="detail-grid">
+          <article class="detail-card detail-main-card">
+            <div class="card-head">
+              <div>
+                <p class="card-kicker">Tổng quan</p>
+                <h2>Thông tin hợp đồng</h2>
+              </div>
+            </div>
+            <div class="info-grid" id="contractInfo"></div>
+          </article>
+
+          <aside class="detail-side">
+            <article class="detail-card">
+              <div class="card-head">
+                <div>
+                  <p class="card-kicker">Người thuê</p>
+                  <h2>Thông tin khách thuê</h2>
+                </div>
+              </div>
+              <div class="person-block" id="tenantInfo"></div>
+            </article>
+
+            <article class="detail-card">
+              <div class="card-head">
+                <div>
+                  <p class="card-kicker">Căn hộ</p>
+                  <h2>Thông tin phòng</h2>
+                </div>
+              </div>
+              <div class="person-block" id="roomInfo"></div>
+            </article>
+
+            <article class="detail-card">
+              <div class="card-head">
+                <div>
+                  <p class="card-kicker">Thanh lý</p>
+                  <h2>Thông tin bổ sung</h2>
+                </div>
+              </div>
+              <div class="extra-list" id="extraInfo"></div>
+            </article>
+          </aside>
+        </section>
+
+        <section class="note-panel" id="errorPanel" hidden>
+          <h2>Không thể tải hợp đồng</h2>
+          <p id="errorMessage"></p>
+        </section>
+      </section>
+    </main>
+
+    <script src="./js/contract-detail.js"></script>
+  </body>
+</html>

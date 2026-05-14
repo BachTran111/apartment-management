@@ -3,7 +3,7 @@ const DETAIL_LABELS = {
   loading: "Đang tải...",
   contractActive: "Hiệu lực",
   contractExpired: "Hết hạn",
-  unknown: "Chưa rõ"
+  unknown: "Chưa rõ",
 };
 
 const bodyDataset = document.body.dataset;
@@ -20,7 +20,11 @@ const backToListButton = document.getElementById("backToListButton");
 const tenantDetailButton = document.getElementById("tenantDetailButton");
 
 const apiBase = (bodyDataset.apiBase || params.get("apiBase") || "").trim();
-let currentCanHoId = (bodyDataset.canHoId || params.get("canHoId") || "").trim();
+let currentCanHoId = (
+  bodyDataset.canHoId ||
+  params.get("canHoId") ||
+  ""
+).trim();
 const phongId = (params.get("phongId") || "").trim();
 const resolvedApiBase = apiBase || resolveApiBase();
 const resolvedNoiThatApiBase = resolveNoiThatApiBase();
@@ -55,7 +59,9 @@ async function boot() {
   }
 
   try {
-    const response = await fetch(`${resolvedApiBase}/${encodeURIComponent(phongId)}`);
+    const response = await fetch(
+      `${resolvedApiBase}/${encodeURIComponent(phongId)}`,
+    );
     const payload = await parseJsonResponse(response);
 
     if (!response.ok) {
@@ -63,7 +69,6 @@ async function boot() {
     }
 
     await renderDetail(payload.metadata || {});
-    setNotice(`Đã tải chi tiết phòng ${phongId}.`);
   } catch (error) {
     setNotice(error.message, true);
     renderEmptyState();
@@ -76,13 +81,13 @@ function renderLoadingState() {
     { label: "Giá thuê", value: DETAIL_LABELS.loading },
     { label: "Diện tích", value: DETAIL_LABELS.loading },
     { label: "Kết thúc hợp đồng", value: DETAIL_LABELS.loading },
-    { label: "Tình trạng", value: DETAIL_LABELS.loading }
+    { label: "Tình trạng", value: DETAIL_LABELS.loading },
   ]);
   tenantInfo.innerHTML = buildTenantFields([
     { label: "Họ và tên", value: DETAIL_LABELS.loading },
     { label: "Loại hợp đồng", value: DETAIL_LABELS.loading },
     { label: "Thời hạn hợp đồng", value: DETAIL_LABELS.loading },
-    { label: "Số điện thoại", value: DETAIL_LABELS.loading }
+    { label: "Số điện thoại", value: DETAIL_LABELS.loading },
   ]);
   historyBody.innerHTML = `<tr><td class="empty-state" colspan="4">Đang tải lịch sử hợp đồng...</td></tr>`;
   inventoryList.innerHTML = `<div class="empty-state">Đang tải nội thất...</div>`;
@@ -95,13 +100,13 @@ function renderEmptyState() {
     { label: "Giá thuê", value: DETAIL_LABELS.empty },
     { label: "Diện tích", value: DETAIL_LABELS.empty },
     { label: "Kết thúc hợp đồng", value: DETAIL_LABELS.empty },
-    { label: "Tình trạng", value: DETAIL_LABELS.empty }
+    { label: "Tình trạng", value: DETAIL_LABELS.empty },
   ]);
   tenantInfo.innerHTML = buildTenantFields([
     { label: "Họ và tên", value: DETAIL_LABELS.empty },
     { label: "Loại hợp đồng", value: DETAIL_LABELS.empty },
     { label: "Thời hạn hợp đồng", value: DETAIL_LABELS.empty },
-    { label: "Số điện thoại", value: DETAIL_LABELS.empty }
+    { label: "Số điện thoại", value: DETAIL_LABELS.empty },
   ]);
   historyBody.innerHTML = `<tr><td class="empty-state" colspan="4">Chưa có lịch sử hợp đồng.</td></tr>`;
   inventoryList.innerHTML = `<div class="empty-state">Chưa có nội thất.</div>`;
@@ -109,26 +114,35 @@ function renderEmptyState() {
 }
 
 async function renderDetail(metadata) {
-  const phong = metadata.phong || {};
   const noiThat = await resolveFurniture(metadata);
-  const nguoiThue = metadata.nguoiThue;
-  const hopDong = Array.isArray(metadata.hopDong) ? metadata.hopDong : [];
+  const phong = metadata.phong || {};
+
+  // Lấy từ hop_dong_ids
+  const hopDong = Array.isArray(phong.hop_dong_ids) ? phong.hop_dong_ids : [];
+
+  // Lấy người thuê từ hợp đồng đầu tiên
+  const nguoiThue = hopDong.length > 0 ? hopDong[0].nguoi_thue_id : null;
   currentCanHoId = currentCanHoId || String(phong.can_ho_id || "").trim();
 
-  roomTitle.textContent = phong.so_phong ? `Phòng ${phong.so_phong}` : "Chi tiết phòng";
+  roomTitle.textContent = phong.so_phong
+    ? `Phòng ${phong.so_phong}`
+    : "Chi tiết phòng";
 
   summaryGrid.innerHTML = buildInfoCards([
     { label: "Giá thuê", value: formatCurrency(phong.gia) },
     { label: "Diện tích", value: formatArea(phong.dien_tich) },
     { label: "Kết thúc hợp đồng", value: getContractEndDate(hopDong) },
-    { label: "Tình trạng", value: normalizeStatus(phong.trang_thai).label }
+    { label: "Tình trạng", value: normalizeStatus(phong.trang_thai).label },
   ]);
 
   tenantInfo.innerHTML = buildTenantFields([
     { label: "Họ và tên", value: nguoiThue?.ho_ten || DETAIL_LABELS.empty },
     { label: "Loại hợp đồng", value: getContractType(hopDong) },
     { label: "Thời hạn hợp đồng", value: getContractDuration(hopDong) },
-    { label: "Số điện thoại", value: nguoiThue?.so_dien_thoai || DETAIL_LABELS.empty }
+    {
+      label: "Số điện thoại",
+      value: nguoiThue?.so_dien_thoai || DETAIL_LABELS.empty,
+    },
   ]);
 
   historyBody.innerHTML = hopDong.length
@@ -215,18 +229,18 @@ function resolveApiBase() {
 
   const currentHost = window.location.hostname || "localhost";
   if (window.location.port === "5000") {
-    return `${window.location.origin}/api/phongs`;
+    return `${window.location.origin}/api/rooms`;
   }
 
   if (window.location.protocol.startsWith("http")) {
-    return `${window.location.protocol}//${currentHost}:5000/api/phongs`;
+    return `${window.location.protocol}//${currentHost}:5000/api/rooms`;
   }
 
-  return "http://localhost:5000/api/phongs";
+  return "http://localhost:5000/api/rooms";
 }
 
 function resolveNoiThatApiBase() {
-  return resolvedApiBase.replace(/\/api\/phongs$/, "/api/noithat");
+  return resolvedApiBase.replace(/\/api\/rooms$/, "/api/noithat");
 }
 
 async function resolveFurniture(metadata) {
@@ -245,7 +259,9 @@ async function resolveFurniture(metadata) {
   const items = await Promise.all(
     furnitureIds.map(async (id) => {
       try {
-        const response = await fetch(`${resolvedNoiThatApiBase}/${encodeURIComponent(id)}`);
+        const response = await fetch(
+          `${resolvedNoiThatApiBase}/${encodeURIComponent(id)}`,
+        );
         const payload = await parseJsonResponse(response);
         if (!response.ok) {
           return null;
@@ -284,7 +300,12 @@ function renderGallery(phong) {
 
 function getInventoryIconClass(name) {
   const value = String(name || "").toLowerCase();
-  if (value.includes("điều hòa") || value.includes("dieu hoa") || value.includes("máy lạnh") || value.includes("may lanh")) {
+  if (
+    value.includes("điều hòa") ||
+    value.includes("dieu hoa") ||
+    value.includes("máy lạnh") ||
+    value.includes("may lanh")
+  ) {
     return "snow";
   }
   if (value.includes("đèn") || value.includes("den")) {
@@ -321,20 +342,26 @@ function getContractDuration(contracts) {
 function formatContractRange(contract) {
   const start = formatDate(contract.ngay_bat_dau);
   const end = formatDate(contract.ngay_ket_thuc);
-  if (start === DETAIL_LABELS.empty && end === DETAIL_LABELS.empty) return DETAIL_LABELS.empty;
+  if (start === DETAIL_LABELS.empty && end === DETAIL_LABELS.empty)
+    return DETAIL_LABELS.empty;
   return `${start} - ${end}`;
 }
 
 function mapContractStatus(status) {
   const value = String(status || "").toLowerCase();
-  if (value.includes("hết") || value.includes("het") || value.includes("expired")) {
+  if (
+    value.includes("hết") ||
+    value.includes("het") ||
+    value.includes("expired")
+  ) {
     return { kind: "expired", label: DETAIL_LABELS.contractExpired };
   }
   return { kind: "active", label: status || DETAIL_LABELS.contractActive };
 }
 
 function formatArea(value) {
-  if (value === undefined || value === null || value === "") return DETAIL_LABELS.empty;
+  if (value === undefined || value === null || value === "")
+    return DETAIL_LABELS.empty;
   return `${value} m²`;
 }
 
@@ -363,14 +390,18 @@ function normalizeStatus(rawStatus) {
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 
-  if (compact.includes("bao tri") || source.includes("bảo trì") || source.includes("maintenance")) {
+  if (
+    compact.includes("bao tri") ||
+    source.includes("bảo trì") ||
+    source.includes("maintenance")
+  ) {
     return { key: "maintenance", label: "Đang bảo trì" };
   }
   if (
-    compact.includes("co nguoi")
-    || compact.includes("nguoi o")
-    || source.includes("người ở")
-    || source.includes("rented")
+    compact.includes("co nguoi") ||
+    compact.includes("nguoi o") ||
+    source.includes("người ở") ||
+    source.includes("rented")
   ) {
     return { key: "occupied", label: "Đang có người ở" };
   }

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thanh lý hợp đồng</title>
+    <link rel="stylesheet" href="./css/contract-action-form.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="card">
+        <a class="back-link" id="backLink" href="./ContractDetail.html"
+          >← Về chi tiết hợp đồng</a
+        >
+        <p class="eyebrow">Hợp đồng</p>
+        <h1 id="pageTitle">Thanh lý hợp đồng</h1>
+        <p class="page-note" id="pageNote">
+          Đang tải dữ liệu hợp đồng để thanh lý...
+        </p>
+
+        <form id="terminateForm">
+          <div class="grid">
+            <div class="field">
+              <label for="ngay_thanh_ly">Ngày thanh lý</label>
+              <input
+                type="date"
+                id="ngay_thanh_ly"
+                name="ngay_thanh_ly"
+                required
+              />
+              <span class="hint"
+                >Phải nằm trong khoảng ngày bắt đầu và ngày kết thúc hợp
+                đồng.</span
+              >
+            </div>
+
+            <div class="field">
+              <label for="chi_phi_phat_sinh">Chi phí phát sinh</label>
+              <input
+                type="number"
+                id="chi_phi_phat_sinh"
+                name="chi_phi_phat_sinh"
+                min="0"
+                step="1000"
+                placeholder="Ví dụ: 500000"
+                required
+              />
+              <span class="hint"
+                >Nhập tổng chi phí phát sinh khi thanh lý.</span
+              >
+            </div>
+
+            <div class="field full">
+              <label for="ghi_chu_thanh_ly">Ghi chú</label>
+              <textarea
+                id="ghi_chu_thanh_ly"
+                name="ghi_chu"
+                rows="4"
+                placeholder="Ghi chú thêm khi thanh lý hợp đồng"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              id="fillTodayButton"
+            >
+              Điền hôm nay
+            </button>
+            <a
+              class="btn btn-secondary"
+              id="cancelLink"
+              href="./ContractList.html"
+              >Quay lại</a
+            >
+            <button class="btn btn-danger" type="submit" id="terminateButton">
+              Thanh lý hợp đồng
+            </button>
+          </div>
+
+          <p class="message" id="terminationNote">
+            Hành động này sẽ chuyển trạng thái hợp đồng sang đã thanh lý.
+          </p>
+          <div
+            id="terminationFormMessage"
+            class="message"
+            aria-live="polite"
+          ></div>
+        </form>
+      </section>
+    </main>
+
+    <script src="./js/contract-terminate.js"></script>
+  </body>
+</html>
