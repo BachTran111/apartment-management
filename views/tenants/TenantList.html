@@ -1,237 +1,271 @@
 <!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý người thuê</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/tenant-style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quản lý người thuê</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/tenant-style.css" />
-</head>
-
-<body>
-  <div class="main-container">
-    <section class="header-section">
-      <div class="header-info header-copy">
-        <a class="back-link" href="../../dashboard/Dashboard.html">← Về dashboard</a>
-        <h1>
-          <i class="fas fa-users" style="color: var(--primary-color); margin-right: 10px"></i>
-          Quản lý người thuê
-        </h1>
-        <p>Theo dõi và quản lý thông tin các cư dân trong các căn hộ</p>
-      </div>
-      <button class="btn-add-tenant" onclick="openModal()">
-        <i class="fas fa-plus"></i>
-        Thêm người thuê mới
-      </button>
-    </section>
-
-    <section class="stats-section">
-      <div class="stat-card">
-        <div class="stat-card-content">
-          <h3>Tổng người thuê</h3>
-          <div class="stat-card-value">
-            <span class="value" id="totalCount">0</span>
-            <span class="unit">người</span>
-          </div>
+  <body>
+    <div class="main-container">
+      <section class="header-section">
+        <div class="header-info header-copy">
+          <a class="back-link" href="../dashboard/Dashboard.html"
+            >← Về dashboard</a
+          >
+          <h1>
+            <i
+              class="fas fa-users"
+              style="color: var(--primary-color); margin-right: 10px"
+            ></i>
+            Quản lý người thuê
+          </h1>
+          <p>Theo dõi và quản lý thông tin các cư dân trong các căn hộ</p>
         </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-card-content">
-          <h3>Hợp đồng hoạt động</h3>
-          <div class="stat-card-value">
-            <span class="value" id="activeCount">0</span>
-            <span class="unit">bản</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-card-content">
-          <h3>Cảnh báo</h3>
-          <div class="stat-card-value">
-            <span class="value" id="warningCount">0</span>
-            <span class="unit">bản</span>
-          </div>
-        </div>
-        <div class="badge-alert">
-          <i class="fas fa-exclamation-triangle"></i>
-        </div>
-      </div>
-    </section>
-
-    <section class="controls-section">
-      <div class="search-box">
-        <i class="fas fa-magnifying-glass search-icon"></i>
-        <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên, CMND/CCCD, phòng..." />
-      </div>
-      <div class="controls-actions">
-        <button class="btn-control" id="filterStatusBtn">
-          <i class="fas fa-filter"></i>
-          Trạng thái
+        <button class="btn-add-tenant" onclick="openModal()">
+          <i class="fas fa-plus"></i>
+          Thêm người thuê mới
         </button>
-        <button class="btn-control btn-download" id="downloadBtn">
-          <i class="fas fa-download"></i>
-          Xuất danh sách
-        </button>
-      </div>
-    </section>
+      </section>
 
-    <div class="filter-modal" id="statusFilterModal">
-      <div class="filter-popup">
-        <div class="filter-header">
-          <h3>Lọc theo trạng thái</h3>
-          <button class="close-btn">&times;</button>
+      <section class="stats-section">
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <h3>Tổng người thuê</h3>
+            <div class="stat-card-value">
+              <span class="value" id="totalCount">0</span>
+              <span class="unit">người</span>
+            </div>
+          </div>
         </div>
-        <div class="filter-options">
-          <label class="filter-option">
-            <input type="radio" name="status-filter" value="all" checked />
-            <span>Tất cả</span>
-          </label>
-          <label class="filter-option">
-            <input type="radio" name="status-filter" value="active" />
-            <span>Hoạt động</span>
-          </label>
-          <label class="filter-option">
-            <input type="radio" name="status-filter" value="expiring" />
-            <span>Sắp hết hạn</span>
-          </label>
-          <label class="filter-option">
-            <input type="radio" name="status-filter" value="expired" />
-            <span>Hết hạn</span>
-          </label>
+
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <h3>Hợp đồng hoạt động</h3>
+            <div class="stat-card-value">
+              <span class="value" id="activeCount">0</span>
+              <span class="unit">bản</span>
+            </div>
+          </div>
         </div>
-        <div class="filter-actions">
-          <button class="btn-cancel">Hủy</button>
-          <button class="btn-apply">Áp dụng</button>
+
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <h3>Cảnh báo</h3>
+            <div class="stat-card-value">
+              <span class="value" id="warningCount">0</span>
+              <span class="unit">bản</span>
+            </div>
+          </div>
+          <div class="badge-alert">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
         </div>
+      </section>
+
+      <section class="controls-section">
+        <div class="search-box">
+          <i class="fas fa-magnifying-glass search-icon"></i>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Tìm kiếm theo tên, CMND/CCCD, phòng..."
+          />
+        </div>
+        <div class="controls-actions">
+          <button class="btn-control" id="filterStatusBtn">
+            <i class="fas fa-filter"></i>
+            Trạng thái
+          </button>
+          <button class="btn-control btn-download" id="downloadBtn">
+            <i class="fas fa-download"></i>
+            Xuất danh sách
+          </button>
+        </div>
+      </section>
+
+      <div class="filter-modal" id="statusFilterModal">
+        <div class="filter-popup">
+          <div class="filter-header">
+            <h3>Lọc theo trạng thái</h3>
+            <button class="close-btn">&times;</button>
+          </div>
+          <div class="filter-options">
+            <label class="filter-option">
+              <input type="radio" name="status-filter" value="all" checked />
+              <span>Tất cả</span>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="status-filter" value="active" />
+              <span>Hoạt động</span>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="status-filter" value="expiring" />
+              <span>Sắp hết hạn</span>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="status-filter" value="expired" />
+              <span>Hết hạn</span>
+            </label>
+          </div>
+          <div class="filter-actions">
+            <button class="btn-cancel">Hủy</button>
+            <button class="btn-apply">Áp dụng</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="table-section">
+        <div class="table-responsive">
+          <table class="tenant-table">
+            <thead>
+              <tr>
+                <th>Họ và tên</th>
+                <th>CMND/CCCD</th>
+                <th>Phòng</th>
+                <th>Số điện thoại</th>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="tenantTableBody">
+              <!-- Data will be populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="pagination-section">
+        <div id="paginationInfo" class="pagination-info">Đang tải...</div>
+        <div id="paginationButtons" class="pagination"></div>
+      </section>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="tenantModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle">Thêm người thuê mới</h3>
+          <button class="close-btn" onclick="closeModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="tenantForm" class="modal-form">
+          <input type="hidden" id="editId" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Họ và tên *</label>
+              <input
+                type="text"
+                id="formName"
+                placeholder="Nguyễn Văn A"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Số điện thoại *</label>
+              <input
+                type="tel"
+                id="formPhone"
+                placeholder="0901234567"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>CMND/CCCD *</label>
+              <input
+                type="text"
+                id="formIdCard"
+                placeholder="123456789"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Tuổi</label>
+              <input type="number" id="formAge" placeholder="25" min="18" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Quê quán</label>
+              <input type="text" id="formHometown" placeholder="Hà Nội" />
+            </div>
+            <div class="form-group">
+              <label>Nghề nghiệp</label>
+              <input type="text" id="formOccupation" placeholder="Kỹ sư" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Căn hộ *</label>
+              <select id="formApartment" required>
+                <option value="">-- Chọn căn hộ --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Phòng *</label>
+              <select id="formRoom" required>
+                <option value="">-- Chọn phòng --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ngày bắt đầu *</label>
+              <input type="date" id="formStartDate" required />
+            </div>
+            <div class="form-group">
+              <label>Ngày kết thúc *</label>
+              <input type="date" id="formEndDate" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tiền phòng (VNĐ) *</label>
+              <input
+                type="number"
+                id="formRentPrice"
+                placeholder="3000000"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Liên hệ khẩn cấp</label>
+              <input
+                type="text"
+                id="formEmergencyContact"
+                placeholder="Họ tên"
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" onclick="closeModal()">
+              Hủy
+            </button>
+            <button type="submit" class="btn-submit">
+              <i class="fas fa-check"></i> Lưu
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
-    <section class="table-section">
-      <div class="table-responsive">
-        <table class="tenant-table">
-          <thead>
-            <tr>
-              <th>Họ và tên</th>
-              <th>CMND/CCCD</th>
-              <th>Phòng</th>
-              <th>Số điện thoại</th>
-              <th>Ngày bắt đầu</th>
-              <th>Ngày kết thúc</th>
-              <th>Trạng thái</th>
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody id="tenantTableBody">
-            <!-- Data will be populated by JS -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="pagination-section">
-      <div id="paginationInfo" class="pagination-info">Đang tải...</div>
-      <div id="paginationButtons" class="pagination"></div>
-    </section>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal" id="tenantModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modalTitle">Thêm người thuê mới</h3>
-        <button class="close-btn" onclick="closeModal()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <form id="tenantForm" class="modal-form">
-        <input type="hidden" id="editId" />
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Họ và tên *</label>
-            <input type="text" id="formName" placeholder="Nguyễn Văn A" required />
-          </div>
-          <div class="form-group">
-            <label>Số điện thoại *</label>
-            <input type="tel" id="formPhone" placeholder="0901234567" required />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>CMND/CCCD *</label>
-            <input type="text" id="formIdCard" placeholder="123456789" required />
-          </div>
-          <div class="form-group">
-            <label>Tuổi</label>
-            <input type="number" id="formAge" placeholder="25" min="18" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Quê quán</label>
-            <input type="text" id="formHometown" placeholder="Hà Nội" />
-          </div>
-          <div class="form-group">
-            <label>Nghề nghiệp</label>
-            <input type="text" id="formOccupation" placeholder="Kỹ sư" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Căn hộ *</label>
-            <select id="formApartment" required>
-              <option value="">-- Chọn căn hộ --</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Phòng *</label>
-            <select id="formRoom" required>
-              <option value="">-- Chọn phòng --</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Ngày bắt đầu *</label>
-            <input type="date" id="formStartDate" required />
-          </div>
-          <div class="form-group">
-            <label>Ngày kết thúc *</label>
-            <input type="date" id="formEndDate" required />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Tiền phòng (VNĐ) *</label>
-            <input type="number" id="formRentPrice" placeholder="3000000" required />
-          </div>
-          <div class="form-group">
-            <label>Liên hệ khẩn cấp</label>
-            <input type="text" id="formEmergencyContact" placeholder="Họ tên" />
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="closeModal()">
-            Hủy
-          </button>
-          <button type="submit" class="btn-submit">
-            <i class="fas fa-check"></i> Lưu
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script src="js/TenantList.js"></script>
-</body>
-
+    <script src="js/TenantList.js"></script>
+  </body>
 </html>

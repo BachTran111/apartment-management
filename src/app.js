@@ -11,18 +11,17 @@ import tenantRouter from "./routes/tenant.route.js";
 import billRouter from "./routes/bill.route.js";
 import interiorRouter from "./routes/interior.route.js";
 import { errorHandler } from "./middlewares/error-handler.js";
+import dashboardRoute from "./routes/dashboard.route.js";
 
 const app = express();
-const viewsPath = path.resolve("views");
 
 app.use(express.json());
 app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
-app.use(express.static(viewsPath));
-app.use("/views", express.static(viewsPath));
+app.use(express.static(path.resolve("views")));
 
 app.get("/", (_req, res) => {
-  res.sendFile(path.join(viewsPath, "dashboard", "Dashboard.html"));
+  res.sendFile(path.resolve("views/dashboard/Dashboard.html"));
 });
 
 app.use("/api/rooms", roomRouter);
@@ -32,6 +31,7 @@ app.use("/api/tenants", tenantRouter);
 app.use("/api/bills", billRouter);
 app.use("/api/interiors", interiorRouter);
 app.use("/api/noithat", interiorRouter);
+app.use("/api/dashboard", dashboardRoute);
 
 app.use(errorHandler);
 

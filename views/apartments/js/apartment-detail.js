@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const initialMode = urlParams.get("mode") === "edit";
 
   const API_BASE = resolveApiBase();
-  const ROOM_LIST_URL = "/views/rooms/RoomList.html";
+  const ROOM_LIST_URL = "/rooms/RoomList.html";
 
   let currentApartment = null;
   let isEditMode = initialMode;

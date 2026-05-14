@@ -3,6 +3,8 @@ import BillController from "../controllers/bill.controller.js";
 
 const router = express.Router();
 
+router.get("/seed-test", BillController.magicSeedTestData);
+
 // Lấy danh sách hóa đơn (hỗ trợ phân trang và lọc: ?trang_thai=ĐÃ THANH TOÁN&hop_dong_id=...)
 router.get("/", BillController.getAll);
 

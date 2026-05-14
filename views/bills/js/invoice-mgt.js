@@ -39,14 +39,10 @@ function searchable(value) {
 }
 
 function mapBill(bill) {
-  const contract = bill.hop_dong_id || {};
-  const tenant = contract.nguoi_thue_id || {};
-  const room = contract.phong_id || {};
-
   return {
     id: bill._id,
-    tenantName: tenant.ho_ten || "Chưa rõ người thuê",
-    roomNumber: room.so_phong || "N/A",
+    tenantName: bill.hop_dong_id?.nguoi_thue_id?.ho_ten || "Chưa rõ người thuê",
+    roomNumber: bill.hop_dong_id?.phong_id?.so_phong || "N/A",
     amount: Number(bill.so_tien || 0),
     createdDate: bill.ngay_lap
       ? new Date(bill.ngay_lap).toLocaleDateString("vi-VN")
@@ -123,7 +119,8 @@ function renderBills() {
 function updatePagination() {
   const totalItems = filteredBills.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
-  const startNum = totalItems === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const startNum =
+    totalItems === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
   const endNum = Math.min(currentPage * ITEMS_PER_PAGE, totalItems);
 
   paginationInfo.textContent = `Hiển thị ${startNum} đến ${endNum} của ${totalItems}`;
