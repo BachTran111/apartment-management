@@ -3,7 +3,6 @@ const DETAIL_LABELS = {
   loading: "Đang tải...",
   contractActive: "Hiệu lực",
   contractExpired: "Hết hạn",
-  unknown: "Chưa rõ",
 };
 
 const bodyDataset = document.body.dataset;
@@ -27,7 +26,6 @@ let currentCanHoId = (
 ).trim();
 const phongId = (params.get("phongId") || "").trim();
 const resolvedApiBase = apiBase || resolveApiBase();
-const resolvedNoiThatApiBase = resolveNoiThatApiBase();
 
 bindEvents();
 boot();
@@ -74,7 +72,7 @@ async function boot() {
       throw new Error(payload.message || "Không thể tải chi tiết phòng");
     }
 
-    await renderDetail(payload.metadata || {});
+    renderDetail(payload.metadata || {});
   } catch (error) {
     setNotice(error.message, true);
     renderEmptyState();
@@ -95,9 +93,10 @@ function renderLoadingState() {
     { label: "Thời hạn hợp đồng", value: DETAIL_LABELS.loading },
     { label: "Số điện thoại", value: DETAIL_LABELS.loading },
   ]);
-  historyBody.innerHTML = `<tr><td class="empty-state" colspan="4">Đang tải lịch sử hợp đồng...</td></tr>`;
-  inventoryList.innerHTML = `<div class="empty-state">Đang tải nội thất...</div>`;
-  galleryGrid.innerHTML = `<div class="gallery-empty">Đang tải hình ảnh...</div>`;
+  historyBody.innerHTML =
+    '<tr><td class="empty-state" colspan="4">Đang tải lịch sử hợp đồng...</td></tr>';
+  inventoryList.innerHTML = '<div class="empty-state">Đang tải nội thất...</div>';
+  galleryGrid.innerHTML = '<div class="gallery-empty">Đang tải hình ảnh...</div>';
 }
 
 function renderEmptyState() {
@@ -114,17 +113,19 @@ function renderEmptyState() {
     { label: "Thời hạn hợp đồng", value: DETAIL_LABELS.empty },
     { label: "Số điện thoại", value: DETAIL_LABELS.empty },
   ]);
-  historyBody.innerHTML = `<tr><td class="empty-state" colspan="4">Chưa có lịch sử hợp đồng.</td></tr>`;
-  inventoryList.innerHTML = `<div class="empty-state">Chưa có nội thất.</div>`;
-  galleryGrid.innerHTML = `<div class="gallery-empty">Chưa có hình ảnh phòng.</div>`;
+  historyBody.innerHTML =
+    '<tr><td class="empty-state" colspan="4">Chưa có lịch sử hợp đồng.</td></tr>';
+  inventoryList.innerHTML = '<div class="empty-state">Chưa có nội thất.</div>';
+  galleryGrid.innerHTML = '<div class="gallery-empty">Chưa có hình ảnh phòng.</div>';
 }
 
-async function renderDetail(metadata) {
+function renderDetail(metadata) {
   const noiThat = Array.isArray(metadata.noiThat) ? metadata.noiThat : [];
   const phong = metadata.phong || {};
   const hopDong = Array.isArray(metadata.hopDong) ? metadata.hopDong : [];
   const currentContract = hopDong[0] || null;
   const nguoiThue = metadata.nguoiThue || currentContract?.nguoi_thue_id || null;
+
   currentCanHoId = currentCanHoId || String(phong.can_ho_id || "").trim();
   tenantDetailButton.dataset.tenantId = nguoiThue?._id || "";
 
@@ -164,23 +165,24 @@ async function renderDetail(metadata) {
           `;
         })
         .join("")
-    : `<tr><td class="empty-state" colspan="4">Chưa có lịch sử hợp đồng.</td></tr>`;
+    : '<tr><td class="empty-state" colspan="4">Chưa có lịch sử hợp đồng.</td></tr>';
 
   inventoryList.innerHTML = noiThat.length
     ? noiThat
-        .map(
-          (item) => `
+        .map((item) => {
+          const interiorName = getInteriorName(item);
+          return `
             <div class="inventory-item">
-              <div class="inventory-icon ${getInventoryIconClass(item.ten)}"></div>
+              <div class="inventory-icon ${getInventoryIconClass(interiorName)}"></div>
               <div class="inventory-text">
-                <strong>${escapeHtml(item.ten || "Nội thất")}</strong>
+                <strong>${escapeHtml(interiorName)}</strong>
                 <span>${escapeHtml(buildInventoryDetail(item))}</span>
               </div>
             </div>
-          `,
-        )
+          `;
+        })
         .join("")
-    : `<div class="empty-state">Chưa có nội thất.</div>`;
+    : '<div class="empty-state">Chưa có nội thất.</div>';
 
   renderGallery(phong);
 }
@@ -244,10 +246,6 @@ function resolveApiBase() {
   return "http://localhost:5000/api/rooms";
 }
 
-function resolveNoiThatApiBase() {
-  return resolvedApiBase.replace(/\/api\/rooms$/, "/api/noithat");
-}
-
 function buildImageUrl(imagePath) {
   if (/^https?:\/\//i.test(imagePath)) {
     return imagePath;
@@ -259,14 +257,16 @@ function buildImageUrl(imagePath) {
 
 function renderGallery(phong) {
   if (!phong.anh_phong) {
-    galleryGrid.innerHTML = `<div class="gallery-empty">Chưa có hình ảnh phòng.</div>`;
+    galleryGrid.innerHTML =
+      '<div class="gallery-empty">Chưa có hình ảnh phòng.</div>';
     return;
   }
 
   galleryGrid.innerHTML = `<img id="roomGalleryImage" src="${escapeAttribute(buildImageUrl(phong.anh_phong))}" alt="Ảnh phòng ${escapeAttribute(phong.so_phong || "")}" />`;
   const image = document.getElementById("roomGalleryImage");
   image.addEventListener("error", () => {
-    galleryGrid.innerHTML = `<div class="gallery-empty">Chưa có hình ảnh phòng.</div>`;
+    galleryGrid.innerHTML =
+      '<div class="gallery-empty">Chưa có hình ảnh phòng.</div>';
   });
 }
 
@@ -289,6 +289,10 @@ function getInventoryIconClass(name) {
   return "kitchen";
 }
 
+function getInteriorName(item) {
+  return item?.ten_noi_that || item?.ten || "Nội thất";
+}
+
 function buildInventoryDetail(item) {
   const details = [];
   if (item.tinh_trang) details.push(item.tinh_trang);
@@ -301,11 +305,6 @@ function getContractEndDate(contracts) {
   return formatDate(contracts[0].ngay_ket_thuc);
 }
 
-function getContractType(contracts) {
-  if (!contracts.length) return DETAIL_LABELS.empty;
-  return contracts[0].loai_hop_dong || DETAIL_LABELS.empty;
-}
-
 function getContractDuration(contracts) {
   if (!contracts.length) return DETAIL_LABELS.empty;
   return formatContractRange(contracts[0]);
@@ -314,8 +313,9 @@ function getContractDuration(contracts) {
 function formatContractRange(contract) {
   const start = formatDate(contract.ngay_bat_dau);
   const end = formatDate(contract.ngay_ket_thuc);
-  if (start === DETAIL_LABELS.empty && end === DETAIL_LABELS.empty)
+  if (start === DETAIL_LABELS.empty && end === DETAIL_LABELS.empty) {
     return DETAIL_LABELS.empty;
+  }
   return `${start} - ${end}`;
 }
 
@@ -332,8 +332,9 @@ function mapContractStatus(status) {
 }
 
 function formatArea(value) {
-  if (value === undefined || value === null || value === "")
+  if (value === undefined || value === null || value === "") {
     return DETAIL_LABELS.empty;
+  }
   return `${value} m²`;
 }
 
@@ -405,7 +406,7 @@ async function parseJsonResponse(response) {
   const rawText = await response.text();
   try {
     return JSON.parse(rawText);
-  } catch (error) {
+  } catch {
     throw new Error(
       `API ${response.url} không trả JSON hợp lệ. Hãy kiểm tra lại apiBase hoặc cổng backend.`,
     );
