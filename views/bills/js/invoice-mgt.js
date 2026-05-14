@@ -24,6 +24,8 @@ function normalizeStatus(status) {
   const normalized = String(status || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/Đ/g, "D")
+    .replace(/đ/g, "d")
     .toUpperCase();
 
   if (normalized.includes("DA THANH TOAN")) return "ĐÃ THANH TOÁN";

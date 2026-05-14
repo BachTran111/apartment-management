@@ -37,6 +37,8 @@ async function loadBillDetail() {
     document.getElementById("invoiceAmount").value = formatCurrency(bill.so_tien);
     document.getElementById("invoiceDate").value = formatDate(bill.ngay_lap);
     document.getElementById("invoiceStatus").value = bill.trang_thai || "N/A";
+    document.getElementById("invoiceNote").value =
+      bill?.ghi_chu?.trim() || "Chưa có ghi chú";
   } catch (error) {
     console.error("Lỗi tải chi tiết hóa đơn:", error);
     alert("Không thể tải chi tiết hóa đơn");
