@@ -13,7 +13,13 @@ class BillService {
         .skip(skip)
         .limit(limit)
         .sort(sort)
-        .populate("hop_dong_id") // Tự động lấy thông tin hợp đồng đi kèm
+        .populate({
+          path: "hop_dong_id",
+          populate: [
+            { path: "phong_id", select: "so_phong" },
+            { path: "nguoi_thue_id", select: "ho_ten" }
+          ]
+        }) // Tự động lấy thông tin người thuê và phòng từ hợp đồng
         .lean(),
       Bill.countDocuments(filter),
     ]);
@@ -29,7 +35,13 @@ class BillService {
    */
   async getById(id) {
     if (!id) return null;
-    return Bill.findById(id).populate("hop_dong_id").lean();
+    return Bill.findById(id).populate({
+      path: "hop_dong_id",
+      populate: [
+        { path: "phong_id", select: "so_phong" },
+        { path: "nguoi_thue_id", select: "ho_ten" }
+      ]
+    }).lean();
   }
 
   /**

@@ -11,6 +11,7 @@ import tenantRouter from "./routes/tenant.route.js";
 import billRouter from "./routes/bill.route.js";
 import interiorRouter from "./routes/interior.route.js";
 import { errorHandler } from "./middlewares/error-handler.js";
+import dashboardRoute from './routes/dashboard.route.js';
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/api/tenants", tenantRouter);
 app.use("/api/bills", billRouter);
 app.use("/api/interiors", interiorRouter);
 app.use("/api/noithat", interiorRouter);
+app.use('/api/dashboard', dashboardRoute);
 
 app.use(errorHandler);
 
