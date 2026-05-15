@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("search-btn");
   const searchInput = document.getElementById("search-input");
   const locationFilter = document.getElementById("location-filter");
+  const statusFilter = document.getElementById("status-filter");
   const paginationContainer = document.querySelector(".pagination");
   const footerTable = document.querySelector(".footer-table");
   const errorMsgContainer = document.getElementById("error-message");
@@ -11,81 +12,69 @@ document.addEventListener("DOMContentLoaded", () => {
   const itemsPerPage = 6;
   let allApartments = [];
 
-  const fetchApartments = async (page = 1) => {
+  async function fetchApartments(page = 1) {
     currentPage = page;
 
     errorMsgContainer.style.display = "none";
     listContainer.innerHTML =
       '<tr><td colspan="6"><div class="spinner"></div></td></tr>';
-
     footerTable.style.display = "none";
 
     const keyword = searchInput.value.trim();
-    const locationValue = locationFilter.value.trim();
-
     const params = new URLSearchParams();
 
-    if (keyword) params.append("q", keyword);
-    if (locationValue) params.append("location", locationValue);
+    if (keyword) {
+      params.append("q", keyword);
+    }
 
     try {
       const response = await fetch(
         `http://127.0.0.1:5000/api/apartments/search?${params.toString()}`,
       );
-
       const data = await response.json();
 
-      allApartments = filterApartments(data.metadata || []);
+      allApartments = Array.isArray(data.metadata) ? data.metadata : [];
+      populateLocationOptions(allApartments);
 
-      // =========================
-      // PAGINATION
-      // =========================
-      const totalPages = Math.ceil(allApartments.length / itemsPerPage);
-      const startIndex = (currentPage - 1) * itemsPerPage;
-
-      const paginated = allApartments.slice(
-        startIndex,
-        startIndex + itemsPerPage,
-      );
-
-      renderApartments(paginated);
-      renderPagination(totalPages);
-
-      footerTable.style.display = "flex";
-      footerTable.querySelector("div:first-child").textContent =
-        `Hiển thị ${startIndex + 1}-${Math.min(
-          startIndex + itemsPerPage,
-          allApartments.length,
-        )} / ${allApartments.length}`;
+      const filteredApartments = filterApartments(allApartments);
+      renderFilteredList(filteredApartments, page);
     } catch (error) {
       errorMsgContainer.style.display = "block";
       errorMsgContainer.textContent = error.message;
     }
-  };
+  }
 
-  const filterApartments = (apartments) => {
+  function filterApartments(apartments) {
     const keyword = normalizeText(searchInput.value.trim());
     const selectedLocation = normalizeText(locationFilter.value.trim());
+    const selectedStatus = statusFilter.value.trim();
 
     return (apartments || []).filter((apt) => {
       const name = normalizeText(apt.ten || "");
       const address = normalizeText(apt.dia_chi || "");
+      const area = normalizeText(extractAreaLabel(apt.dia_chi || ""));
+      const apartmentStatus = getApartmentStatus(apt).key;
 
-      const matchName = !keyword || name.includes(keyword);
+      const matchKeyword =
+        !keyword || name.includes(keyword) || address.includes(keyword);
       const matchLocation =
-        !selectedLocation || address.includes(selectedLocation);
+        !selectedLocation ||
+        area.includes(selectedLocation) ||
+        address.includes(selectedLocation);
+      const matchStatus = !selectedStatus || apartmentStatus === selectedStatus;
 
-      return matchName && matchLocation;
+      return matchKeyword && matchLocation && matchStatus;
     });
-  };
+  }
 
-  const renderFilteredList = (apartments, page = 1) => {
+  function renderFilteredList(apartments, page = 1) {
     currentPage = page;
 
-    if (!allApartments.length) {
+    if (!apartments.length) {
       listContainer.innerHTML =
-        '<tr><td colspan="6" class="no-data-msg"> Không có căn hộ nào</td></tr>';
+        '<tr><td colspan="6" class="no-data-msg">Không có căn hộ nào phù hợp</td></tr>';
       footerTable.style.display = "none";
+      paginationContainer.innerHTML = "";
       return;
     }
 
@@ -97,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     renderApartments(paginatedApartments);
-    renderPagination(totalPages);
+    renderPagination(totalPages, apartments);
 
     footerTable.style.display = "flex";
     const currentRange = `${startIndex + 1}-${Math.min(
@@ -106,31 +95,27 @@ document.addEventListener("DOMContentLoaded", () => {
     )}`;
     footerTable.querySelector("div:first-child").textContent =
       `Hiển thị ${currentRange} trên tổng số ${apartments.length} căn hộ`;
-  };
+  }
 
-  const renderApartments = (apartments) => {
+  function renderApartments(apartments) {
     listContainer.innerHTML = apartments
       .map((apt) => {
         const rooms = Array.isArray(apt.rooms) ? apt.rooms : [];
-        const totalRooms = rooms.length;
-
-        const availableRooms = rooms.filter((r) =>
-          isAvailableRoomStatus(r.trang_thai),
+        const totalRooms = rooms.length || Number(apt.tong_so_phong || 0);
+        const availableRooms = rooms.filter((room) =>
+          isAvailableRoomStatus(room.trang_thai),
         ).length;
 
         const availablePercent =
           totalRooms > 0 ? Math.round((availableRooms / totalRooms) * 100) : 0;
-
         const progressColor =
           availablePercent <= 20
             ? "#dc3545"
             : availablePercent <= 50
               ? "#ffc107"
               : "#28a745";
-
         const imageUrl =
           apt.hinh_anh || `https://picsum.photos/seed/${apt._id}/40/40`;
-
         const apartmentStatus = getApartmentStatus(apt);
 
         return `
@@ -141,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <span class="apartment-name">${escapeHtml(apt.ten || "")}</span>
               </div>
             </td>
-            <td class="location">${escapeHtml(apt.dia_chi || "")}</td>
+            <td class="location">${escapeHtml(extractAreaLabel(apt.dia_chi || ""))}</td>
             <td>${totalRooms} phòng</td>
             <td>
               <div class="progress-container">
@@ -167,52 +152,104 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       })
       .join("");
-  };
+  }
 
-  const renderPagination = (totalPages) => {
+  function renderPagination(totalPages, apartments) {
     let paginationHTML = "";
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = 1; i <= totalPages; i += 1) {
       paginationHTML += `<div class="page-btn ${i === currentPage ? "active" : ""}" onclick="window.goToPage(${i})">${i}</div>`;
     }
     paginationContainer.innerHTML = paginationHTML;
-  };
 
-  window.goToPage = (page) => {
-    renderFilteredList(allApartments, page);
-  };
+    window.goToPage = (page) => {
+      renderFilteredList(apartments, page);
+    };
+  }
 
-  searchBtn.addEventListener("click", () => fetchApartments(1));
-  searchInput.addEventListener(
-    "input",
-    debounce(() => fetchApartments(1), 300),
-  );
-  locationFilter.addEventListener("change", () => fetchApartments(1));
+  function populateLocationOptions(apartments) {
+    const currentValue = locationFilter.value;
+    const areaSet = new Set();
 
-  fetchApartments(1);
+    apartments.forEach((apt) => {
+      const area = extractAreaLabel(apt.dia_chi || "");
+      if (area) {
+        areaSet.add(area);
+      }
+    });
+
+    const sortedAreas = [...areaSet].sort((left, right) =>
+      left.localeCompare(right, "vi"),
+    );
+
+    locationFilter.innerHTML =
+      '<option value="">Khu vực</option>' +
+      sortedAreas
+        .map((area) => `<option value="${escapeHtml(area)}">${escapeHtml(area)}</option>`)
+        .join("");
+
+    if (sortedAreas.includes(currentValue)) {
+      locationFilter.value = currentValue;
+    }
+  }
+
+  function extractAreaLabel(address) {
+    const source = String(address || "").trim();
+    if (!source) return "";
+
+    const parts = source
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    if (parts.length >= 2) {
+      return parts[parts.length - 2];
+    }
+
+    return parts[0] || source;
+  }
 
   function getApartmentStatus(apt) {
     const rooms = Array.isArray(apt.rooms) ? apt.rooms : [];
-    const hasActiveRoom = rooms.some(
-      (r) =>
-        isAvailableRoomStatus(r.trang_thai) ||
-        isOccupiedRoomStatus(r.trang_thai),
-    );
 
-    if (hasActiveRoom) {
-      return { className: "status-active", label: "Hoạt động" };
+    if (!rooms.length) {
+      return { key: "inactive", className: "status-inactive", label: "Không hoạt động" };
     }
 
-    return { className: "status-inactive", label: "Không hoạt động" };
+    const hasOccupied = rooms.some((room) =>
+      isOccupiedRoomStatus(room.trang_thai),
+    );
+    const hasAvailable = rooms.some((room) =>
+      isAvailableRoomStatus(room.trang_thai),
+    );
+    const hasMaintenance = rooms.some((room) =>
+      isMaintenanceRoomStatus(room.trang_thai),
+    );
+
+    if (hasOccupied || hasAvailable) {
+      return { key: "active", className: "status-active", label: "Hoạt động" };
+    }
+
+    if (hasMaintenance) {
+      return {
+        key: "maintenance",
+        className: "status-maintenance",
+        label: "Bảo trì",
+      };
+    }
+
+    return { key: "inactive", className: "status-inactive", label: "Không hoạt động" };
   }
 
   function isAvailableRoomStatus(status) {
-    const value = normalizeText(status || "");
-    return value === normalizeText("Phòng Trống");
+    return normalizeText(status || "") === normalizeText("Phòng Trống");
   }
 
   function isOccupiedRoomStatus(status) {
-    const value = normalizeText(status || "");
-    return value === normalizeText("Đang Có Người Ở");
+    return normalizeText(status || "") === normalizeText("Đang Có Người Ở");
+  }
+
+  function isMaintenanceRoomStatus(status) {
+    return normalizeText(status || "") === normalizeText("Đang Bảo Trì");
   }
 
   function normalizeText(value) {
@@ -220,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
       .replace(/[^a-z0-9]+/g, " ")
       .trim();
   }
@@ -240,4 +278,15 @@ document.addEventListener("DOMContentLoaded", () => {
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#39;");
   }
+
+  searchBtn.addEventListener("click", () => fetchApartments(1));
+  searchInput.addEventListener("input", debounce(() => fetchApartments(1), 300));
+  locationFilter.addEventListener("change", () =>
+    renderFilteredList(filterApartments(allApartments), 1),
+  );
+  statusFilter.addEventListener("change", () =>
+    renderFilteredList(filterApartments(allApartments), 1),
+  );
+
+  fetchApartments(1);
 });

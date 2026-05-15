@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function goBackToList() {
-    window.location.href = "/views/apartments/apartment-list.html";
+    window.location.href = "/apartments/apartment-list.html";
   }
 
   async function fetchDetail() {
